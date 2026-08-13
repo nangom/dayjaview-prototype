@@ -55,7 +55,7 @@ export default class App extends React.Component {
 
   wheelItems = [];
   wheelPill = 'display:flex;align-items:center;gap:12px;flex:none;padding:15px 20px;border-radius:26px;border:1.5px solid rgba(255,255,255,.85);cursor:pointer;text-align:left;font-family:inherit;'
-    + 'background:linear-gradient(150deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.34) 55%,rgba(232,232,228,.34) 100%);'
+    + 'background:linear-gradient(150deg,rgba(255,255,255,.80) 0%,rgba(255,255,255,.62) 55%,rgba(232,232,228,.60) 100%);'
     + 'backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);'
     + 'box-shadow:0 0 0 1px rgba(22,22,15,.045),0 12px 26px -12px rgba(22,22,15,.2),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 4px rgba(22,22,15,.045);'
     + 'will-change:transform,opacity;transform-origin:center center;';
@@ -144,17 +144,22 @@ export default class App extends React.Component {
       const k = Math.min(Math.abs(r.top + r.height / 2 - focus) / step, 7);
       const near = Math.max(0, 1 - k);
       item.style.transform = 'scale(' + (0.94 + near * 0.12 - Math.min(k * 0.012, 0.05)).toFixed(3) + ')';
-      item.style.opacity = String(k <= 1 ? 1 : Math.max(0.2, 1 - (k - 1) * 0.2).toFixed(3));
-      item.style.filter = k > 0.6 ? 'blur(' + Math.min((k - 0.6) * 0.45, 1.6).toFixed(2) + 'px)' : 'none';
+      // 비초점 항목을 blur 로 뭉개면 목록 10줄 중 9줄이 읽히지 않아 화면이
+      // '정보 1개 + 노이즈'로 보인다. 흐림은 빼고 opacity 하한도 0.55 로 올려
+      // 초점만 강조하되 나머지도 읽히게 둔다. blur 는 프레임마다 리페인트를
+      // 강제하는 비용도 있었다.
+      item.style.opacity = String(k <= 1 ? 1 : Math.max(0.55, 1 - (k - 1) * 0.2).toFixed(3));
       item.style.zIndex = String(100 - Math.round(k * 5));
       item.style.boxShadow = near > 0.02
         ? '0 0 0 1px rgba(22,22,15,' + (0.045 + near * 0.02).toFixed(3) + '),'
           + '0 ' + (12 + near * 16).toFixed(0) + 'px ' + (26 + near * 24).toFixed(0) + 'px -12px rgba(22,22,15,' + (0.2 + near * 0.22).toFixed(3) + '),'
           + 'inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 4px rgba(22,22,15,.045)'
         : '0 0 0 1px rgba(22,22,15,.045),0 12px 26px -12px rgba(22,22,15,.2),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 4px rgba(22,22,15,.045)';
+      // 페이지 배경이 알약보다 어두워졌으므로 알약 자체는 더 불투명해야 카드로
+      // 읽힌다. 예전 값(.62/.34)은 흰 배경 위 흰 유리라 경계가 그림자뿐이었다.
       item.style.background = near > 0.3
-        ? 'linear-gradient(150deg,rgba(255,255,255,' + (0.62 + near * 0.28).toFixed(2) + ') 0%,rgba(255,255,255,' + (0.34 + near * 0.4).toFixed(2) + ') 55%,rgba(240,240,236,' + (0.34 + near * 0.4).toFixed(2) + ') 100%)'
-        : 'linear-gradient(150deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.34) 55%,rgba(232,232,228,.34) 100%)';
+        ? 'linear-gradient(150deg,rgba(255,255,255,' + (0.80 + near * 0.18).toFixed(2) + ') 0%,rgba(255,255,255,' + (0.62 + near * 0.26).toFixed(2) + ') 55%,rgba(240,240,236,' + (0.60 + near * 0.26).toFixed(2) + ') 100%)'
+        : 'linear-gradient(150deg,rgba(255,255,255,.80) 0%,rgba(255,255,255,.62) 55%,rgba(232,232,228,.60) 100%)';
     });
   };
 
@@ -297,6 +302,9 @@ export default class App extends React.Component {
           rank: String(t.rank),
           title: t.title,
           chg: t.chg,
+          // 1위만 오렌지로 채워 시선 앵커를 만든다. 채도 있는 색이 날짜와
+          // 등락률 빨강뿐이라 어디를 먼저 볼지가 없었다.
+          top: t.rank === 1,
           open: () => { this.wheelPick = j; this.go('theme', { theme: t.title, themeChg: t.chg, themeRank: String(t.rank) }); },
           ref: el => { this.wheelItems[idx] = el; }
         };
@@ -497,9 +505,11 @@ export default class App extends React.Component {
     );
   }
 
+  // 배경은 알약보다 어두워야 흰 유리 알약이 카드로 떠오른다.
+  // 흰 배경일 때는 흰 알약과 명도가 같아 경계가 그림자뿐이었다.
   renderHome(v) {
     return (
-      <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
+      <div style={css('position:absolute;inset:0;background:#EAE8E3;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
         <div style={css('position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(420px 300px at 12% 46%,rgba(214,214,206,.5),transparent 70%),radial-gradient(380px 320px at 92% 66%,rgba(222,220,212,.55),transparent 72%),radial-gradient(300px 240px at 70% 34%,rgba(238,236,230,.7),transparent 70%)')}></div>
 
         <div style={css('position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(54) + ' 20px 0')}>
@@ -511,7 +521,6 @@ export default class App extends React.Component {
         </div>
 
         <div style={css('position:relative;z-index:1;padding:26px 20px 40px')}>
-          <div style={css('height:52px;margin-bottom:14px')}></div>
           <div style={css('font-size:34px;line-height:1.14;font-weight:700;letter-spacing:-0.03em;color:#EB5E28')}>2026년 08월 12일</div>
           <div style={css('font-size:34px;line-height:1.14;font-weight:800;letter-spacing:-0.035em;color:#16160F')}>오늘의 요약</div>
         </div>
@@ -519,16 +528,21 @@ export default class App extends React.Component {
         <div ref={this.wheelRef} style={css('position:relative;z-index:1;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 20px;display:flex;flex-direction:column;gap:8px')}>
           {v.wheel.map(a => (
             <button key={a.key} ref={a.ref} onClick={a.open} style={css(this.wheelPill)}>
-              <span style={css('width:32px;height:32px;flex:none;border-radius:11px;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 1px 3px rgba(22,22,15,.06);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#16160F')}>{a.rank}</span>
+              <span style={css('width:32px;height:32px;flex:none;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;'
+                + (a.top
+                  ? 'background:#FF5C00;border:1px solid #FF5C00;box-shadow:0 2px 6px -2px rgba(255,92,0,.55);color:#FFFDF1'
+                  : 'background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 1px 3px rgba(22,22,15,.06);color:#16160F'))}>{a.rank}</span>
               <span style={css('font-size:19px;font-weight:700;letter-spacing:-0.02em;color:#16160F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0')}>{a.title}</span>
               <span style={css('margin-left:auto;padding-left:12px;font-size:19px;font-weight:700;letter-spacing:-0.01em;color:#E5484D;white-space:nowrap')}>{a.chg}</span>
             </button>
           ))}
         </div>
 
-        <div style={css('position:relative;z-index:1;display:flex;align-items:center;justify-content:flex-end;padding:16px 20px 30px')}>
-          <span style={css('width:58px;height:58px;display:block')}></span>
-        </div>
+        {/* 휠 하단 여백. 예전엔 빈 58px 상자가 104px 을 차지했다. 여백 자체는
+            필요하다 — 없애면 휠이 홈 인디케이터에 가린다. 크기를 줄이고
+            bare 모드에서 안전영역을 타도록 padBottom 을 쓴다. layoutWheel 이
+            휠 자신의 padding 을 덮어쓰므로 바깥 형제로 둬야 한다. */}
+        <div style={{ ...css('position:relative;z-index:1;flex:none'), height: this.padBottom(40) }}></div>
 
         {v.menu && <div onClick={v.closeMenu} style={css('position:absolute;inset:0;z-index:12;background:rgba(22,22,15,.28);animation:fadeIn .18s ease both')}></div>}
         {v.menu && (
