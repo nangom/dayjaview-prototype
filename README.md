@@ -15,6 +15,16 @@ npm run build    # dist/ 생성
 npm run preview  # 빌드 결과 확인
 ```
 
+## 배포
+
+`main` push → Vercel 자동 배포 → https://dayjaview-prototype.vercel.app
+다른 브랜치 push → 그 브랜치 전용 미리보기 URL 생성
+
+`vercel.json`이 dashboard 설정보다 우선한다. 프로젝트 기본값이
+`Framework: Other` / `Output: public`이라 그대로 두면 `public/`(로고 2개)만
+배포되므로, `vercel.json`의 `framework: vite` · `outputDirectory: dist`를
+지우지 말 것.
+
 ## 구조
 
 ```

@@ -97,8 +97,11 @@ git commit -m "디자인 수정: (무엇을 고쳤는지)"
 git push
 ```
 
-> **push해도 배포 URL은 자동으로 안 바뀝니다.**
-> Vercel-GitHub 연동이 아직 안 붙어 있습니다. push하신 뒤 알려주시면 배포하겠습니다.
+`main`에 push하면 **Vercel이 알아서 배포합니다.** 1~2분 뒤
+https://dayjaview-prototype.vercel.app 에 반영됩니다. 따로 알려주실 필요 없습니다.
+
+다른 브랜치에 push하면 그 브랜치만의 미리보기 URL이 따로 생깁니다.
+확정 전에 보여주고 싶을 때 쓰시면 됩니다.
 
 ---
 
