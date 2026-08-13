@@ -322,7 +322,7 @@ export default class App extends React.Component {
         { key: 'l1', label: '과거 사례 전체보기', go: () => this.go('cases') },
         { key: 'l2', label: '상세 통계', go: () => this.go('stats') }
       ],
-      saveFill: st.saved ? '#50FFEB' : 'none',
+      saveFill: st.saved ? '#FFFDF1' : 'none',
       toggleSave: () => { const v = !st.saved; this.setState({ saved: v }); this.flash(v ? '저장한 테마에 담았습니다' : '저장한 테마에서 제거했습니다'); },
 
       menu: st.menu,
@@ -420,6 +420,15 @@ export default class App extends React.Component {
         }));
       })(),
       sortLabel: st.byReturn ? '수익률순' : '종목명순',
+      sortSegs: [{ key: 'name', label: '종목명순', on: !st.byReturn }, { key: 'ret', label: '수익률순', on: !!st.byReturn }].map(sg => ({
+        key: sg.key,
+        label: sg.label,
+        pick: () => this.setState({ byReturn: sg.key === 'ret' }),
+        style: 'appearance:none;border:none;cursor:pointer;font-family:inherit;padding:5px 12px;border-radius:7px;font-size:12.5px;letter-spacing:-0.01em;transition:background .16s ease,color .16s ease,box-shadow .16s ease;'
+          + (sg.on
+            ? 'background:#FFFFFF;color:#321E37;font-weight:700;box-shadow:0 1px 3px rgba(22,22,15,.14),0 0 0 .5px rgba(22,22,15,.04);'
+            : 'background:transparent;color:#8B8E96;font-weight:600;')
+      })),
       toggleSort: () => this.setState(s => ({ byReturn: !s.byReturn })),
 
       statCols: ['1일', '5일', '20일'],
@@ -468,20 +477,20 @@ export default class App extends React.Component {
   renderSplash(v) {
     return (
       <div onClick={v.toHome} style={css('position:absolute;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;animation:fadeIn .3s ease both')}>
-        <div style={css('position:absolute;top:50%;left:50%;width:520px;height:520px;margin:-335px 0 0 -260px;border-radius:50%;background:radial-gradient(circle,rgba(80,255,235,.5) 0%,rgba(80,255,235,.14) 38%,rgba(80,255,235,0) 68%);filter:blur(18px);animation:halo 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
+        <div style={css('position:absolute;top:50%;left:50%;width:520px;height:520px;margin:-335px 0 0 -260px;border-radius:50%;background:radial-gradient(circle,rgba(255,92,0,.5) 0%,rgba(255,92,0,.14) 38%,rgba(255,92,0,0) 68%);filter:blur(18px);animation:halo 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
         <div style={css('position:relative;width:258px;height:96px;margin-bottom:150px')}>
-          <div style={css(`position:absolute;inset:0;background:rgba(255,255,255,.5);-webkit-mask:url(${LOGO_WHITE}) center/contain no-repeat;mask:url(${LOGO_WHITE}) center/contain no-repeat;animation:breathe 3.4s cubic-bezier(.45,0,.55,1) infinite`)}></div>
+          <div style={css(`position:absolute;inset:0;background:rgba(255,92,0,.55);-webkit-mask:url(${LOGO_WHITE}) center/contain no-repeat;mask:url(${LOGO_WHITE}) center/contain no-repeat;animation:breathe 3.4s cubic-bezier(.45,0,.55,1) infinite`)}></div>
           <div style={css(`position:absolute;inset:-40px;overflow:hidden;-webkit-mask:url(${LOGO_WHITE}) center/144px 96px no-repeat;mask:url(${LOGO_WHITE}) center/144px 96px no-repeat;filter:blur(9px);opacity:.85`)}>
-            <div style={css('position:absolute;inset:0;background:linear-gradient(100deg,rgba(80,255,235,0) 34%,rgba(80,255,235,.95) 50%,rgba(255,255,255,1) 56%,rgba(80,255,235,0) 70%);animation:sweep 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
+            <div style={css('position:absolute;inset:0;background:linear-gradient(100deg,rgba(255,92,0,0) 34%,rgba(255,92,0,.95) 50%,rgba(255,150,80,1) 56%,rgba(255,92,0,0) 70%);animation:sweep 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
           </div>
           <div style={css(`position:absolute;inset:0;overflow:hidden;-webkit-mask:url(${LOGO_WHITE}) center/contain no-repeat;mask:url(${LOGO_WHITE}) center/contain no-repeat`)}>
-            <div style={css('position:absolute;inset:0;background:linear-gradient(100deg,rgba(255,255,255,0) 36%,rgba(80,255,235,.9) 48%,#FFFFFF 55%,rgba(80,255,235,.55) 62%,rgba(255,255,255,0) 74%);animation:sweep 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
+            <div style={css('position:absolute;inset:0;background:linear-gradient(100deg,rgba(255,92,0,0) 36%,rgba(255,92,0,.9) 48%,#FFB07A 55%,rgba(255,92,0,.6) 62%,rgba(255,92,0,0) 74%);animation:sweep 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
           </div>
         </div>
         <div style={css('position:absolute;left:0;right:0;bottom:96px;display:flex;flex-direction:column;align-items:center;gap:20px')}>
           <div style={css('font-size:14.5px;font-weight:600;letter-spacing:.02em;color:rgba(255,255,255,.44)')}>오늘의 시장을, 과거의 기록으로</div>
           <div style={css('width:132px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);overflow:hidden')}>
-            <div style={css('height:100%;border-radius:2px;background:#50FFEB;transform-origin:left;animation:barFill 2.6s cubic-bezier(.3,.7,.2,1) both')}></div>
+            <div style={css('height:100%;border-radius:2px;background:#FF5C00;transform-origin:left;animation:barFill 2.6s cubic-bezier(.3,.7,.2,1) both')}></div>
           </div>
         </div>
       </div>
@@ -503,7 +512,7 @@ export default class App extends React.Component {
 
         <div style={css('position:relative;z-index:1;padding:26px 20px 40px')}>
           <div style={css('height:52px;margin-bottom:14px')}></div>
-          <div style={css('font-size:34px;line-height:1.14;font-weight:700;letter-spacing:-0.03em;color:#B6B5AF')}>2026년 08월 12일</div>
+          <div style={css('font-size:34px;line-height:1.14;font-weight:700;letter-spacing:-0.03em;color:#EB5E28')}>2026년 08월 12일</div>
           <div style={css('font-size:34px;line-height:1.14;font-weight:800;letter-spacing:-0.035em;color:#16160F')}>오늘의 요약</div>
         </div>
 
@@ -570,33 +579,33 @@ export default class App extends React.Component {
   renderTheme(v) {
     return (
       <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
-        <div style={css('position:absolute;top:0;left:0;right:0;height:340px;background:#000000')}></div>
+        <div style={css('position:absolute;top:0;left:0;right:0;height:340px;background:#FF5C00')}></div>
         <div style={css('position:relative;z-index:1;flex:1;overflow-y:auto')}>
           <div style={css('padding:' + this.padTop(52) + ' 22px 34px')}>
             <div style={css('display:flex;align-items:center;justify-content:space-between;margin-bottom:26px')}>
-              <button className="press" onClick={v.toHome} aria-label="Back" style={css('width:46px;height:46px;border-radius:23px;border:none;cursor:pointer;background:rgba(80,255,235,.14);display:flex;align-items:center;justify-content:center')}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#50FFEB" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+              <button className="press" onClick={v.toHome} aria-label="Back" style={css('width:46px;height:46px;border-radius:23px;border:none;cursor:pointer;background:rgba(255,253,241,.18);display:flex;align-items:center;justify-content:center')}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFDF1" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
               </button>
-              <span style={css('font-size:17px;font-weight:600;letter-spacing:-0.01em;color:rgba(80,255,235,.66)')}>8월 12일 장 마감 기준</span>
-              <button className="press" onClick={v.toggleSave} aria-label="Save" style={css('width:46px;height:46px;border-radius:23px;border:none;cursor:pointer;background:rgba(80,255,235,.14);display:flex;align-items:center;justify-content:center')}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill={v.saveFill} stroke="#50FFEB" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M7 4.5h10a1 1 0 0 1 1 1V20l-6-3.6L6 20V5.5a1 1 0 0 1 1-1z"></path></svg>
+              <span style={css('font-size:17px;font-weight:600;letter-spacing:-0.01em;color:#4A1608')}>8월 12일 장 마감 기준</span>
+              <button className="press" onClick={v.toggleSave} aria-label="Save" style={css('width:46px;height:46px;border-radius:23px;border:none;cursor:pointer;background:rgba(255,253,241,.18);display:flex;align-items:center;justify-content:center')}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill={v.saveFill} stroke="#FFFDF1" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M7 4.5h10a1 1 0 0 1 1 1V20l-6-3.6L6 20V5.5a1 1 0 0 1 1-1z"></path></svg>
               </button>
             </div>
             <div style={css('display:flex;align-items:center;gap:10px;margin-bottom:6px')}>
-              <span style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#50FFEB')}>{v.theme}</span>
-              {v.hasRank && <span style={css('padding:5px 12px;border-radius:14px;background:rgba(80,255,235,.16);font-size:13px;font-weight:700;color:#50FFEB')}>상승 {v.themeRank}위</span>}
+              <span style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#FFFDF1')}>{v.theme}</span>
+              {v.hasRank && <span style={css('padding:5px 12px;border-radius:14px;background:rgba(255,253,241,.2);font-size:13px;font-weight:700;color:#FFFDF1')}>상승 {v.themeRank}위</span>}
             </div>
-            <div style={css('font-size:86px;line-height:.96;font-weight:800;letter-spacing:-0.055em;color:#50FFEB;margin:6px 0 4px')}>{v.themeChg}</div>
-            <div style={css('font-size:15px;font-weight:600;color:rgba(80,255,235,.62)')}>오늘 테마 평균 등락</div>
+            <div style={css('font-size:86px;line-height:.96;font-weight:800;letter-spacing:-0.055em;color:#FFFDF1;margin:6px 0 4px')}>{v.themeChg}</div>
+            <div style={css('font-size:15px;font-weight:600;color:#4A1608')}>오늘 테마 평균 등락</div>
           </div>
 
-          <div style={css('background:#fff;border-radius:34px 34px 0 0;box-shadow:0 -14px 34px -18px rgba(22,22,15,.28);padding:24px 22px 0;min-height:520px')}>
-            <div style={css('border:1px solid #EAE9E4;border-radius:26px;padding:20px;box-shadow:0 8px 22px -14px rgba(22,22,15,.18)')}>
+          <div style={css('background:linear-gradient(180deg,rgba(255,255,255,.86) 0%,rgba(252,251,248,.94) 100%);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:34px 34px 0 0;box-shadow:0 -14px 34px -18px rgba(22,22,15,.28);padding:24px 22px 0;min-height:520px')}>
+            <div style={css('border-radius:26px;padding:20px;background:linear-gradient(150deg,rgba(255,255,255,.72) 0%,rgba(255,255,255,.42) 55%,rgba(240,240,236,.4) 100%);backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);border:1px solid rgba(255,255,255,.85);box-shadow:0 0 0 1px rgba(22,22,15,.035),0 8px 22px -14px rgba(22,22,15,.18),inset 0 1.5px 1px rgba(255,255,255,.9)')}>
               <div style={css('font-size:12.5px;font-weight:700;letter-spacing:.08em;color:#9A998F;margin-bottom:12px')}>오늘 부각된 이유</div>
               <div style={css('font-size:18px;font-weight:700;line-height:1.42;letter-spacing:-0.02em;color:#16160F;text-wrap:pretty')}>{v.reason}</div>
               <div style={css('display:flex;flex-wrap:wrap;gap:8px;margin-top:16px')}>
                 {v.stocks.map(s => (
-                  <span key={s} style={css('padding:9px 14px;border-radius:16px;background:#F5F4F0;font-size:15px;font-weight:700;letter-spacing:-0.01em;color:#16160F')}>{s}</span>
+                  <span key={s} style={css('padding:9px 14px;border-radius:16px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.85);font-size:15px;font-weight:700;letter-spacing:-0.01em;color:#16160F')}>{s}</span>
                 ))}
               </div>
               <div style={css('margin-top:14px;font-size:12.5px;font-weight:500;color:#A9A89E')}>출처 · 인포스탁</div>
@@ -745,8 +754,12 @@ export default class App extends React.Component {
           <div style={css('margin-top:14px;font-size:12.5px;font-weight:500;line-height:1.55;color:#8B8E96;text-wrap:pretty')}>키워드가 등장한 과거 사건이 미등장 사건보다 5일 후 얼마나 더 올랐는지를 뜻합니다 (상승 동반 강도, 인과 아님). 표본 5~9건은 참고용이며 일반어는 제외했습니다.</div>
 
           <div style={css('margin-top:28px;display:flex;align-items:baseline;justify-content:space-between')}>
-            <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>종목별 5일 후 등락률</span>
-            <button onClick={v.toggleSort} style={css('border:none;background:none;padding:0;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;color:#3267D6')}>{v.sortLabel}</button>
+            <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>5일 후 등락률</span>
+            <span style={css('display:inline-flex;align-items:center;padding:2px;border-radius:9px;background:#EFEFF0')}>
+              {v.sortSegs.map(sg => (
+                <button key={sg.key} onClick={sg.pick} style={css(sg.style)}>{sg.label}</button>
+              ))}
+            </span>
           </div>
           <div style={css('margin-top:12px;border:1px solid #ECEEF3;border-radius:26px;background:#FFFFFF;overflow:hidden')}>
             <div style={css('display:flex;align-items:center;padding:14px 18px;background:#F6F7FB')}>
