@@ -173,6 +173,12 @@ export default class App extends React.Component {
     if (q && q !== 'splash') this.setState({ screen: q });
     else this._splash = setTimeout(() => { if (this.state.screen === 'splash') this.go('home'); }, 2800);
     window.addEventListener('resize', this.fitFrame);
+    // resize 이벤트가 오지 않는 환경(인앱 웹뷰, 분할 화면, 개발자도구 기기 모드)이
+    // 있어서 문서 크기 자체도 같이 관찰한다.
+    if (typeof ResizeObserver !== 'undefined') {
+      this._ro = new ResizeObserver(this.fitFrame);
+      this._ro.observe(document.documentElement);
+    }
     this.fitFrame();
   }
 
@@ -182,6 +188,7 @@ export default class App extends React.Component {
     clearTimeout(this._autoT);
     cancelAnimationFrame(this._wheelRaf);
     window.removeEventListener('resize', this.fitFrame);
+    if (this._ro) this._ro.disconnect();
     if (this.wheelEl) this.wheelEl.removeEventListener('scroll', this.onWheelScroll);
   }
 
