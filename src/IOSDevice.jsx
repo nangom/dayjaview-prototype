@@ -184,25 +184,29 @@ function IOSList({ header, children, dark = false }) {
 // ─────────────────────────────────────────────────────────────
 // Device frame
 // ─────────────────────────────────────────────────────────────
+// bare: 실제 모바일에서 쓰는 모드. 기기 목업의 테두리·그림자·다이내믹 아일랜드를
+// 없애고 화면을 꽉 채운다. 진짜 폰 안에 폰 목업을 또 그리면 앱처럼 보이지 않는다.
 function IOSDevice({
   children, width = 402, height = 874, dark = false,
-  title, keyboard = false,
+  title, keyboard = false, bare = false,
 }) {
   return (
     // data-om-starter: inert presence marker — Claude Design's starter-usage
     // probe reads it; it renders nothing. Keep it on this root element.
     <div data-om-starter="ios-frame" style={{
-      width, height, borderRadius: 48, overflow: 'hidden',
+      width, height, borderRadius: bare ? 0 : 48, overflow: 'hidden',
       position: 'relative', background: dark ? '#000' : '#F2F2F7',
-      boxShadow: '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
+      boxShadow: bare ? 'none' : '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
       fontFamily: '-apple-system, system-ui, sans-serif',
       WebkitFontSmoothing: 'antialiased',
     }}>
-      {/* dynamic island */}
+      {/* dynamic island — 실제 기기엔 진짜 노치가 있으므로 bare 에서는 그리지 않는다 */}
+      {!bare && (
       <div style={{
         position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)',
         width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50,
       }} />
+      )}
       {/* status bar (absolute) */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
         <IOSStatusBar dark={dark} />

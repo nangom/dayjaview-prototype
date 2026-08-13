@@ -8,12 +8,14 @@ const LOGO_MARK = '/dejavu-mark.png';
 // 기기 목업 고정 크기 (iPhone 15 Pro). vals()의 w/h 와 같은 값이어야 한다.
 const FRAME_W = 393;
 const FRAME_H = 852;
+const FRAME_PAD = 40;      // 목업 바깥 여백 (넓은 화면에서만)
+const BARE_MAX_W = 520;    // 이 폭 미만이면 프레임 없이 꽉 채운다
 
 export default class App extends React.Component {
   state = {
     screen: 'splash', theme: 'LED', hz: 1, pickIdx: 0, hover: null, plus: false,
     notif: true, saved: false, savedMap: {}, tab: 'home', byReturn: false,
-    toast: null, menu: false, savedQ: '', scale: 1, pad: 40
+    toast: null, menu: false, savedQ: '', scale: 1, bare: false
   };
 
   themes = [
@@ -183,19 +185,20 @@ export default class App extends React.Component {
     if (this.wheelEl) this.wheelEl.removeEventListener('scroll', this.onWheelScroll);
   }
 
-  // 기기 목업은 393x852 고정 크기다. 화면이 좁으면 flex 아이템으로서
-  // 폭만 줄어들어 비율이 깨지므로(852는 그대로라 세로로 길쭉해진다),
-  // 레이아웃으로 줄이지 않고 transform:scale 로 통째로 축소한다.
-  // 여백은 좁은 화면에서 40px을 쓸 수 없어 같이 줄인다.
+  // 좁은 화면(= 실제 모바일)에서는 목업 프레임을 벗기고 화면을 꽉 채운다.
+  // 진짜 폰 안에 폰 목업을 또 그리면 앱이 아니라 데모처럼 보인다.
+  //
+  // 넓은 화면에서는 목업으로 보여주되, 393x852 고정 크기라 flex 아이템으로 두면
+  // 폭만 줄고 높이 852는 그대로 남아 비율이 깨진다. 레이아웃으로 줄이지 않고
+  // transform:scale 로 통째로 축소한다.
   fitFrame = () => {
-    const pad = window.innerWidth < 520 ? 12 : 40;
-    const scale = Math.min(
+    const bare = window.innerWidth < BARE_MAX_W;
+    const scale = bare ? 1 : Math.max(0.2, Math.min(
       1,
-      (window.innerWidth - pad * 2) / FRAME_W,
-      (window.innerHeight - pad * 2) / FRAME_H
-    );
-    const next = Math.max(scale, 0.2);
-    if (next !== this.state.scale || pad !== this.state.pad) this.setState({ scale: next, pad });
+      (window.innerWidth - FRAME_PAD * 2) / FRAME_W,
+      (window.innerHeight - FRAME_PAD * 2) / FRAME_H
+    ));
+    if (scale !== this.state.scale || bare !== this.state.bare) this.setState({ scale, bare });
   };
 
   wheelRef = el => {
@@ -858,29 +861,46 @@ export default class App extends React.Component {
 
   render() {
     const v = this.vals();
-    const { scale, pad } = this.state;
+    const { scale, bare } = this.state;
+
+    const device = (
+      <IOSDevice
+        width={bare ? '100%' : v.w}
+        height={bare ? '100%' : v.h}
+        dark={v.isDark}
+        bare={bare}
+      >
+        <div style={{ ...css("height:100%;position:relative;overflow:hidden;font-family:'Pretendard',system-ui,sans-serif;-webkit-font-smoothing:antialiased"), background: v.pageBg }}>
+          {v.isSplash && this.renderSplash(v)}
+          {v.isHome && this.renderHome(v)}
+          {v.isTheme && this.renderTheme(v)}
+          {v.isCases && this.renderCases(v)}
+          {v.isCase && this.renderCase(v)}
+          {v.isStats && this.renderStats(v)}
+          {v.toast && (
+            <div style={css('position:absolute;left:22px;right:22px;bottom:44px;z-index:20;padding:14px 16px;border-radius:20px;background:#16160F;color:#fff;font-size:14px;font-weight:600;box-shadow:0 12px 30px rgba(20,20,10,.24);animation:fadeIn .18s ease both')}>{v.toast}</div>
+          )}
+        </div>
+      </IOSDevice>
+    );
+
+    // 모바일: 여백도 프레임도 없이 뷰포트를 그대로 채운다.
+    // 100dvh 라야 주소창이 접혔다 펴져도 높이가 튀지 않는다.
+    if (bare) {
+      return <div style={{ width: '100%', height: '100dvh', overflow: 'hidden' }}>{device}</div>;
+    }
+
+    // 데스크톱: 목업으로 보여준다. 축소해도 레이아웃이 원래 크기를 차지하지
+    // 않도록 바깥 div 가 축소된 실제 크기를 잡는다.
     return (
       <div style={{
         ...css('min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden'),
-        padding: pad, boxSizing: 'border-box',
+        padding: FRAME_PAD, boxSizing: 'border-box',
       }}>
-        {/* 축소해도 레이아웃이 원래 크기를 차지하지 않도록 바깥에서 실제 크기를 잡는다 */}
         <div style={{ flex: 'none', width: FRAME_W * scale, height: FRAME_H * scale }}>
-        <div style={{ width: FRAME_W, height: FRAME_H, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
-        <IOSDevice width={v.w} height={v.h} dark={v.isDark}>
-          <div style={{ ...css("height:100%;position:relative;overflow:hidden;font-family:'Pretendard',system-ui,sans-serif;-webkit-font-smoothing:antialiased"), background: v.pageBg }}>
-            {v.isSplash && this.renderSplash(v)}
-            {v.isHome && this.renderHome(v)}
-            {v.isTheme && this.renderTheme(v)}
-            {v.isCases && this.renderCases(v)}
-            {v.isCase && this.renderCase(v)}
-            {v.isStats && this.renderStats(v)}
-            {v.toast && (
-              <div style={css('position:absolute;left:22px;right:22px;bottom:44px;z-index:20;padding:14px 16px;border-radius:20px;background:#16160F;color:#fff;font-size:14px;font-weight:600;box-shadow:0 12px 30px rgba(20,20,10,.24);animation:fadeIn .18s ease both')}>{v.toast}</div>
-            )}
+          <div style={{ width: FRAME_W, height: FRAME_H, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
+            {device}
           </div>
-        </IOSDevice>
-        </div>
         </div>
       </div>
     );
