@@ -207,17 +207,21 @@ function IOSDevice({
         width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50,
       }} />
       )}
-      {/* status bar (absolute) */}
+      {/* status bar — bare 에서는 그리지 않는다. 브라우저에서는 주소창이,
+          홈 화면에 추가한 상태에서는 진짜 iOS 상태바가 이미 그 자리에 있다. */}
+      {!bare && (
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
         <IOSStatusBar dark={dark} />
       </div>
+      )}
       {/* nav + content */}
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         {title !== undefined && <IOSNavBar title={title} dark={dark} />}
         <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
         {keyboard && <IOSKeyboard dark={dark} />}
       </div>
-      {/* home indicator — always on top */}
+      {/* home indicator — 실제 기기엔 진짜 인디케이터가 있으므로 bare 에서는 생략 */}
+      {!bare && (
       <div style={{
         position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60,
         height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end',
@@ -228,6 +232,7 @@ function IOSDevice({
           background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)',
         }} />
       </div>
+      )}
     </div>
   );
 }

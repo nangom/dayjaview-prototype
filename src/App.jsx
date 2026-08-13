@@ -201,6 +201,22 @@ export default class App extends React.Component {
     if (scale !== this.state.scale || bare !== this.state.bare) this.setState({ scale, bare });
   };
 
+  // 화면 상단 여백. 목업 모드에서는 가짜 상태바(62px)를 피하려고 50~60px을 쓴다.
+  // bare 모드는 상태바를 안 그리므로 그만큼 줄인다. 다만 홈 화면에 추가해
+  // 전체화면으로 뜨면 진짜 iOS 상태바가 콘텐츠 위에 겹치므로 안전영역을 더해
+  // 그 아래에서 시작하게 한다. 일반 브라우저에서는 inset 이 0이라 영향이 없다.
+  padTop(base) {
+    if (!this.state.bare) return base + 'px';
+    return 'calc(env(safe-area-inset-top, 0px) + ' + Math.max(base - 34, 14) + 'px)';
+  }
+
+  // 화면 하단 여백. bare 모드는 가짜 홈 인디케이터(34px)를 안 그리는 대신
+  // 전체화면일 때 진짜 인디케이터에 가리지 않도록 안전영역을 더한다.
+  padBottom(base) {
+    if (!this.state.bare) return base + 'px';
+    return 'calc(env(safe-area-inset-bottom, 0px) + ' + base + 'px)';
+  }
+
   wheelRef = el => {
     if (el && el !== this.wheelEl) {
       if (this.wheelEl) {
@@ -470,7 +486,7 @@ export default class App extends React.Component {
       <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
         <div style={css('position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(420px 300px at 12% 46%,rgba(214,214,206,.5),transparent 70%),radial-gradient(380px 320px at 92% 66%,rgba(222,220,212,.55),transparent 72%),radial-gradient(300px 240px at 70% 34%,rgba(238,236,230,.7),transparent 70%)')}></div>
 
-        <div style={css('position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:54px 20px 0')}>
+        <div style={css('position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(54) + ' 20px 0')}>
           <button className="tap-bg" onClick={v.openMenu} style={css('width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;padding:0;cursor:pointer;border-radius:22px')}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A1A18" strokeWidth="1.9" strokeLinecap="round"><path d="M5 8.5h14M5 13h14M5 17.5h9"></path></svg>
           </button>
@@ -501,7 +517,7 @@ export default class App extends React.Component {
         {v.menu && <div onClick={v.closeMenu} style={css('position:absolute;inset:0;z-index:12;background:rgba(22,22,15,.28);animation:fadeIn .18s ease both')}></div>}
         {v.menu && (
           <div style={css('position:absolute;top:0;bottom:0;left:0;z-index:13;width:300px;background:#fff;border-radius:0 26px 26px 0;box-shadow:0 20px 60px rgba(20,20,10,.28);display:flex;flex-direction:column;animation:drawerIn .26s cubic-bezier(.2,.85,.3,1) both')}>
-            <div style={css('padding:60px 22px 12px')}>
+            <div style={css('padding:' + this.padTop(60) + ' 22px 12px')}>
               <div style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#16160F')}>저장한 테마</div>
               <input value={v.savedQ} onChange={v.onSavedQ} placeholder="테마 검색" style={css('margin-top:14px;width:100%;box-sizing:border-box;padding:11px 14px;border:none;border-radius:14px;background:#F5F4F1;font-family:inherit;font-size:14px;font-weight:500;color:#16160F;outline:none')} />
             </div>
@@ -549,7 +565,7 @@ export default class App extends React.Component {
       <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('position:absolute;top:0;left:0;right:0;height:340px;background:#000000')}></div>
         <div style={css('position:relative;z-index:1;flex:1;overflow-y:auto')}>
-          <div style={css('padding:52px 22px 34px')}>
+          <div style={css('padding:' + this.padTop(52) + ' 22px 34px')}>
             <div style={css('display:flex;align-items:center;justify-content:space-between;margin-bottom:26px')}>
               <button className="press" onClick={v.toHome} aria-label="Back" style={css('width:46px;height:46px;border-radius:23px;border:none;cursor:pointer;background:rgba(80,255,235,.14);display:flex;align-items:center;justify-content:center')}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#50FFEB" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
@@ -642,7 +658,7 @@ export default class App extends React.Component {
   renderCases(v) {
     return (
       <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
-        <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:50px 20px 4px')}>
+        <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
           <button className="icon-btn press" onClick={v.toTheme} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
@@ -668,7 +684,7 @@ export default class App extends React.Component {
   renderCase(v) {
     return (
       <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
-        <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:50px 20px 4px')}>
+        <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
           <button className="icon-btn press" onClick={v.toCases} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
@@ -755,7 +771,7 @@ export default class App extends React.Component {
   renderStats(v) {
     return (
       <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
-        <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:50px 20px 4px')}>
+        <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
           <button className="icon-btn press" onClick={v.toTheme} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
