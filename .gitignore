@@ -1,0 +1,15 @@
+# Claude Design 원본 번들 — 22MB대라 커밋하지 않는다. tools/unbundle.py 로 풀어서 쓴다.
+*.bundle.html
+Dejavu*.html
+!index.html
+
+# Vercel
+.vercel/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
