@@ -4,7 +4,8 @@ Dejavu*.html
 !index.html
 
 # Vercel
-.vercel/
+.vercel
+.env*
 
 # OS
 .DS_Store
