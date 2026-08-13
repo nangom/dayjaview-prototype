@@ -1,0 +1,29 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #EFEEEB; font-family: 'Pretendard', system-ui, sans-serif; }
+::-webkit-scrollbar { display: none; }
+
+@keyframes pushIn { from { opacity: 0; transform: translateX(26px) } to { opacity: 1; transform: translateX(0) } }
+@keyframes popBack { from { opacity: 0; transform: translateX(-22px) } to { opacity: 1; transform: translateX(0) } }
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes drawerIn { from { transform: translateX(-100%) } to { transform: translateX(0) } }
+@keyframes sheetUp { from { transform: translateY(102%) } to { transform: translateY(0) } }
+@keyframes sweep { 0% { transform: translateX(-115%) } 52% { transform: translateX(0%) } 100% { transform: translateX(115%) } }
+@keyframes halo { 0%,100% { opacity: .06; transform: scale(.86) } 50% { opacity: .5; transform: scale(1.12) } }
+@keyframes breathe { 0%,100% { opacity: .42 } 50% { opacity: .62 } }
+@keyframes barFill { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes grow { from { transform: scaleY(0) } to { transform: scaleY(1) } }
+@keyframes draw { from { stroke-dashoffset: 640 } to { stroke-dashoffset: 0 } }
+
+a { color: #16160F; }
+a:hover { color: #000; }
+
+.tap-bg:active { background: #F3F3F0; }
+.press:active { transform: scale(.94); }
+.press-sm:active { transform: scale(.985); }
+.icon-btn:hover { background: #F5F4F0; }
+.row-hover:hover { background: #FBFBF9; }
+.case-card:hover { box-shadow: 0 12px 26px -16px rgba(22,22,15,.4); }
+.link-btn:hover { background: #FBFBF9; }
+.lift:hover { transform: translateY(-4px); box-shadow: 0 14px 26px -16px rgba(22,22,15,.45); }
+.lift-soft:hover { transform: translateY(-4px); box-shadow: 0 14px 26px -16px rgba(22,22,15,.35); }
+.quick-item:hover { background: #F6F5F1; }
