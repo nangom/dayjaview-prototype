@@ -1,7 +1,10 @@
 """Claude Design 번들 HTML을 git 친화적인 소스로 되돌린다.
 
-사용법:  python tools/unbundle.py "<번들.html>" <출력디렉터리>
+사용법:  python tools/unbundle.py "<번들.html>" <출력디렉터리> [--force]
 예:      python tools/unbundle.py "~/Downloads/Dejavu App5.html" .
+
+index.html 이 이미 있으면 --force 없이는 덮어쓰지 않는다.
+그 파일은 사람이 직접 고치는 대상이기 때문이다.
 
 번들은 폰트와 라이브러리까지 base64로 전부 품고 있어 22MB를 넘지만,
 실제 앱 화면 코드(template 아일랜드)는 50KB 남짓이다. 이 스크립트는
@@ -78,7 +81,18 @@ def asset_name(uuid, ext_id, data):
     return slug(ext_id) if ext_id else uuid[:8]
 
 
-def main(src, outdir):
+def main(src, outdir, force=False):
+    # index.html 은 사람이 직접 고치는 파일이다. 새 시안을 언팩하면 그 수정분이
+    # 통째로 날아가므로, 이미 있으면 --force 없이는 덮어쓰지 않는다.
+    index_path = os.path.join(outdir, "index.html")
+    if os.path.exists(index_path) and not force:
+        sys.exit(
+            "%s 가 이미 있습니다.\n"
+            "이 파일은 손으로 수정하는 대상이라, 덮어쓰면 그 수정분이 사라집니다.\n"
+            "정말 새 시안으로 갈아엎으려면 --force 를 붙이세요.\n"
+            "  (그 전에 git 상태부터 확인: git status)" % index_path
+        )
+
     src = os.path.expanduser(src)
     html = open(src, encoding="utf-8", errors="replace").read()
     print("번들: %.1f MB  (%s)" % (len(html) / 1024 / 1024, os.path.basename(src)))
@@ -144,7 +158,7 @@ def main(src, outdir):
     if leftover:
         print("!! 처리하지 못한 uuid 참조: %s" % ", ".join(u[:8] for u in leftover))
 
-    index = os.path.join(outdir, "index.html")
+    index = index_path
     with open(index, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(out)
 
@@ -160,6 +174,7 @@ def main(src, outdir):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
+    args = [a for a in sys.argv[1:] if a != "--force"]
+    if len(args) != 2:
         sys.exit(__doc__)
-    main(sys.argv[1], sys.argv[2])
+    main(args[0], args[1], force="--force" in sys.argv)

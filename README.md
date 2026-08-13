@@ -28,22 +28,25 @@ base64 한 덩어리라 `git diff`가 아무것도 보여주지 못한다.
 원본 번들과 렌더 결과가 동일함은 확인했다 (`body.innerHTML` 69,446자 일치,
 SVG path 7개 일치, 미해결 템플릿 바인딩 0건, Pretendard 적용됨).
 
-## 새 시안 반영하기
+## 지금 원본은 index.html 이다
 
-1. claude.ai/design에서 대상 파일을 다운로드
-2. 언번들:
+초기 `index.html`은 claude.ai/design의 `Dejavu App5.html`을 변환해서 만들었다.
+**하지만 2026-08-13부터 원본은 `index.html`이다.** 디자인 수정은 여기서 한다.
+
+그래서 `unbundle.py`는 `index.html`이 이미 있으면 `--force` 없이 덮어쓰지 않는다.
+design 쪽 시안으로 갈아엎는 건 손수정분을 버리는 결정이라, 팀 합의가 먼저다.
+
+UI 담당자용 안내는 [HANDOFF.md](HANDOFF.md).
+
+## 새 시안으로 갈아엎어야 한다면
 
 ```bash
-python tools/unbundle.py "~/Downloads/Dejavu App5.html" .
+python tools/unbundle.py "~/Downloads/Dejavu App5.html" . --force
+python -m http.server 8899 --bind 127.0.0.1   # http://127.0.0.1:8899 에서 확인
 ```
 
-3. 결과 확인:
-
-```bash
-python -m http.server 8899 --bind 127.0.0.1
-```
-
-4. 커밋 후 push → Vercel 자동 배포
+`--force`는 `index.html`의 손수정 내용을 전부 버린다. 실행 전 `git status`로
+커밋 안 된 변경이 없는지 확인할 것.
 
 ## 구조
 
