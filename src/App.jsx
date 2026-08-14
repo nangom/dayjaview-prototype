@@ -91,9 +91,10 @@ export default class App extends React.Component {
       drawerFoot: d ? 'rgba(255,255,255,.09)' : '#F0EFEA',
       popBg: d ? '#262321' : '#FFFFFF',
       popBorder: d ? 'rgba(255,255,255,.10)' : '#E9E8E3',
-      sheetGrad: d
-        ? 'linear-gradient(180deg,rgba(38,35,33,.92) 0%,rgba(28,25,23,.96) 100%)'
-        : 'linear-gradient(180deg,rgba(255,255,255,.86) 0%,rgba(252,251,248,.94) 100%)',
+      // 테마 시트는 불투명하다. 반투명 그라디언트로 두면 뒤의 오렌지 헤더
+      // (340px 블록)가 비쳐서 시트 상단에 원치 않는 색 그라데이션이 깔린다.
+      // 시트가 막아주면 그 위 카드들의 옅은 흰 그라디언트도 거의 안 보인다.
+      sheetBg: d ? '#262321' : '#FFFFFF',
       cardGrad: d
         ? 'linear-gradient(150deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.045) 55%,rgba(255,255,255,.025) 100%)'
         : 'linear-gradient(150deg,rgba(255,255,255,.72) 0%,rgba(255,255,255,.42) 55%,rgba(240,240,236,.4) 100%)',
@@ -793,7 +794,7 @@ export default class App extends React.Component {
             <div style={css('font-size:15px;font-weight:600;color:#4A1608')}>오늘 테마 평균 등락</div>
           </div>
 
-          <div style={css('background:' + p.sheetGrad + ';backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:34px 34px 0 0;box-shadow:0 -14px 34px -18px rgba(22,22,15,.28);padding:24px 22px 0;min-height:520px')}>
+          <div style={css('background:' + p.sheetBg + ';border-radius:34px 34px 0 0;box-shadow:0 -14px 34px -18px rgba(22,22,15,.28);padding:24px 22px 0;min-height:520px')}>
             <div style={css('border-radius:26px;padding:20px;background:' + p.cardGrad + ';backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);border:1px solid ' + p.cardBorder + ';box-shadow:' + p.cardShadow)}>
               <div style={css('font-size:12.5px;font-weight:700;letter-spacing:.08em;color:' + p.fg2 + ';margin-bottom:12px')}>오늘 부각된 이유</div>
               <div style={css('font-size:18px;font-weight:700;line-height:1.42;letter-spacing:-0.02em;color:' + p.fg + ';text-wrap:pretty')}>{v.reason}</div>
