@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import {
+  IconChevronRightSmallLine,
   IconGridLine,
   IconHouseLine,
   IconMagnifyingglassLine,
+  IconStarFill,
   IconStarLine,
 } from "@karrotmarket/react-monochrome-icon";
 import { marketSnapshot } from "../data/prototype";
@@ -146,7 +148,7 @@ export default function Home() {
             <header className={styles.detailHeader}>
               <button type="button" aria-label="뒤로 가기" onClick={() => goTo("screen-home")}>←</button>
               <span>8월 14일 장중 기준</span>
-              <button type="button" aria-label={isSaved ? "즐겨찾기에서 제거" : "즐겨찾기에 추가"} className={isSaved ? styles.savedStar : ""} onClick={toggleSaved}>{isSaved ? "★" : "☆"}</button>
+              <button type="button" aria-label={isSaved ? "즐겨찾기에서 제거" : "즐겨찾기에 추가"} className={isSaved ? styles.savedStar : ""} onClick={toggleSaved}>{isSaved ? <IconStarFill size={24} /> : <IconStarLine size={24} />}</button>
             </header>
 
             <div className={styles.detailScroll}>
@@ -177,18 +179,18 @@ export default function Home() {
               <section>
                 <div className={styles.sectionHeading}><h2>오늘의 상승 소재 Top 3</h2><span>근거 기반</span></div>
                 <ol className={styles.catalysts}>
-                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>1</b><div><strong>체코 원전 수주</strong><p>오늘 뉴스 3건 · 관련 종목 12개</p></div><span>높음</span></li>
-                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>2</b><div><strong>원전 수출 정책</strong><p>오늘 뉴스 2건 · 관련 종목 8개</p></div><span>중간</span></li>
-                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>3</b><div><strong>원전 기자재 공급</strong><p>오늘 뉴스 2건 · 관련 종목 6개</p></div><span>중간</span></li>
+                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>1</b><div><strong>체코 원전 수주</strong><p>오늘 뉴스 3건 · 관련 종목 12개</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
+                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>2</b><div><strong>원전 수출 정책</strong><p>오늘 뉴스 2건 · 관련 종목 8개</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
+                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>3</b><div><strong>원전 기자재 공급</strong><p>오늘 뉴스 2건 · 관련 종목 6개</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
                 </ol>
               </section>
 
               <section>
                 <div className={styles.sectionHeading}><h2>오늘의 주도 종목</h2><span>등락률 순</span></div>
                 <div className={styles.leaders}>
-                  <div role="button" tabIndex={0} onClick={() => goTo("screen-leader")}><span>두산에너빌리티<small>거래대금 6,240억</small></span><strong>+14.2%</strong></div>
-                  <div role="button" tabIndex={0} onClick={() => goTo("screen-leader")}><span>한전기술<small>거래대금 1,820억</small></span><strong>+7.1%</strong></div>
-                  <div role="button" tabIndex={0} onClick={() => goTo("screen-leader")}><span>우리기술<small>거래대금 940억</small></span><strong>+5.8%</strong></div>
+                  <div role="button" tabIndex={0} onClick={() => goTo("screen-leader")}><span>두산에너빌리티<small>거래대금 6,240억</small></span><strong>+14.2%</strong><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></div>
+                  <div role="button" tabIndex={0} onClick={() => goTo("screen-leader")}><span>한전기술<small>거래대금 1,820억</small></span><strong>+7.1%</strong><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></div>
+                  <div role="button" tabIndex={0} onClick={() => goTo("screen-leader")}><span>우리기술<small>거래대금 940억</small></span><strong>+5.8%</strong><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></div>
                 </div>
               </section>
 
@@ -205,9 +207,9 @@ export default function Home() {
               <section>
                 <div className={styles.sectionHeading}><h2>오늘과 비슷했던 과거</h2><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div>
                 <div className={styles.cases}>
-                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2024.07.18 · 유사도 87%</span><strong>체코 원전 우선협상대상자 선정</strong><small>T+5 +4.6%</small></article>
-                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2023.04.25 · 유사도 74%</span><strong>한미 원전 협력 확대 발표</strong><small>T+5 -1.2%</small></article>
-                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2022.10.31 · 유사도 69%</span><strong>폴란드 원전 개발계획 협력</strong><small>T+5 +3.3%</small></article>
+                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2024.07.18 · 유사도 87%</span><strong>체코 원전 우선협상대상자 선정</strong><small>T+5 +4.6%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
+                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2023.04.25 · 유사도 74%</span><strong>한미 원전 협력 확대 발표</strong><small>T+5 -1.2%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
+                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2022.10.31 · 유사도 69%</span><strong>폴란드 원전 개발계획 협력</strong><small>T+5 +3.3%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
                 </div>
               </section>
 
@@ -263,7 +265,7 @@ function SavedLibrary({
               <span><small>테마 · 8월 14일 장중 기준</small><strong>원전수출</strong></span>
               <b>+2.7%</b>
             </button>
-            <button type="button" className={styles.removeSaved} onClick={onRemoveSaved} aria-label="원전수출 즐겨찾기에서 제거"><IconStarLine size={20} /></button>
+            <button type="button" className={styles.removeSaved} onClick={onRemoveSaved} aria-label="원전수출 즐겨찾기에서 제거"><IconStarFill size={20} /></button>
           </article>
         ) : <div className={styles.libraryEmpty}><IconStarLine size={28} /><strong>저장한 항목이 없어요.</strong><p>테마 상세의 별을 누르면 여기에 모아볼 수 있어요.</p></div>}
       </section>
@@ -298,14 +300,14 @@ const caseRows = [
 ];
 
 function WireHeader({ title, onBack }: { title: string; onBack: () => void }) {
-  return <header className={styles.wireHeader}><button type="button" onClick={onBack}>←</button><strong>{title}</strong><button type="button">☆</button></header>;
+  return <header className={styles.wireHeader}><button type="button" onClick={onBack}>←</button><strong>{title}</strong><button type="button" className={styles.savedStar} aria-label="즐겨찾기에서 제거"><IconStarFill size={24} /></button></header>;
 }
 
 function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
   return (
     <section id="screen-realtime" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="실시간 테마주 와이어프레임">
       <div className={`${styles.wireScreen} ${styles.realtimeScreen}`}>
-        <header className={styles.wireTitle}><div><small>장중 관찰 화면</small><h1>실시간 테마주</h1><p>현재 움직임이 강한 테마를 모아봐요.</p></div><button type="button">⌕</button></header>
+        <header className={styles.wireTitle}><div><small>장중 관찰 화면</small><h1>실시간 테마주</h1><p>현재 움직임이 강한 테마를 모아봐요.</p></div></header>
         <div className={styles.stateNote}>면적은 테마의 실시간 강도에 따라 달라져요.</div>
         <div className={styles.treemap} aria-label="실시간 테마 강도 트리맵">
           <div className={styles.treeTop}>
