@@ -7,39 +7,42 @@ import styles from "./page.module.css";
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("home");
+  const [currentScreen, setCurrentScreen] = useState("screen-home");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setIsLoading(false), 1600);
+    const timer = window.setTimeout(() => setIsLoading(false), 2600);
     return () => window.clearTimeout(timer);
   }, []);
 
   const goTo = (screen: string) => {
     if (screen === "screen-home") setActiveTab("home");
-    window.requestAnimationFrame(() => document.getElementById(screen)?.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" }));
+    if (screen === "screen-realtime") setActiveTab("realtime");
+    if (screen === "screen-natural") setActiveTab("natural");
+    setCurrentScreen(screen);
   };
 
   return (
     <main className={styles.preview}>
-      <section id="screen-home" className={styles.phone} aria-label="DAY-JA-VIEW 모바일 목업">
+      <section id="screen-home" className={`${styles.phone} ${currentScreen === "screen-home" ? styles.activePhone : ""}`} aria-label="DAY-JA-VIEW 모바일 목업">
         {isLoading ? (
           <div className={styles.loading}>
-            <img src="/dejavu-mark.png" alt="DAY-JA-VIEW" />
-            <span>DAY-JA-VIEW</span>
+            <div className={styles.loadingHalo} />
+            <div className={styles.loadingLogo}><img src="/dejavu-logo-white.png" alt="DAY-JA-VIEW" /><i /></div>
+            <div className={styles.loadingFooter}><span>오늘의 시장을, 과거의 기록으로</span><b><i /></b></div>
           </div>
         ) : (
           <div className={styles.app}>
             <div className={styles.content}>
               {activeTab === "home" ? (
                 <div className={styles.home}>
-                  <header>
-                    <div>
-                      <h1>오늘 많이 오른 테마예요</h1>
-                      <p>장중 상승률을 기준으로 보여드려요.</p>
-                    </div>
+                  <header className={styles.orangeHomeHeader}>
+                    <span className={styles.homeHeaderSpacer} />
+                    <img src="/dejavu-mark.png" alt="DAY-JA-VIEW" />
                     <button className={styles.searchButton} type="button" onClick={() => setIsSearchOpen(true)} aria-label="검색 열기">⌕</button>
                   </header>
+                  <div className={styles.orangeHomeTitle}><strong>2026년 08월 14일</strong><h1>오늘의 요약</h1><p>지금 많이 오른 테마를 확인해 보세요.</p></div>
 
                   <ol className={styles.ranking}>
                     {marketSnapshot.themes.slice(0, 10).map((theme) => (
@@ -94,7 +97,7 @@ export default function Home() {
       </section>
 
       {!isLoading && (
-        <section id="screen-detail" className={styles.phone} aria-label="원전수출 테마 상세 목업">
+        <section id="screen-detail" className={`${styles.phone} ${currentScreen === "screen-detail" ? styles.activePhone : ""}`} aria-label="원전수출 테마 상세 목업">
           <div className={styles.detail}>
             <header className={styles.detailHeader}>
               <button type="button" aria-label="뒤로 가기" onClick={() => goTo("screen-home")}>←</button>
@@ -166,16 +169,22 @@ export default function Home() {
 
               <p className={styles.notice}>장중 정보는 이후 정정될 수 있습니다. 과거 데이터 기반 참고 정보이며 투자 자문이나 종목 추천이 아닙니다.</p>
             </div>
+            <nav className={styles.miniFooter} aria-label="테마 상세 주요 메뉴">
+              <button type="button" onClick={() => goTo("screen-home")}>⌂<small>홈</small></button>
+              <button type="button" onClick={() => goTo("screen-realtime")}>▦<small>실시간</small></button>
+              <button type="button">☆<small>즐겨찾기</small></button>
+              <button type="button" onClick={() => goTo("screen-natural")}>⌕<small>자연어</small></button>
+            </nav>
           </div>
         </section>
       )}
 
-      {!isLoading && <RealtimeThemeScreen goTo={goTo} />}
-      {!isLoading && <CaseListScreen goTo={goTo} />}
-      {!isLoading && <CaseDetailScreen goTo={goTo} />}
-      {!isLoading && <CatalystDetailScreen goTo={goTo} />}
-      {!isLoading && <LeaderDetailScreen goTo={goTo} />}
-      {!isLoading && <NaturalSearchScreen goTo={goTo} />}
+      {!isLoading && <RealtimeThemeScreen goTo={goTo} active={currentScreen === "screen-realtime"} />}
+      {!isLoading && <CaseListScreen goTo={goTo} active={currentScreen === "screen-cases"} />}
+      {!isLoading && <CaseDetailScreen goTo={goTo} active={currentScreen === "screen-case-detail"} />}
+      {!isLoading && <CatalystDetailScreen goTo={goTo} active={currentScreen === "screen-catalyst"} />}
+      {!isLoading && <LeaderDetailScreen goTo={goTo} active={currentScreen === "screen-leader"} />}
+      {!isLoading && <NaturalSearchScreen goTo={goTo} active={currentScreen === "screen-natural"} />}
     </main>
   );
 }
@@ -199,9 +208,9 @@ function WireHeader({ title, onBack }: { title: string; onBack: () => void }) {
   return <header className={styles.wireHeader}><button type="button" onClick={onBack}>←</button><strong>{title}</strong><button type="button">☆</button></header>;
 }
 
-function RealtimeThemeScreen({ goTo }: { goTo: (screen: string) => void }) {
+function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
   return (
-    <section id="screen-realtime" className={styles.phone} aria-label="실시간 테마주 와이어프레임">
+    <section id="screen-realtime" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="실시간 테마주 와이어프레임">
       <div className={`${styles.wireScreen} ${styles.realtimeScreen}`}>
         <header className={styles.wireTitle}><div><small>장중 관찰 화면</small><h1>실시간 테마주</h1><p>현재 움직임이 강한 테마를 모아봐요.</p></div><button type="button">⌕</button></header>
         <div className={styles.stateNote}>면적은 테마의 실시간 강도에 따라 달라져요.</div>
@@ -228,9 +237,9 @@ function RealtimeThemeScreen({ goTo }: { goTo: (screen: string) => void }) {
   );
 }
 
-function CaseListScreen({ goTo }: { goTo: (screen: string) => void }) {
+function CaseListScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
   return (
-    <section id="screen-cases" className={styles.phone} aria-label="과거 사례 전체보기 와이어프레임">
+    <section id="screen-cases" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="과거 사례 전체보기 와이어프레임">
       <div className={styles.wireScreen}>
         <WireHeader title="과거 사례 전체보기" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
@@ -243,9 +252,9 @@ function CaseListScreen({ goTo }: { goTo: (screen: string) => void }) {
   );
 }
 
-function CaseDetailScreen({ goTo }: { goTo: (screen: string) => void }) {
+function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
   return (
-    <section id="screen-case-detail" className={styles.phone} aria-label="과거 개별 사례 와이어프레임">
+    <section id="screen-case-detail" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="과거 개별 사례 와이어프레임">
       <div className={styles.wireScreen}>
         <WireHeader title="과거 사례" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
@@ -260,9 +269,9 @@ function CaseDetailScreen({ goTo }: { goTo: (screen: string) => void }) {
   );
 }
 
-function CatalystDetailScreen({ goTo }: { goTo: (screen: string) => void }) {
+function CatalystDetailScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
   return (
-    <section id="screen-catalyst" className={styles.phone} aria-label="상승 소재 상세 와이어프레임">
+    <section id="screen-catalyst" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="상승 소재 상세 와이어프레임">
       <div className={styles.wireScreen}>
         <WireHeader title="상승 소재" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
@@ -277,9 +286,9 @@ function CatalystDetailScreen({ goTo }: { goTo: (screen: string) => void }) {
   );
 }
 
-function LeaderDetailScreen({ goTo }: { goTo: (screen: string) => void }) {
+function LeaderDetailScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
   return (
-    <section id="screen-leader" className={styles.phone} aria-label="주도 종목 상세 와이어프레임">
+    <section id="screen-leader" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="주도 종목 상세 와이어프레임">
       <div className={styles.wireScreen}>
         <WireHeader title="당시 주도 종목" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
@@ -293,9 +302,9 @@ function LeaderDetailScreen({ goTo }: { goTo: (screen: string) => void }) {
   );
 }
 
-function NaturalSearchScreen({ goTo }: { goTo: (screen: string) => void }) {
+function NaturalSearchScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
   return (
-    <section id="screen-natural" className={styles.phone} aria-label="자연어 검색 와이어프레임">
+    <section id="screen-natural" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="자연어 검색 와이어프레임">
       <div className={styles.wireScreen}>
         <div className={styles.wireBody}><div className={styles.pageIntro}><small>테마·종목 데이터 검색</small><h1>무엇이 궁금하세요?</h1><p>질문하면 보유한 과거 데이터 안에서 답을 찾아요.</p></div>
           <form className={styles.naturalForm} onSubmit={(event) => event.preventDefault()}><textarea defaultValue="원전수출 테마는 과거에 오른 뒤 5일 동안 어땠어?" aria-label="자연어 질문"/><button type="submit">검색</button></form>
