@@ -322,14 +322,14 @@ a { color: #16160F; }
   cursor: pointer;
 }
 .seed-save-fab {
-  left: 50%;
-  right: auto;
+  left: auto;
+  right: 20px;
   bottom: 22px;
-  transform: translateX(-50%);
+  transform: none;
   border: 3px solid #fff;
   box-shadow: 0 8px 22px rgba(255, 111, 15, .3), 0 2px 8px rgba(0, 0, 0, .12);
 }
 .seed-home-fab { left: 20px; bottom: 24px; }
-.seed-save-fab:active { transform: translateX(-50%) scale(.95); }
+.seed-save-fab:active { transform: scale(.95); }
 .seed-save-fab.is-saved { background: var(--seed-color-bg-brand-solid-pressed, #d95700); }
 .seed-home-fab:active { transform: scale(.95); }
