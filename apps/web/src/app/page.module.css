@@ -464,19 +464,20 @@
 .detailHeader button svg { display: block; width: 24px !important; height: 24px !important; margin: 0; stroke-width: 2.2; }
 .detailHeader .savedStar { color: #ffffff !important; }
 .detailScroll > section {
-  margin: 10px 0;
-  padding: 22px 16px;
-  border: 1px solid var(--djv-color-border);
-  border-radius: 22px;
-  background: var(--djv-color-surface);
-  box-shadow: 0 1px 2px rgba(33,33,36,.025);
+  margin: 0;
+  padding: 24px 12px;
+  border: 0;
+  border-bottom: 1px solid #eaebee;
+  border-radius: 0;
+  background: #ffffff;
+  box-shadow: none;
 }
 .detailScroll > .themeSummary {
-  margin: 0 -12px 12px;
+  margin: 0 -12px 10px;
   min-height: 170px;
   padding: 22px 20px 36px !important;
   border-radius: 0 0 24px 24px;
-  border: 0;
+  border-bottom: 0;
   background: #f47b3d;
   box-shadow: none;
 }
@@ -486,7 +487,6 @@
 .themeSummary > strong { display: inline-block; margin-top: 20px; font-size: 44px; line-height: 1; letter-spacing: -.035em; }
 .themeSummary > .themeReturnPill { display: inline-block; margin: 0 0 0 10px; vertical-align: 7px; }
 .detailScroll > .themeSummary + .metrics { position: relative; z-index: 2; margin-top: 0; }
-.detailScroll .sectionHeading h2 { font-size: 19px; line-height: 1.3; letter-spacing: -.025em; }
 .detailScroll h2, .detailScroll strong, .wireBody h1, .wireBody h2 { color: #212124; }
 .detailScroll > .themeSummary h1, .detailScroll > .themeSummary strong { color: #ffffff; }
 .detailScroll > .themeSummary span, .detailScroll > .themeSummary p { color: rgba(255,255,255,.82); }
