@@ -1,0 +1,42 @@
+:root {
+  --djv-color-bg: var(--seed-color-bg-layer-default, #ffffff);
+  --djv-color-surface: var(--seed-color-bg-layer-floating, #ffffff);
+  --djv-color-surface-muted: var(--seed-color-bg-neutral-weak, #f7f7f8);
+  --djv-color-border: var(--seed-color-stroke-neutral-muted, #eaebee);
+  --djv-color-text: var(--seed-color-fg-neutral, #212124);
+  --djv-color-text-muted: var(--seed-color-fg-neutral-muted, #868b94);
+  --djv-color-brand: var(--seed-color-fg-brand, #ff6f0f);
+  --djv-color-brand-soft: var(--seed-color-bg-brand-weak, #fff0e5);
+  --djv-color-on-brand: #ffffff;
+  --djv-color-market-up: #e5484d;
+  --djv-color-market-down: #356ae6;
+  --djv-color-warning: #a76700;
+
+  --djv-font-sans: Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  --djv-font-size-caption: 12px;
+  --djv-font-size-label: 13px;
+  --djv-font-size-body: 15px;
+  --djv-font-size-heading-3: 17px;
+  --djv-font-size-heading-2: 20px;
+  --djv-font-size-heading-1: 24px;
+  --djv-font-size-display: 32px;
+
+  --djv-space-1: 4px;
+  --djv-space-2: 8px;
+  --djv-space-3: 12px;
+  --djv-space-4: 16px;
+  --djv-space-5: 20px;
+  --djv-space-6: 24px;
+  --djv-space-8: 32px;
+
+  --djv-radius-sm: 11px;
+  --djv-radius-md: 16px;
+  --djv-radius-lg: 22px;
+  --djv-radius-pill: 999px;
+
+  --djv-motion-fast: 160ms;
+  --djv-motion-screen: 220ms;
+  --djv-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --djv-app-max-width: 420px;
+  --djv-touch-size: 48px;
+}
