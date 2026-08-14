@@ -277,6 +277,48 @@ a { color: #16160F; }
   box-shadow: 0 1px 5px rgba(0, 0, 0, .1);
 }
 
+.seed-keyword-bubbles {
+  margin-top: 14px;
+  padding: 20px 8px;
+  border: 1px solid #eceef3;
+  border-radius: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fff;
+}
+.seed-keyword-bubble {
+  flex: none;
+  border: 1px solid rgba(216, 58, 67, .14);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #321e37;
+  text-align: center;
+}
+.seed-keyword-bubble strong {
+  line-height: 1.15;
+  font-weight: 750;
+  letter-spacing: -.035em;
+}
+.seed-keyword-bubble b {
+  margin-top: 4px;
+  color: #d83a43;
+  font-size: 14px;
+  line-height: 1;
+}
+.seed-keyword-bubble small {
+  margin-top: 5px;
+  color: #777b84;
+  font-size: 9.5px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
 .seed-history-drawer {
   position: absolute;
   inset: 0 auto 0 0;

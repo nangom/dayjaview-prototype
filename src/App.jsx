@@ -444,10 +444,15 @@ export default class App extends React.Component {
         { word: '조명', n: 14, rate: 64, lift: '+1.8%p' },
         { word: '수출', n: 11, rate: 64, lift: '+1.5%p' },
         { word: '양산', n: 7, rate: 57, lift: '+1.1%p' }
-      ].map(k => ({
+      ].map((k, index) => ({
         key: k.word,
         word: k.word,
         lift: k.lift,
+        n: k.n,
+        rate: k.rate,
+        bubbleSize: [132, 116, 104, 94, 84][index],
+        bubbleFont: [18, 17, 16, 15, 14][index],
+        bubbleBg: 'rgba(229,72,77,' + (0.1 + (k.rate - 55) * 0.009).toFixed(2) + ')',
         meta: '표본 ' + k.n + '건 · 상승 ' + k.rate + '%',
         bar: 'display:block;height:100%;width:' + k.rate + '%;border-radius:3px;background:#D83A43'
       })),
@@ -990,17 +995,12 @@ export default class App extends React.Component {
 
           <div style={css('margin-top:28px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>상승 동반 키워드</div>
           <div style={css('margin-top:5px;font-size:12.5px;font-weight:600;color:#8B8E96')}>5일 후 영향 · 등장 vs 미등장</div>
-          <div style={css('margin-top:14px;border:1px solid #ECEEF3;border-radius:26px;background:#FFFFFF;padding:20px 18px;display:flex;flex-direction:column;gap:16px')}>
+          <div className="seed-keyword-bubbles">
             {v.kwRows.map(k => (
-              <div key={k.key} style={css('display:flex;align-items:center;gap:14px')}>
-                <span style={css('width:60px;flex:none;font-size:17px;font-weight:800;letter-spacing:-0.02em;color:#321E37')}>{k.word}</span>
-                <span style={css('flex:1;min-width:0;display:flex;flex-direction:column;gap:7px')}>
-                  <span style={css('font-size:12px;font-weight:600;color:#8B8E96')}>{k.meta}</span>
-                  <span style={css('height:5px;border-radius:3px;background:#ECEEF3;overflow:hidden')}>
-                    <span style={css(k.bar)}></span>
-                  </span>
-                </span>
-                <span style={css('flex:none;font-size:15.5px;font-weight:800;letter-spacing:-0.01em;color:#D83A43')}>{k.lift}</span>
+              <div key={k.key} className="seed-keyword-bubble" style={{ width: k.bubbleSize, height: k.bubbleSize, background: k.bubbleBg }}>
+                <strong style={{ fontSize: k.bubbleFont }}>{k.word}</strong>
+                <b>{k.lift}</b>
+                <small>표본 {k.n}건 · 상승 {k.rate}%</small>
               </div>
             ))}
           </div>
