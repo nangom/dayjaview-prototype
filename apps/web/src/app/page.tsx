@@ -338,7 +338,6 @@ function SavedLibrary({
   return (
     <div className={styles.library}>
       <header>
-        <p>나중에 다시 볼 항목과 검색 기록이에요.</p>
         <h1>저장</h1>
       </header>
 

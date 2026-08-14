@@ -384,7 +384,7 @@
 .treemap button, .treeTop button:first-child { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--seed-color-bg-neutral-weak, #f7f7f8); }
 .treemap button:nth-child(odd) { background: var(--seed-color-bg-brand-weak, #fff0e5); }
 .treemap small { color: var(--seed-color-fg-neutral-muted, #868b94); }
-.naturalForm textarea { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--djv-color-surface-muted, #f7f7f8); }
+.naturalForm textarea { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--seed-color-bg-layer-default, #fff); }
 .naturalForm button { background: var(--seed-color-bg-brand-solid, #ff6f0f); color: var(--seed-color-fg-brand-inverted, #fff); }
 .answerBlock > button { border-color: transparent; background: var(--seed-color-bg-brand-weak, #fff0e5); color: var(--seed-color-fg-brand-contrast, #d95700); }
 
