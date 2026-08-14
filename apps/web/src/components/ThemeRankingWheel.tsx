@@ -19,6 +19,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
   const wheelRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef({ pointerId: -1, startY: 0, startTop: 0, moved: false });
   const frameRef = useRef<number | undefined>(undefined);
+  const hasPlayedIntroRef = useRef(false);
   const orderedThemes = themes.length > 0 ? [themes[themes.length - 1], ...themes.slice(0, -1)] : [];
   const repeatedThemes = [...orderedThemes, ...orderedThemes, ...orderedThemes];
 
@@ -62,9 +63,25 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     };
 
     const firstVisibleCard = cards[themes.length + 1];
+    let introFrame: number | undefined;
+    let introTimer: number | undefined;
     if (firstVisibleCard) {
       baseTop = firstVisibleCard.offsetTop;
       wheel.scrollTop = baseTop;
+    }
+
+    const shouldPlayIntro = !hasPlayedIntroRef.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (shouldPlayIntro && firstVisibleCard) {
+      hasPlayedIntroRef.current = true;
+      wheel.dataset.intro = "true";
+      const maxOffset = Math.max(0, wheel.scrollHeight - wheel.clientHeight - baseTop);
+      wheel.scrollTop = baseTop + Math.min(step * 0.25, maxOffset);
+      introFrame = window.requestAnimationFrame(() => {
+        wheel.scrollTo({ top: baseTop, behavior: "smooth" });
+      });
+      introTimer = window.setTimeout(() => {
+        delete wheel.dataset.intro;
+      }, 680);
     }
     paint();
     wheel.addEventListener("scroll", handleScroll, { passive: true });
@@ -72,6 +89,9 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     return () => {
       wheel.removeEventListener("scroll", handleScroll);
       if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+      if (introFrame) window.cancelAnimationFrame(introFrame);
+      if (introTimer) window.clearTimeout(introTimer);
+      delete wheel.dataset.intro;
     };
   }, [themes]);
 
