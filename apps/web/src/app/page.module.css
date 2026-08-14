@@ -52,7 +52,7 @@
 .loadingFooter { position: absolute; right: 0; bottom: 96px; left: 0; display: flex; flex-direction: column; align-items: center; gap: 20px; }
 .loadingFooter > span { color: rgba(255,255,255,.48); font-size: 14px; font-weight: 600; }
 .loadingFooter > b { width: 132px; height: 3px; border-radius: 2px; overflow: hidden; background: rgba(255,255,255,.12); }
-.loadingFooter > b > i { display: block; width: 100%; height: 100%; border-radius: inherit; background: #ff5c00; transform-origin: left; animation: orangeBar 2.6s cubic-bezier(.3,.7,.2,1) both; }
+.loadingFooter > b > i { display: block; width: 100%; height: 100%; border-radius: inherit; background: #ff5c00; transform-origin: left; animation: orangeBar 3.4s cubic-bezier(.3,.7,.2,1) both; }
 .login { position: relative; height: 100%; padding: 72px 28px 36px; display: flex; flex-direction: column; background: var(--djv-color-bg); color: var(--djv-color-text); }
 .loginMark { width: 38px; height: 48px; object-fit: contain; opacity: .82; filter: invert(37%) sepia(45%) saturate(1660%) hue-rotate(338deg) brightness(94%) contrast(91%); }
 .loginClose { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center; background: #f4f4f5; color: #4d5159; }
@@ -70,7 +70,13 @@
 @keyframes orangeHalo { 50% { opacity: .72; transform: scale(.92); } }
 @keyframes orangeBreathe { 50% { opacity: .94; } }
 @keyframes orangeSweep { from { transform: translateX(-115%); } to { transform: translateX(115%); } }
-@keyframes orangeBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes orangeBar {
+  0% { transform: scaleX(0); }
+  60% { transform: scaleX(.63); }
+  80% { transform: scaleX(.82); }
+  92% { transform: scaleX(.91); }
+  100% { transform: scaleX(1); }
+}
 .app { position: relative; height: 100%; overflow: hidden; }
 .content { height: 100%; padding-bottom: 0; }
 .home {
@@ -378,7 +384,7 @@
 .treemap button, .treeTop button:first-child { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--seed-color-bg-neutral-weak, #f7f7f8); }
 .treemap button:nth-child(odd) { background: var(--seed-color-bg-brand-weak, #fff0e5); }
 .treemap small { color: var(--seed-color-fg-neutral-muted, #868b94); }
-.naturalForm textarea { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--seed-color-bg-layer-default, #fff); }
+.naturalForm textarea { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--djv-color-surface-muted, #f7f7f8); }
 .naturalForm button { background: var(--seed-color-bg-brand-solid, #ff6f0f); color: var(--seed-color-fg-brand-inverted, #fff); }
 .answerBlock > button { border-color: transparent; background: var(--seed-color-bg-brand-weak, #fff0e5); color: var(--seed-color-fg-brand-contrast, #d95700); }
 
@@ -605,3 +611,8 @@
 .wireBody .simpleRows button { color: #212124; }
 .wireBody .simpleRows b { color: #f04452; }
 .wireBody .disclaimer { color: #868b94; }
+
+/* Keep the orange header and theme summary visually connected during a downward drag. */
+.detail { background: #f47b3d; }
+.detailHeader { position: relative; z-index: 3; }
+.detailScroll { overscroll-behavior: none; overscroll-behavior-y: none; touch-action: pan-y; background: var(--djv-color-bg); }

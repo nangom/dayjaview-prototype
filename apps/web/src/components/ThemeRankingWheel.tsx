@@ -63,10 +63,9 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     };
 
     const firstVisibleCard = cards[themes.length + 1];
-    let introFrame: number | undefined;
     let introTimer: number | undefined;
     if (firstVisibleCard) {
-      baseTop = firstVisibleCard.offsetTop;
+      baseTop = Math.max(0, firstVisibleCard.offsetTop - (wheel.clientHeight - firstVisibleCard.offsetHeight) / 2);
       wheel.scrollTop = baseTop;
     }
 
@@ -74,11 +73,6 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     if (shouldPlayIntro && firstVisibleCard) {
       hasPlayedIntroRef.current = true;
       wheel.dataset.intro = "true";
-      const maxOffset = Math.max(0, wheel.scrollHeight - wheel.clientHeight - baseTop);
-      wheel.scrollTop = baseTop + Math.min(step * 0.25, maxOffset);
-      introFrame = window.requestAnimationFrame(() => {
-        wheel.scrollTo({ top: baseTop, behavior: "smooth" });
-      });
       introTimer = window.setTimeout(() => {
         delete wheel.dataset.intro;
       }, 680);
@@ -89,7 +83,6 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     return () => {
       wheel.removeEventListener("scroll", handleScroll);
       if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
-      if (introFrame) window.cancelAnimationFrame(introFrame);
       if (introTimer) window.clearTimeout(introTimer);
       delete wheel.dataset.intro;
     };

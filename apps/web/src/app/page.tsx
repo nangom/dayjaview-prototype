@@ -23,6 +23,8 @@ const footerItems = [
   { id: "natural", Icon: IconMagnifyingglassLine, label: "리서치" },
 ];
 
+const LOADING_DURATION_MS = 3400;
+
 const leaderRows = [
   { name: "두산에너빌리티", volume: "거래대금 6,240억", change: "+14.2%" },
   { name: "한전기술", volume: "거래대금 1,820억", change: "+7.1%" },
@@ -55,7 +57,7 @@ export default function Home() {
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setIsLoading(false), 2600);
+    const timer = window.setTimeout(() => setIsLoading(false), LOADING_DURATION_MS);
     setIsSaved(window.localStorage.getItem("dayjaview:saved:원전수출") === "true");
     try {
       setSearchHistory(JSON.parse(window.localStorage.getItem("dayjaview:search-history") ?? "[]"));
@@ -67,6 +69,8 @@ export default function Home() {
 
   const goTo = (screen: string) => {
     if (screen === "screen-saved" && !isLoggedIn) {
+      setIsLoading(false);
+      setCurrentScreen("screen-home");
       setLoginIntent("library");
       return;
     }
@@ -92,6 +96,7 @@ export default function Home() {
   const requestToggleSaved = () => {
     if (!isLoggedIn) {
       setIsLoading(false);
+      setCurrentScreen("screen-home");
       setLoginIntent("save");
       return;
     }
@@ -101,6 +106,7 @@ export default function Home() {
   const requestSavedLibrary = () => {
     if (!isLoggedIn) {
       setIsLoading(false);
+      setCurrentScreen("screen-home");
       setLoginIntent("library");
       return;
     }
@@ -215,7 +221,7 @@ export default function Home() {
         )}
       </section>
 
-      {!isLoading && (
+      {!isLoading && !loginIntent && (
         <section id="screen-detail" className={`${styles.phone} ${currentScreen === "screen-detail" ? styles.activePhone : ""}`} aria-label="원전수출 테마 상세 목업">
           <div className={styles.detail}>
             <header className={styles.detailHeader}>
@@ -303,12 +309,12 @@ export default function Home() {
         </section>
       )}
 
-      {!isLoading && <RealtimeThemeScreen goTo={goTo} active={currentScreen === "screen-realtime"} />}
-      {!isLoading && <CaseListScreen goTo={goTo} active={currentScreen === "screen-cases"} />}
-      {!isLoading && <CaseDetailScreen goTo={goTo} active={currentScreen === "screen-case-detail"} />}
-      {!isLoading && <CatalystDetailScreen goTo={goTo} active={currentScreen === "screen-catalyst"} />}
-      {!isLoading && <LeaderDetailScreen goTo={goTo} active={currentScreen === "screen-leader"} />}
-      {!isLoading && <NaturalSearchScreen goTo={goTo} active={currentScreen === "screen-natural"} />}
+      {!isLoading && !loginIntent && <RealtimeThemeScreen goTo={goTo} active={currentScreen === "screen-realtime"} />}
+      {!isLoading && !loginIntent && <CaseListScreen goTo={goTo} active={currentScreen === "screen-cases"} />}
+      {!isLoading && !loginIntent && <CaseDetailScreen goTo={goTo} active={currentScreen === "screen-case-detail"} />}
+      {!isLoading && !loginIntent && <CatalystDetailScreen goTo={goTo} active={currentScreen === "screen-catalyst"} />}
+      {!isLoading && !loginIntent && <LeaderDetailScreen goTo={goTo} active={currentScreen === "screen-leader"} />}
+      {!isLoading && !loginIntent && <NaturalSearchScreen goTo={goTo} active={currentScreen === "screen-natural"} />}
     </main>
   );
 }
