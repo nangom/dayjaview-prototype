@@ -31,36 +31,35 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
   background: #111111;
   color: #ffffff;
 }
 
-.loadingHalo { position: absolute; top: 50%; left: 50%; width: 520px; height: 520px; margin: -335px 0 0 -260px; border-radius: 50%; background: radial-gradient(circle,rgba(255,92,0,.5) 0%,rgba(255,92,0,.14) 38%,rgba(255,92,0,0) 68%); filter: blur(18px); animation: orangeHalo 3.4s ease-in-out infinite; }
-.loadingLogo { position: relative; width: 92px; height: 108px; margin-bottom: 150px; }
-.loadingLogo img { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: contain; filter: invert(44%) sepia(99%) saturate(4213%) hue-rotate(359deg) brightness(102%) contrast(105%) drop-shadow(0 0 10px rgba(255,92,0,.75)); animation: orangeBreathe 3.4s ease-in-out infinite; }
-.loadingLogo b { position: absolute; inset: 8px; border-radius: 50%; background: rgba(255,92,0,.36); filter: blur(20px); animation: orangeHalo 3.4s ease-in-out infinite; }
+.loadingLogo { width: 64px; height: 74px; animation: logoPulse 2.2s ease-in-out infinite; }
+.loadingLogo img { display: block; width: 100%; height: 100%; object-fit: contain; filter: invert(44%) sepia(99%) saturate(4213%) hue-rotate(359deg) brightness(102%) contrast(105%); }
 .loadingFooter { position: absolute; right: 0; bottom: 96px; left: 0; display: flex; flex-direction: column; align-items: center; gap: 20px; }
 .loadingFooter > span { color: rgba(255,255,255,.48); font-size: 14px; font-weight: 600; }
 .loadingFooter > b { width: 132px; height: 3px; border-radius: 2px; overflow: hidden; background: rgba(255,255,255,.12); }
 .loadingFooter > b > i { display: block; width: 100%; height: 100%; border-radius: inherit; background: #ff5c00; transform-origin: left; animation: orangeBar 2.6s cubic-bezier(.3,.7,.2,1) both; }
-.login { position: relative; height: 100%; padding: 92px 28px 36px; display: flex; flex-direction: column; background: linear-gradient(180deg,#f1eee8,#fff 62%); }
+.login { position: relative; height: 100%; padding: 72px 28px 36px; display: flex; flex-direction: column; background: #ffffff; }
 .loginMark { width: 38px; height: 48px; object-fit: contain; filter: invert(44%) sepia(99%) saturate(4213%) hue-rotate(359deg) brightness(102%) contrast(105%); }
-.loginClose { position: absolute; top: 24px; right: 20px; width: 44px; height: 44px; border: 0; background: transparent; color: #333; font-size: 30px; line-height: 1; }
+.loginClose { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center; background: #f4f4f5; color: #4d5159; }
+.loginClose svg { display: block; width: 22px; height: 22px; }
 .loginCopy { margin: 26px 0 38px; }
-.loginCopy small { color: #eb5e28; font-size: 12px; font-weight: 800; letter-spacing: .12em; }
+.loginCopy small { color: #d95700; font-size: 11px; font-weight: 700; letter-spacing: .06em; }
 .loginCopy h1 { margin: 8px 0 0; font-size: 29px; letter-spacing: -.04em; }
 .loginCopy p { margin: 9px 0 0; color: #777; font-size: 14px; }
 .login label { margin-top: 16px; }
 .login label span { display: block; margin-bottom: 7px; color: #555; font-size: 12px; font-weight: 700; }
 .login input { width: 100%; height: 52px; padding: 0 15px; border: 1px solid #ddd9d2; border-radius: 15px; background: rgba(255,255,255,.86); color: #16160f; font: inherit; outline: none; }
 .login input:focus { border-color: #ff7a33; box-shadow: 0 0 0 3px rgba(255,92,0,.1); }
-.login > button { height: 54px; margin-top: 28px; border: 0; border-radius: 16px; background: #ff5c00; color: #fff; font: inherit; font-weight: 800; }
+.loginSubmit { height: 54px; margin-top: 28px; border: 0; border-radius: 16px; background: #ff5c00; color: #fff; font: inherit; font-weight: 800; }
 .login > em { margin-top: 13px; color: #999; font-size: 11px; font-style: normal; text-align: center; }
 @keyframes orangeHalo { 50% { opacity: .72; transform: scale(.92); } }
 @keyframes orangeBreathe { 50% { opacity: .95; filter: sepia(1) saturate(9) hue-rotate(338deg) drop-shadow(0 0 15px rgba(255,92,0,.65)); } }
 @keyframes orangeSweep { from { transform: translateX(-115%); } to { transform: translateX(115%); } }
 @keyframes orangeBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes logoPulse { 50% { opacity: .68; transform: scale(.96); } }
 
 .app { position: relative; height: 100%; overflow: hidden; }
 .content { height: 100%; padding-bottom: 0; }
@@ -90,8 +89,8 @@
   justify-content: space-between;
   gap: 12px;
 }
-.home .orangeHomeHeader { margin-bottom: 0; align-items: center; padding: 11px 0 0; }
-.homeMark { width: 24px; height: 30px; object-fit: contain; }
+.home .orangeHomeHeader { margin-bottom: 0; align-items: center; justify-content: flex-start; padding: 16px 0 0; }
+.homeMark { width: 28px; height: 34px; object-fit: contain; }
 .homeHeaderSpacer { width: 44px; height: 44px; }
 .homeSavedButton { width: 44px; height: 44px; border: 0; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.45); color: #16160f; }
 .orangeHomeTitle { flex: none; padding: 26px 0 40px; }

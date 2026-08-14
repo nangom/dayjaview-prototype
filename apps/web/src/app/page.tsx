@@ -9,6 +9,7 @@ import {
   IconMagnifyingglassLine,
   IconStarFill,
   IconStarLine,
+  IconXmarkLine,
 } from "@karrotmarket/react-monochrome-icon";
 import { marketSnapshot } from "../data/prototype";
 import { ThemeRankingWheel } from "../components/ThemeRankingWheel";
@@ -133,18 +134,17 @@ export default function Home() {
       <section id="screen-home" className={`${styles.phone} ${currentScreen === "screen-home" ? styles.activePhone : ""}`} aria-label="DAY-JA-VIEW 모바일 목업">
         {isLoading ? (
           <div className={styles.loading}>
-            <div className={styles.loadingHalo} />
-            <div className={styles.loadingLogo} aria-label="DAY-JA-VIEW"><Image src="/dejavu-mark.png" alt="" width={92} height={108} priority /><b /></div>
+            <div className={styles.loadingLogo} aria-label="DAY-JA-VIEW"><Image src="/dejavu-mark.png" alt="" width={64} height={74} priority /></div>
             <div className={styles.loadingFooter}><span>오늘의 시장을, 과거의 기록으로</span><b><i /></b></div>
           </div>
         ) : loginIntent ? (
           <form className={styles.login} onSubmit={(event) => { event.preventDefault(); completeLogin(); }}>
-            <button className={styles.loginClose} type="button" onClick={() => setLoginIntent(null)} aria-label="로그인 닫기">×</button>
+            <button className={styles.loginClose} type="button" onClick={() => setLoginIntent(null)} aria-label="로그인 닫기"><IconXmarkLine size={22} /></button>
             <Image className={styles.loginMark} src="/dejavu-mark.png" alt="DAY-JA-VIEW" width={38} height={48} />
             <div className={styles.loginCopy}><small>DAY-JA-VIEW</small><h1>다시 만나 반가워요</h1><p>저장한 분석 결과를 이어서 확인하세요.</p></div>
             <label><span>이메일</span><input type="email" defaultValue="demo@dayjaview.kr" /></label>
             <label><span>비밀번호</span><input type="password" defaultValue="dayjaview" /></label>
-            <button type="submit">로그인</button>
+            <button className={styles.loginSubmit} type="submit">로그인</button>
             <em>데모 계정이 입력되어 있어 바로 시작할 수 있어요.</em>
           </form>
         ) : (
@@ -153,9 +153,7 @@ export default function Home() {
               {activeTab === "home" ? (
                 <div className={styles.home}>
                   <header className={styles.orangeHomeHeader}>
-                    <span className={styles.homeHeaderSpacer} aria-hidden="true" />
-                    <Image className={styles.homeMark} src="/dejavu-mark.png" alt="DAY-JA-VIEW" width={24} height={30} priority />
-                    <button className={styles.homeSavedButton} type="button" onClick={requestSavedLibrary} aria-label="저장한 결과 보기"><IconStarLine size={22} /></button>
+                    <Image className={styles.homeMark} src="/dejavu-mark.png" alt="DAY-JA-VIEW" width={28} height={34} priority />
                   </header>
                   <div className={styles.orangeHomeTitle}><strong>2026년 08월 12일</strong><h1>오늘의 요약</h1></div>
 
