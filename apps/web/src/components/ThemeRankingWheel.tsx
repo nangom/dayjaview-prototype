@@ -48,9 +48,10 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
         // Treat the list like the front arc of a vertical cylinder: cards
         // above/below the focus rotate away and recede in Z, rather than only
         // sliding sideways with a flat curve.
-        const rotate = Math.max(-30, Math.min(30, -boundedDistance * 15));
-        const depth = Math.max(-56, 22 - distance * 32);
-        const curve = Math.sign(boundedDistance) * Math.min(4, distance * 1.4);
+        const visualDistance = Math.min(distance, 2.35);
+        const rotate = Math.max(-24, Math.min(24, -boundedDistance * 12));
+        const depth = Math.max(-40, 18 - visualDistance * 24);
+        const curve = Math.sign(boundedDistance) * Math.min(3, visualDistance * 1.2);
         card.style.setProperty("--wheel-scale", String(0.97 + emphasis * 0.03));
         card.style.setProperty("--wheel-opacity", String(Math.max(0.24, 1 - Math.max(0, distance - 1) * 0.2)));
         card.style.setProperty("--wheel-rotate", `${rotate}deg`);

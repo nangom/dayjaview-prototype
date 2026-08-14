@@ -351,7 +351,7 @@ function SavedLibrary({
               <span><small>테마 · 8월 14일 장중 기준</small><strong>원전수출</strong></span>
               <b>+2.7%</b>
             </button>
-            <button type="button" className={styles.removeSaved} onClick={onRemoveSaved} aria-label="원전수출 저장 목록에서 제거" title="저장 해제"><IconXmarkLine size={16} /><span>삭제</span></button>
+                <button type="button" className={styles.removeSaved} onClick={onRemoveSaved} aria-label="원전수출 저장 목록에서 제거" title="저장 해제"><IconXmarkLine size={14} /></button>
           </article>
         ) : <div className={styles.libraryEmpty}><IconStarLine size={28} /><strong>저장한 항목이 없어요.</strong><p>테마 상세의 별을 누르면 여기에 모아볼 수 있어요.</p></div>}
       </section>
@@ -431,11 +431,13 @@ function CaseListScreen({ goTo, active }: { goTo: (screen: string) => void; acti
     <section id="screen-cases" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="과거 사례 전체보기 와이어프레임">
       <div className={styles.wireScreen}>
         <WireHeader title="과거 사례 전체보기" onBack={() => goTo("screen-detail")} />
-        <div className={styles.wireBody}>
-          <div className={styles.pageIntro}><small className={styles.themeContext}>원전수출 테마</small><h1>과거에는 이런 일이 있었어요</h1></div>
-          <div className={styles.horizonToggle} aria-label="사례 수익률 기간 선택">{([1, 5, 20] as const).map((day) => <button type="button" key={day} className={horizon === day ? styles.horizonActive : ""} onClick={() => setHorizon(day)}>{day}일 후</button>)}</div>
-          <div className={styles.filterRow}><button className={styles.filterActive}>전체 34건</button><button>수주</button><button>정책</button><button>기자재</button></div>
-          <div className={styles.caseList}>{caseRows.map(([date, title, members], index) => <button type="button" key={date} onClick={() => goTo("screen-case-detail")}><span><small>{date}</small><strong>{title}</strong><span className={styles.caseRowTags}>{caseTags[index].map((tag) => <em key={tag}>{tag}</em>)}</span><em>{members}</em></span><b><small>T+{horizon}</small>{horizonResults[index][horizon]}</b><i>›</i></button>)}</div>
+        <div className={`${styles.wireBody} ${styles.caseListBody}`}>
+          <div className={styles.caseListCard}>
+            <div className={styles.pageIntro}><small className={styles.themeContext}>원전수출 테마</small><h1>과거에는 이런 일이 있었어요</h1></div>
+            <div className={styles.horizonToggle} aria-label="사례 수익률 기간 선택">{([1, 5, 20] as const).map((day) => <button type="button" key={day} className={horizon === day ? styles.horizonActive : ""} onClick={() => setHorizon(day)}>{day}일 후</button>)}</div>
+            <div className={styles.filterRow}><button className={styles.filterActive}>전체 34건</button><button>수주</button><button>정책</button><button>기자재</button></div>
+            <div className={styles.caseList}>{caseRows.map(([date, title, members], index) => <button type="button" key={date} onClick={() => goTo("screen-case-detail")}><span><small>{date}</small><strong>{title}</strong><span className={styles.caseRowTags}>{caseTags[index].map((tag) => <em key={tag}>{tag}</em>)}</span><em>{members}</em></span><b><small>T+{horizon}</small>{horizonResults[index][horizon]}</b><i>›</i></button>)}</div>
+          </div>
         </div>
       </div>
     </section>
@@ -496,12 +498,14 @@ function CatalystDetailScreen({ goTo, active }: { goTo: (screen: string) => void
     <section id="screen-catalyst" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="상승 소재 상세 와이어프레임">
       <div className={`${styles.wireScreen} ${styles.catalystScreen}`}>
         <WireHeader title="상승 소재" onBack={() => goTo("screen-detail")} />
-        <div className={styles.wireBody}>
+        <div className={`${styles.wireBody} ${styles.caseDetailBody}`}>
+          <div className={styles.caseDetailCard}>
           <div className={`${styles.pageIntro} ${styles.catalystHero}`}><small>원전수출 테마 · 과거 상승 소재</small><h1>체코 원전 수주</h1><p>이 소재가 과거 같은 테마와 함께 등장했던 기록을 모았어요.</p></div>
           <section className={styles.dataBlock}><div className={styles.blockHeading}><h2>과거 동반 기록</h2><span>키워드 통계</span></div><div className={styles.statGrid}><article><span>발생</span><strong>9회</strong></article><article><span>상승 동반</span><strong>78%</strong></article><article><span>D+5 차이</span><strong>+2.6%p</strong></article></div></section>
           <section className={styles.dataBlock}><h2>기간별 평균 반응</h2><div className={styles.statGrid}><article><span>D+1</span><strong>+0.8%</strong></article><article><span>D+5</span><strong>+2.6%</strong></article><article><span>D+20</span><strong>+3.1%</strong></article></div></section>
           <section className={styles.dataBlock}><div className={styles.blockHeading}><h2>연결된 과거 사건</h2><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div><div className={styles.simpleRows}><button type="button" onClick={() => goTo("screen-case-detail")}>2024.07.18 · 체코 원전 우선협상자 <b>›</b></button><button type="button" onClick={() => goTo("screen-case-detail")}>2022.10.31 · 폴란드 원전 협력 <b>›</b></button></div></section>
           <p className={styles.disclaimer}>현재 룰 기반 키워드는 검수 전 노이즈가 있을 수 있어요.</p>
+          </div>
         </div>
       </div>
     </section>

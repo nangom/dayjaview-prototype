@@ -217,7 +217,8 @@
 .savedRow small { color: #868b94; font-size: 11px; }
 .savedRow strong { color: #212124; font-size: 16px; }
 .savedRow b { color: #f04452; font-size: 16px; }
-.removeSaved { position: absolute; top: 50%; right: 12px; width: 48px; height: 30px; margin-top: -15px; padding: 0 7px; border: 0; border-radius: 999px; display: flex; align-items: center; justify-content: center; gap: 3px; background: #f4f4f5; color: #6b6b70; font: inherit; font-size: 10px; font-weight: 700; }
+.removeSaved { position: absolute; top: 8px; right: 8px; width: 28px; height: 28px; margin: 0; padding: 0; border: 0; border-radius: 50%; display: grid; place-items: center; background: #f4f4f5; color: #6b6b70; }
+.removeSaved svg { display: block; width: 14px; height: 14px; }
 .libraryEmpty { min-height: 132px; margin-top: 10px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f7f7f8; color: #868b94; text-align: center; }
 .libraryEmpty strong { margin-top: 9px; color: #4d5159; font-size: 14px; }
 .libraryEmpty p { margin: 5px 0 0; font-size: 11px; }
@@ -671,6 +672,42 @@
   background: transparent;
 }
 
+/* The full case index uses the same single-surface treatment as the detail
+   screens: one quiet outer curve, with hairlines separating its controls and
+   rows instead of a stack of floating cards. */
+.caseListBody {
+  padding: 12px 12px 88px;
+  background: var(--djv-color-bg);
+}
+.caseListCard {
+  overflow: hidden;
+  border: 1px solid #eaebee;
+  border-radius: 26px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(33,33,36,.06);
+}
+.caseListCard .pageIntro {
+  padding: 24px 16px 20px;
+  border-bottom: 1px solid #eaebee;
+  background: transparent;
+}
+.caseListCard .horizonToggle {
+  margin: 16px;
+}
+.caseListCard .filterRow {
+  margin: 0 16px 12px;
+}
+.caseListCard .caseList {
+  padding: 0 16px;
+  border-top: 1px solid #eaebee;
+}
+.caseListCard .caseList > button {
+  border-bottom: 1px solid #eaebee;
+}
+.caseListCard .caseList > button:last-child {
+  border-bottom: 0;
+}
+
 /* Research keeps the warm page canvas visible; only the conversation surface
    (question + answer) is lifted onto white. */
 .researchScreen,
@@ -682,16 +719,16 @@
 }
 .researchChatBox {
   margin-top: 4px;
-  padding: 0 16px 16px;
-  overflow: hidden;
-  border: 1px solid #eaebee;
-  border-radius: 26px;
-  background: #ffffff;
-  box-shadow: 0 8px 22px rgba(33,33,36,.06);
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .researchChatBox .naturalForm {
-  padding: 20px 0 16px;
-  border-bottom: 1px solid #eaebee;
+  padding: 0 0 16px;
+  border-bottom: 0;
 }
 .researchChatBox .naturalForm textarea { background: #ffffff; }
 .researchChatBox .answerBlock {
