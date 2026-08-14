@@ -141,7 +141,11 @@ export default function Home() {
           <form className={styles.login} onSubmit={(event) => { event.preventDefault(); completeLogin(); }}>
             <button className={styles.loginClose} type="button" onClick={() => setLoginIntent(null)} aria-label="로그인 닫기"><IconXmarkLine size={22} /></button>
             <Image className={styles.loginMark} src="/dejavu-mark.png" alt="DAY-JA-VIEW" width={38} height={48} />
-            <div className={styles.loginCopy}><small>DAY-JA-VIEW</small><h1>다시 만나 반가워요</h1><p>저장한 분석 결과를 이어서 확인하세요.</p></div>
+            <div className={styles.loginCopy}>
+              <small>DAY-JA-VIEW</small>
+              <h1>{loginIntent === "save" ? "이 분석을 저장할까요?" : "저장한 분석을 확인하세요"}</h1>
+              <p>{loginIntent === "save" ? "로그인하면 현재 분석과 관심 테마를 보관할 수 있어요." : "저장해 둔 테마와 분석 기록을 이어서 살펴보세요."}</p>
+            </div>
             <label><span>이메일</span><input type="email" defaultValue="demo@dayjaview.kr" /></label>
             <label><span>비밀번호</span><input type="password" defaultValue="dayjaview" /></label>
             <button className={styles.loginSubmit} type="submit">로그인</button>
