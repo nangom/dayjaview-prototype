@@ -424,6 +424,10 @@ export default class App extends React.Component {
 
       theme: st.theme,
       themeChg: st.themeChg ?? '+3.63%',
+      // 큰 등락률은 숫자와 단위를 나눠 그린다 (단위만 작게). % 가 없는 값이
+      // 들어와도 깨지지 않도록 끝의 % 만 떼어낸다.
+      themeNum: (st.themeChg ?? '+3.63%').replace(/%$/, ''),
+      themeUnit: /%$/.test(st.themeChg ?? '+3.63%') ? '%' : '',
       themeRank: st.themeRank ?? '10',
       hasRank: !!(st.themeRank ?? '10'),
 
@@ -775,7 +779,12 @@ export default class App extends React.Component {
               <span style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#FFFDF1')}>{v.theme}</span>
               {v.hasRank && <span style={css('padding:5px 12px;border-radius:14px;background:rgba(255,253,241,.2);font-size:13px;font-weight:700;color:#FFFDF1')}>상승 {v.themeRank}위</span>}
             </div>
-            <div style={css('font-size:86px;line-height:.96;font-weight:800;letter-spacing:-0.055em;color:#FFFDF1;margin:6px 0 4px')}>{v.themeChg}</div>
+            {/* 86px 에서는 % 글리프가 숫자만큼 커서 눈에 먼저 걸린다. 읽어야
+                할 건 수치이므로 % 만 0.55 배로 줄인다. 숫자 크기는 그대로다. */}
+            <div style={css('font-size:86px;line-height:.96;font-weight:800;letter-spacing:-0.055em;color:#FFFDF1;margin:6px 0 4px')}>
+              {v.themeNum}
+              {v.themeUnit && <span style={css('font-size:.55em;letter-spacing:-0.02em;margin-left:.02em')}>{v.themeUnit}</span>}
+            </div>
             <div style={css('font-size:15px;font-weight:600;color:#4A1608')}>오늘 테마 평균 등락</div>
           </div>
 
