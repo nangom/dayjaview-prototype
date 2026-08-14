@@ -243,9 +243,15 @@ a { color: #16160F; }
   scroll-behavior: smooth;
   scrollbar-width: none;
   touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
   -webkit-overflow-scrolling: touch;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
   mask-image: linear-gradient(to bottom, transparent 0%, #000 16%, #000 84%, transparent 100%);
+}
+.seed-wheel.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
 }
 .seed-wheel-card {
   min-height: 62px;

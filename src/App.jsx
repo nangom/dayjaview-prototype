@@ -95,8 +95,6 @@ export default class App extends React.Component {
         this._wheelBound = true;
         el.addEventListener('scroll', this.onWheelScroll, { passive: true });
         ['pointerdown', 'wheel', 'touchstart'].forEach(ev => el.addEventListener(ev, this.holdAuto, { passive: true }));
-        // 첫 진입에서는 1·2위 강조 상태를 충분히 보여준 뒤 회전을 시작한다.
-        this.scheduleAuto(7000);
       }
       this.paintWheel();
     });
@@ -104,7 +102,41 @@ export default class App extends React.Component {
 
   holdAuto = () => {
     this._userAt = performance.now();
-    this.scheduleAuto(3200);
+    clearTimeout(this._autoT);
+  };
+
+  onWheelPointerDown = event => {
+    if (event.pointerType !== 'mouse' || event.button !== 0 || !this.wheelEl) return;
+    this._dragPointer = event.pointerId;
+    this._dragStartY = event.clientY;
+    this._dragStartTop = this.wheelEl.scrollTop;
+    this._dragMoved = false;
+    this.wheelEl.setPointerCapture?.(event.pointerId);
+    this.wheelEl.classList.add('is-dragging');
+  };
+
+  onWheelPointerMove = event => {
+    if (event.pointerId !== this._dragPointer || !this.wheelEl) return;
+    const delta = event.clientY - this._dragStartY;
+    if (Math.abs(delta) > 3) this._dragMoved = true;
+    if (!this._dragMoved) return;
+    event.preventDefault();
+    this.wheelEl.scrollTop = this._dragStartTop - delta;
+  };
+
+  onWheelPointerUp = event => {
+    if (event.pointerId !== this._dragPointer || !this.wheelEl) return;
+    this.wheelEl.releasePointerCapture?.(event.pointerId);
+    this.wheelEl.classList.remove('is-dragging');
+    this._dragPointer = null;
+    if (this._dragMoved) this.snapWheel();
+  };
+
+  blockWheelClick = event => {
+    if (!this._dragMoved) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this._dragMoved = false;
   };
 
   scheduleAuto(delay) {
@@ -561,7 +593,16 @@ export default class App extends React.Component {
         </header>
 
         <main style={css('flex:1;min-height:0;display:flex;flex-direction:column;padding:0 20px 94px')}>
-          <div ref={this.wheelRef} className="seed-wheel seed-flat-wheel" style={css('flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:8px')}>
+          <div
+            ref={this.wheelRef}
+            className="seed-wheel seed-flat-wheel"
+            onPointerDown={this.onWheelPointerDown}
+            onPointerMove={this.onWheelPointerMove}
+            onPointerUp={this.onWheelPointerUp}
+            onPointerCancel={this.onWheelPointerUp}
+            onClickCapture={this.blockWheelClick}
+            style={css('flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:8px')}
+          >
             {v.wheel.map((a, index) => (
               <button key={a.key} ref={a.ref} onClick={a.open} className="seed-rank-row seed-flat-wheel-row">
                 <span className={'seed-rank-number ' + ((index % rankedThemes.length) < 3 ? 'is-top' : '')}>{a.rank}</span>
