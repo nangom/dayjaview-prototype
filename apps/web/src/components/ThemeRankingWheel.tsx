@@ -20,7 +20,8 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
   const dragRef = useRef({ pointerId: -1, startY: 0, startTop: 0, moved: false });
   const snapTimerRef = useRef<number | undefined>(undefined);
   const frameRef = useRef<number | undefined>(undefined);
-  const repeatedThemes = [...themes, ...themes, ...themes];
+  const orderedThemes = themes.length > 0 ? [themes[themes.length - 1], ...themes.slice(0, -1)] : [];
+  const repeatedThemes = [...orderedThemes, ...orderedThemes, ...orderedThemes];
 
   useLayoutEffect(() => {
     const wheel = wheelRef.current;
@@ -72,10 +73,10 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
 
     const markInteraction = () => { hasInteracted = true; };
 
-    const firstMiddleCard = cards[themes.length];
-    if (firstMiddleCard) {
-      baseTop = firstMiddleCard.offsetTop - wheel.clientHeight / 2 + firstMiddleCard.offsetHeight / 2;
-      wheel.scrollTop = baseTop + step / 2;
+    const firstVisibleCard = cards[themes.length];
+    if (firstVisibleCard) {
+      baseTop = firstVisibleCard.offsetTop;
+      wheel.scrollTop = baseTop;
     }
     paint();
     wheel.addEventListener("scroll", handleScroll, { passive: true });
@@ -130,6 +131,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
       {repeatedThemes.map((theme, index) => (
         <button
           data-theme-card
+          data-top={theme.rank <= 3 ? "true" : "false"}
           type="button"
           className={styles.card}
           key={`${Math.floor(index / themes.length)}-${theme.rank}`}
@@ -143,9 +145,8 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
           }}
         >
           <span className={styles.rank}>{theme.rank}</span>
-          <span className={styles.copy}><strong>{theme.name}</strong><small>{theme.metadata}</small></span>
+          <span className={styles.copy}><strong>{theme.name}</strong></span>
           <b>{theme.value}</b>
-          <span className={styles.chevron}>›</span>
         </button>
       ))}
     </div>

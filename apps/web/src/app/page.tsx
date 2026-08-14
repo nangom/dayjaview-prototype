@@ -81,7 +81,7 @@ export default function Home() {
         {isLoading ? (
           <div className={styles.loading}>
             <div className={styles.loadingHalo} />
-            <div className={styles.loadingLogo}><img src="/dejavu-logo-white.png" alt="DAY-JA-VIEW" /><i /></div>
+            <div className={styles.loadingLogo} aria-label="DAY-JA-VIEW"><svg viewBox="0 0 48 64" aria-hidden="true"><path d="M9 5h30c0 12-6 17-15 27C15 22 9 17 9 5Zm0 54h30c0-12-6-17-15-27C15 42 9 47 9 59Z" /></svg><b /></div>
             <div className={styles.loadingFooter}><span>오늘의 시장을, 과거의 기록으로</span><b><i /></b></div>
           </div>
         ) : (
@@ -89,12 +89,15 @@ export default function Home() {
             <div className={styles.content}>
               {activeTab === "home" ? (
                 <div className={styles.home}>
+                  <div className={styles.statusBar} aria-hidden="true">
+                    <strong>9:41</strong><i /><span className={styles.signal}>▮▮▮</span><span className={styles.wifi}>⌁</span><span className={styles.battery} />
+                  </div>
                   <header className={styles.orangeHomeHeader}>
+                    <button className={styles.menuButton} type="button" aria-label="메뉴 열기"><span /><span /><span /></button>
+                    <svg className={styles.homeMark} viewBox="0 0 48 64" role="img" aria-label="DAY-JA-VIEW"><path d="M9 5h30c0 12-6 17-15 27C15 22 9 17 9 5Zm0 54h30c0-12-6-17-15-27C15 42 9 47 9 59Z" /></svg>
                     <span className={styles.homeHeaderSpacer} />
-                    <img src="/dejavu-mark.png" alt="DAY-JA-VIEW" />
-                    <button className={styles.searchButton} type="button" onClick={() => setIsSearchOpen(true)} aria-label="검색 열기">⌕</button>
                   </header>
-                  <div className={styles.orangeHomeTitle}><strong>2026년 08월 14일</strong><h1>오늘의 요약</h1><p>지금 많이 오른 테마를 확인해 보세요.</p></div>
+                  <div className={styles.orangeHomeTitle}><strong>2026년 08월 12일</strong><h1>오늘의 요약</h1></div>
 
                   <ThemeRankingWheel themes={marketSnapshot.themes.slice(0, 10)} onSelect={() => goTo("screen-detail")} />
                 </div>
@@ -115,13 +118,13 @@ export default function Home() {
               )}
             </div>
 
-            <nav className={styles.footer} aria-label="주요 메뉴">
+            {activeTab !== "home" && <nav className={styles.footer} aria-label="주요 메뉴">
               {footerItems.map(({ id, Icon, label }) => (
                 <button key={id} type="button" className={activeTab === id ? styles.active : ""} onClick={() => { setActiveTab(id); if (id === "realtime") goTo("screen-realtime"); if (id === "saved") goTo("screen-saved"); if (id === "natural") goTo("screen-natural"); }}>
                   <Icon className={styles.navIcon} size={20} aria-hidden="true" /><small>{label}</small>
                 </button>
               ))}
-            </nav>
+            </nav>}
 
             {isSearchOpen && <button className={styles.scrim} type="button" aria-label="검색 닫기" onClick={() => setIsSearchOpen(false)} />}
             <aside className={`${styles.searchDrawer} ${isSearchOpen ? styles.drawerOpen : ""}`} aria-hidden={!isSearchOpen}>
