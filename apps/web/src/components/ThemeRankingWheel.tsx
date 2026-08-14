@@ -39,10 +39,18 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
 
       cards.forEach((card) => {
         const cardBounds = card.getBoundingClientRect();
-        const distance = Math.abs(cardBounds.top + cardBounds.height / 2 - focusY) / step;
+        const signedDistance = (cardBounds.top + cardBounds.height / 2 - focusY) / step;
+        const distance = Math.abs(signedDistance);
+        const boundedDistance = Math.max(-2.6, Math.min(2.6, signedDistance));
         const emphasis = Math.max(0, 1 - distance);
+        const rotate = Math.max(-24, Math.min(24, -boundedDistance * 11));
+        const depth = Math.max(-20, 10 - distance * 14);
+        const curve = Math.sign(boundedDistance) * Math.min(12, distance * distance * 2.8);
         card.style.setProperty("--wheel-scale", String(0.97 + emphasis * 0.03));
         card.style.setProperty("--wheel-opacity", String(Math.max(0.24, 1 - Math.max(0, distance - 1) * 0.2)));
+        card.style.setProperty("--wheel-rotate", `${rotate}deg`);
+        card.style.setProperty("--wheel-depth", `${depth}px`);
+        card.style.setProperty("--wheel-curve", `${curve}px`);
         card.dataset.focused = distance < 0.72 ? "true" : "false";
       });
     };
