@@ -592,7 +592,7 @@ export default class App extends React.Component {
           </div>
         </header>
 
-        <main style={css('flex:1;min-height:0;display:flex;flex-direction:column;padding:0 20px 94px')}>
+        <main style={css('flex:1;min-height:0;display:flex;flex-direction:column;padding:0 20px 82px')}>
           <div
             ref={this.wheelRef}
             className="seed-wheel seed-flat-wheel"
