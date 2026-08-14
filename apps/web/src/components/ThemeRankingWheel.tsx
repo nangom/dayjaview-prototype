@@ -63,7 +63,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     };
 
     const firstVisibleCard = cards[themes.length + 1];
-    let introTimer: number | undefined;
+    const introTimers: number[] = [];
     if (firstVisibleCard) {
       baseTop = Math.max(0, firstVisibleCard.offsetTop - (wheel.clientHeight - firstVisibleCard.offsetHeight) / 2);
       wheel.scrollTop = baseTop;
@@ -73,9 +73,17 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     if (shouldPlayIntro && firstVisibleCard) {
       hasPlayedIntroRef.current = true;
       wheel.dataset.intro = "true";
-      introTimer = window.setTimeout(() => {
+      const introStepDelay = 680;
+      [baseTop + step, baseTop + step * 2, baseTop].forEach((targetTop, index) => {
+        introTimers.push(window.setTimeout(() => {
+          wheel.scrollTo({ top: targetTop, behavior: "smooth" });
+          wheel.dataset.introStep = String(index + 1);
+        }, introStepDelay * (index + 1)));
+      });
+      introTimers.push(window.setTimeout(() => {
         delete wheel.dataset.intro;
-      }, 680);
+        delete wheel.dataset.introStep;
+      }, introStepDelay * 4));
     }
     paint();
     wheel.addEventListener("scroll", handleScroll, { passive: true });
@@ -83,8 +91,9 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     return () => {
       wheel.removeEventListener("scroll", handleScroll);
       if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
-      if (introTimer) window.clearTimeout(introTimer);
+      introTimers.forEach((timer) => window.clearTimeout(timer));
       delete wheel.dataset.intro;
+      delete wheel.dataset.introStep;
     };
   }, [themes]);
 

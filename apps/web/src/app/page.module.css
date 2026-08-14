@@ -555,24 +555,26 @@
 .wireHeader button { width: 42px; height: 42px; justify-self: center; border-radius: 50%; display: grid; place-items: center; background: #f4f4f5; color: #212124; font-size: 23px; line-height: 1; }
 .wireHeader button svg { display: block; width: 24px !important; height: 24px !important; margin: 0; stroke-width: 2.2; }
 .wireHeaderSpacer { width: 42px; height: 42px; }
-.wireBody { padding-right: 12px; padding-left: 12px; }
+.wireBody { padding-right: 12px; padding-left: 12px; background: #ffffff; }
 .wireBody .pageIntro {
-  margin: 10px 0;
+  margin: 0;
   padding: 22px 16px;
   border: 0;
-  border-radius: 20px;
-  background: #ffffff;
+  border-bottom: 1px solid #eaebee;
+  border-radius: 0;
+  background: transparent;
 }
 .wireBody .pageIntro > small { color: #f46b2c; font-weight: 700; }
 .wireBody .pageIntro > p { color: #868b94; }
-.wireBody .caseHero, .wireBody .catalystHero { border: 0; background: #ffffff; }
+.wireBody .caseHero, .wireBody .catalystHero { border: 0; background: transparent; }
 .wireBody .themeContext { color: #d95700; font-size: 15px; font-weight: 800; }
 .wireBody .dataBlock {
-  margin: 10px 0;
+  margin: 0;
   padding: 20px 16px;
   border: 0;
-  border-radius: 20px;
-  background: #ffffff;
+  border-bottom: 1px solid #eaebee;
+  border-radius: 0;
+  background: transparent;
 }
 .wireBody .dataBlock > p { color: #4d5159; }
 .wireBody .dataBlock > small, .wireBody .dataBlock span { color: #868b94; }
@@ -616,3 +618,9 @@
 .detail { background: #f47b3d; }
 .detailHeader { position: relative; z-index: 3; }
 .detailScroll { overscroll-behavior: none; overscroll-behavior-y: none; touch-action: pan-y; background: var(--djv-color-bg); }
+.detailScroll > .metrics { margin: 0 0 10px; border-radius: 20px; overflow: hidden; }
+
+/* The desktop preview is a web surface, not a phone frame. Keep the rounded shell for mobile only. */
+@media (min-width: 441px) {
+  .phone { border: 0; border-radius: 0; box-shadow: none; }
+}

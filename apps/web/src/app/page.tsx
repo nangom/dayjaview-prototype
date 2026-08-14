@@ -24,6 +24,7 @@ const footerItems = [
 ];
 
 const LOADING_DURATION_MS = 3400;
+const homeThemes = marketSnapshot.themes.slice(0, 10);
 
 const leaderRows = [
   { name: "두산에너빌리티", volume: "거래대금 6,240억", change: "+14.2%" },
@@ -175,7 +176,7 @@ export default function Home() {
                   </header>
                   <div className={styles.orangeHomeTitle}><strong>2026년 08월 12일</strong><h1>오늘 많이 오른 테마예요</h1></div>
 
-                  <ThemeRankingWheel themes={marketSnapshot.themes.slice(0, 10)} onSelect={() => goTo("screen-detail")} />
+                  <ThemeRankingWheel themes={homeThemes} onSelect={() => goTo("screen-detail")} />
                 </div>
               ) : activeTab === "saved" ? (
                 <SavedLibrary
@@ -226,7 +227,7 @@ export default function Home() {
           <div className={styles.detail}>
             <header className={styles.detailHeader}>
               <button type="button" aria-label="뒤로 가기" onClick={() => goTo("screen-home")}><IconArrowLeftLine size={24} /></button>
-              <span>8월 14일 장중 기준</span>
+              <span>원전수출</span>
               <button type="button" aria-label={isSaved ? "저장 목록에서 제거" : "분석 결과 저장"} className={isSaved ? styles.savedStar : ""} onClick={requestToggleSaved}>{isSaved ? <IconStarFill size={24} /> : <IconStarLine size={24} />}</button>
             </header>
 
