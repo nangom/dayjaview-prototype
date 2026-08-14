@@ -15,7 +15,7 @@ export default class App extends React.Component {
   state = {
     screen: 'splash', theme: 'LED', hz: 1, pickIdx: 0, hover: null, plus: false,
     notif: true, saved: false, savedMap: {}, tab: 'home', byReturn: false,
-    toast: null, menu: false, savedQ: '', scale: 1, bare: false
+    toast: null, menu: false, savedQ: '', scale: 1, bare: false, dark: false
   };
 
   themes = [
@@ -53,12 +53,92 @@ export default class App extends React.Component {
 
   hzLabels = ['1일 후', '5일 후', '20일 후'];
 
+  // 다크 팔레트는 웜 뉴트럴(#1C1917 / #262321 / #2C1E16)이다. 슬레이트·네이비
+  // 계열도 후보였지만 브랜드 오렌지(#FF5C00)와 색온도가 어긋나 제외했다.
+  // 다크에서 보조 텍스트는 쿨그레이 대신 웜그레이(#A8A29E)를 쓴다 — 대비는
+  // 같은 수준이면서 배경과 색온도가 맞는다.
+  // 다크 전용 값만 여기서 정의하고, 나머지는 라이트 값을 그대로 쓴다.
+  pal(dark) {
+    const d = dark === undefined ? this.state.dark : dark;
+    return {
+      dark: d,
+      bg: d ? '#1C1917' : '#EAE8E3',
+      surface: d ? '#262321' : '#FFFFFF',
+      fg: d ? '#F5F3F0' : '#16160F',
+      fg2: d ? '#A8A29E' : '#9A998F',
+      // 처음 잡았던 #7C7570 은 #262321 위에서 3.36:1 이라 본문 기준 4.5:1 에
+      // 못 미쳤다. 라이트의 #B4B3A9 는 흰 배경에서 이미 2.2:1 로 더 낮지만
+      // 그건 시안 값이라 건드리지 않았다 (별도 보고).
+      fg3: d ? '#948C86' : '#B4B3A9',
+      up: d ? '#FF6B6E' : '#E5484D',
+      homeGlow: d
+        ? 'radial-gradient(420px 300px at 12% 46%,rgba(255,92,0,.10),transparent 70%),radial-gradient(380px 320px at 92% 66%,rgba(255,140,60,.07),transparent 72%),radial-gradient(300px 240px at 70% 34%,rgba(255,255,255,.04),transparent 70%)'
+        : 'radial-gradient(420px 300px at 12% 46%,rgba(214,214,206,.5),transparent 70%),radial-gradient(380px 320px at 92% 66%,rgba(222,220,212,.55),transparent 72%),radial-gradient(300px 240px at 70% 34%,rgba(238,236,230,.7),transparent 70%)',
+      headerIcon: d ? '#F5F3F0' : '#1A1A18',
+      logo: d ? LOGO_WHITE : LOGO_MARK,
+      logoBlend: d ? 'normal' : 'multiply',
+      pillBorder: d ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.85)',
+      badgeBg: d ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.55)',
+      badgeBorder: d ? 'rgba(255,255,255,.12)' : 'rgba(255,255,255,.85)',
+      badgeShadow: d ? 'none' : 'inset 0 1px 1px rgba(255,255,255,.9),0 1px 3px rgba(22,22,15,.06)',
+      drawerBg: d ? '#262321' : '#FFFFFF',
+      inputBg: d ? '#2C2724' : '#F5F4F1',
+      divider: d ? 'rgba(255,255,255,.07)' : '#F3F2EE',
+      drawerFoot: d ? 'rgba(255,255,255,.09)' : '#F0EFEA',
+      popBg: d ? '#262321' : '#FFFFFF',
+      popBorder: d ? 'rgba(255,255,255,.10)' : '#E9E8E3',
+      sheetGrad: d
+        ? 'linear-gradient(180deg,rgba(38,35,33,.92) 0%,rgba(28,25,23,.96) 100%)'
+        : 'linear-gradient(180deg,rgba(255,255,255,.86) 0%,rgba(252,251,248,.94) 100%)',
+      cardGrad: d
+        ? 'linear-gradient(150deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.045) 55%,rgba(255,255,255,.025) 100%)'
+        : 'linear-gradient(150deg,rgba(255,255,255,.72) 0%,rgba(255,255,255,.42) 55%,rgba(240,240,236,.4) 100%)',
+      cardBorder: d ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.85)',
+      cardShadow: d
+        ? '0 8px 22px -14px rgba(0,0,0,.6)'
+        : '0 0 0 1px rgba(22,22,15,.035),0 8px 22px -14px rgba(22,22,15,.18),inset 0 1.5px 1px rgba(255,255,255,.9)',
+      statGrad: d
+        ? 'linear-gradient(150deg,rgba(44,30,22,.92) 0%,rgba(38,35,33,.86) 55%,rgba(38,35,33,.8) 100%)'
+        : 'linear-gradient(150deg,rgba(246,247,251,.72) 0%,rgba(246,247,251,.42) 55%,rgba(232,234,244,.4) 100%)',
+      statBorder: d ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.8)',
+      statShadow: d ? 'none' : '0 0 0 1px rgba(22,22,15,.035),inset 0 1.5px 1px rgba(255,255,255,.9)',
+      hzBg: d ? 'rgba(255,255,255,.06)' : 'rgba(255,255,255,.72)',
+      hzBorder: d ? 'rgba(255,255,255,.09)' : 'rgba(255,255,255,.9)',
+      chipBg: d ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.6)',
+      chipBorder: d ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.85)',
+      linkBg: d ? 'rgba(255,255,255,.06)' : '#FFFFFF',
+      linkBorder: d ? 'rgba(255,255,255,.10)' : '#E7E6E1',
+      caseBg: d ? '#262321' : '#FFFFFF',
+      caseBorder: d ? 'rgba(255,255,255,.09)' : '#EEEDE8',
+      tagBg: d ? 'rgba(122,142,222,.18)' : '#F1F3FB',
+      tagFg: d ? '#AFBBE8' : '#4A5680',
+      chevron: d ? '#6B6560' : '#C3C2B9'
+    };
+  }
+
+  // 휠 알약 배경. paintWheel 이 모드에 따라 다시 칠하지만, 첫 페인트 전까지의
+  // 값이 필요해 여기서도 같은 식을 쓴다.
+  pillGrad(d, k) {
+    return d
+      ? 'linear-gradient(150deg,rgba(255,255,255,' + (0.10 + k * 0.10).toFixed(3) + ') 0%,rgba(255,255,255,' + (0.06 + k * 0.07).toFixed(3) + ') 55%,rgba(255,255,255,' + (0.04 + k * 0.05).toFixed(3) + ') 100%)'
+      : 'linear-gradient(150deg,rgba(255,255,255,' + (0.80 + k * 0.18).toFixed(2) + ') 0%,rgba(255,255,255,' + (0.62 + k * 0.26).toFixed(2) + ') 55%,rgba(240,240,236,' + (0.60 + k * 0.26).toFixed(2) + ') 100%)';
+  }
+
   wheelItems = [];
-  wheelPill = 'display:flex;align-items:center;gap:12px;flex:none;padding:15px 20px;border-radius:26px;border:1.5px solid rgba(255,255,255,.85);cursor:pointer;text-align:left;font-family:inherit;'
-    + 'background:linear-gradient(150deg,rgba(255,255,255,.80) 0%,rgba(255,255,255,.62) 55%,rgba(232,232,228,.60) 100%);'
-    + 'backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);'
-    + 'box-shadow:0 0 0 1px rgba(22,22,15,.045),0 12px 26px -12px rgba(22,22,15,.2),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 4px rgba(22,22,15,.045);'
-    + 'will-change:transform,opacity;transform-origin:center center;';
+
+  // 라이트에서는 흰 유리(밝은 안쪽 하이라이트 + 짙은 드롭섀도), 다크에서는
+  // 얕은 흰 오버레이 + 검은 드롭섀도로 뒤집는다. 라이트용 inset 하이라이트를
+  // 다크에 그대로 쓰면 알약 위쪽에 흰 테가 떠서 지저분해진다.
+  wheelPillStyle(p) {
+    return 'display:flex;align-items:center;gap:12px;flex:none;padding:15px 20px;border-radius:26px;cursor:pointer;text-align:left;font-family:inherit;'
+      + 'border:1.5px solid ' + p.pillBorder + ';'
+      + 'background:' + this.pillGrad(p.dark, 0) + ';'
+      + 'backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);'
+      + (p.dark
+        ? 'box-shadow:0 0 0 1px rgba(0,0,0,.3),0 12px 26px -12px rgba(0,0,0,.55);'
+        : 'box-shadow:0 0 0 1px rgba(22,22,15,.045),0 12px 26px -12px rgba(22,22,15,.2),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 4px rgba(22,22,15,.045);')
+      + 'will-change:transform,opacity;transform-origin:center center;';
+  }
 
   layoutWheel() {
     const el = this.wheelEl;
@@ -138,6 +218,7 @@ export default class App extends React.Component {
     const box = el.getBoundingClientRect();
     const focus = box.top + box.height / 2 - (this.focusShift || 0);
     const step = (this.wheelItems[0] ? this.wheelItems[0].offsetHeight : 62) + 8;
+    const d = this.state.dark;
     this.wheelItems.forEach(item => {
       if (!item) return;
       const r = item.getBoundingClientRect();
@@ -150,16 +231,16 @@ export default class App extends React.Component {
       // 강제하는 비용도 있었다.
       item.style.opacity = String(k <= 1 ? 1 : Math.max(0.55, 1 - (k - 1) * 0.2).toFixed(3));
       item.style.zIndex = String(100 - Math.round(k * 5));
-      item.style.boxShadow = near > 0.02
-        ? '0 0 0 1px rgba(22,22,15,' + (0.045 + near * 0.02).toFixed(3) + '),'
+      // 다크에서는 깊이를 흰 하이라이트가 아니라 검은 그림자로 준다.
+      item.style.boxShadow = d
+        ? '0 0 0 1px rgba(0,0,0,' + (0.3 + near * 0.12).toFixed(3) + '),'
+          + '0 ' + (12 + near * 16).toFixed(0) + 'px ' + (26 + near * 24).toFixed(0) + 'px -12px rgba(0,0,0,' + (0.55 + near * 0.2).toFixed(3) + ')'
+        : '0 0 0 1px rgba(22,22,15,' + (0.045 + near * 0.02).toFixed(3) + '),'
           + '0 ' + (12 + near * 16).toFixed(0) + 'px ' + (26 + near * 24).toFixed(0) + 'px -12px rgba(22,22,15,' + (0.2 + near * 0.22).toFixed(3) + '),'
-          + 'inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 4px rgba(22,22,15,.045)'
-        : '0 0 0 1px rgba(22,22,15,.045),0 12px 26px -12px rgba(22,22,15,.2),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 4px rgba(22,22,15,.045)';
-      // 페이지 배경이 알약보다 어두워졌으므로 알약 자체는 더 불투명해야 카드로
-      // 읽힌다. 예전 값(.62/.34)은 흰 배경 위 흰 유리라 경계가 그림자뿐이었다.
-      item.style.background = near > 0.3
-        ? 'linear-gradient(150deg,rgba(255,255,255,' + (0.80 + near * 0.18).toFixed(2) + ') 0%,rgba(255,255,255,' + (0.62 + near * 0.26).toFixed(2) + ') 55%,rgba(240,240,236,' + (0.60 + near * 0.26).toFixed(2) + ') 100%)'
-        : 'linear-gradient(150deg,rgba(255,255,255,.80) 0%,rgba(255,255,255,.62) 55%,rgba(232,232,228,.60) 100%)';
+          + 'inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 4px rgba(22,22,15,.045)';
+      // 페이지 배경이 알약보다 어두우므로 알약은 더 불투명해야 카드로 읽힌다.
+      // 초점에 가까울수록(near) 한 단계 더 올린다.
+      item.style.background = this.pillGrad(d, near > 0.3 ? near : 0);
     });
   };
 
@@ -244,7 +325,11 @@ export default class App extends React.Component {
   };
 
   vals() {
-    const up = '#E5484D', down = '#2F6BE0', ink = '#16160F';
+    // 다크는 홈·테마에만 걸려 있고 화면은 서로 배타적이라, 지금 그려지는
+    // 화면이 다크일 때만 등락 색을 밝은 쪽으로 올린다. 원래 값(#E5484D)은
+    // #262321 위에서 대비가 3:1 을 못 넘긴다.
+    const dm = this.state.dark && (this.state.screen === 'home' || this.state.screen === 'theme');
+    const up = dm ? '#FF6B6E' : '#E5484D', down = dm ? '#6EA0FF' : '#2F6BE0', ink = dm ? '#F5F3F0' : '#16160F';
     const tone = v => (String(v).trim().startsWith('-') || String(v).trim().startsWith('−') ? down : up);
     const st = this.state, hz = st.hz, hv = st.hover;
     const picked = this.cases[st.pickIdx];
@@ -281,8 +366,14 @@ export default class App extends React.Component {
 
     return {
       w: 393, h: 852,
-      isDark: st.screen === 'splash',
-      pageBg: st.screen === 'splash' ? '#000000' : '#FFFFFF',
+      // 다크는 홈·테마에만 적용된다. 나머지 화면은 아직 라이트라 pageBg 도
+      // 흰색을 유지해야 전환 순간에 색이 튀지 않는다.
+      p: this.pal(),
+      dark: st.dark,
+      toggleDark: () => this.setState(s => ({ dark: !s.dark }), () => this.paintWheel()),
+      isDark: st.screen === 'splash' || (st.dark && (st.screen === 'home' || st.screen === 'theme')),
+      pageBg: st.screen === 'splash' ? '#000000'
+        : (st.dark && (st.screen === 'home' || st.screen === 'theme')) ? '#1C1917' : '#FFFFFF',
       isSplash: st.screen === 'splash',
       isHome: st.screen === 'home',
       isTheme: st.screen === 'theme',
@@ -508,32 +599,39 @@ export default class App extends React.Component {
   // 배경은 알약보다 어두워야 흰 유리 알약이 카드로 떠오른다.
   // 흰 배경일 때는 흰 알약과 명도가 같아 경계가 그림자뿐이었다.
   renderHome(v) {
+    const p = v.p;
     return (
-      <div style={css('position:absolute;inset:0;background:#EAE8E3;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
-        <div style={css('position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(420px 300px at 12% 46%,rgba(214,214,206,.5),transparent 70%),radial-gradient(380px 320px at 92% 66%,rgba(222,220,212,.55),transparent 72%),radial-gradient(300px 240px at 70% 34%,rgba(238,236,230,.7),transparent 70%)')}></div>
+      <div style={css('position:absolute;inset:0;background:' + p.bg + ';display:flex;flex-direction:column;animation:popBack .28s ease both')}>
+        <div style={css('position:absolute;inset:0;z-index:0;pointer-events:none;background:' + p.homeGlow)}></div>
 
         <div style={css('position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(54) + ' 20px 0')}>
-          <button className="tap-bg" onClick={v.openMenu} style={css('width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;padding:0;cursor:pointer;border-radius:22px')}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A1A18" strokeWidth="1.9" strokeLinecap="round"><path d="M5 8.5h14M5 13h14M5 17.5h9"></path></svg>
+          <button className="tap-bg" onClick={v.openMenu} aria-label="메뉴 열기" style={css('width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:none;border:none;padding:0;cursor:pointer;border-radius:22px')}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={p.headerIcon} strokeWidth="1.9" strokeLinecap="round"><path d="M5 8.5h14M5 13h14M5 17.5h9"></path></svg>
           </button>
-          <img src={LOGO_MARK} alt="Dejavu" style={css('height:30px;width:auto;display:block;mix-blend-mode:multiply')} />
+          {/* 라이트에서는 검정 마크에 multiply 로 배경을 먹였는데, 다크에서
+              multiply 는 로고를 지워버린다. 다크는 흰 로고 + blend 해제. */}
+          <img src={p.logo} alt="Dejavu" style={css('height:30px;width:auto;display:block;mix-blend-mode:' + p.logoBlend)} />
           <span style={css('width:44px;height:44px')}></span>
         </div>
 
         <div style={css('position:relative;z-index:1;padding:26px 20px 40px')}>
           <div style={css('font-size:34px;line-height:1.14;font-weight:700;letter-spacing:-0.03em;color:#EB5E28')}>2026년 08월 12일</div>
-          <div style={css('font-size:34px;line-height:1.14;font-weight:800;letter-spacing:-0.035em;color:#16160F')}>오늘의 요약</div>
+          <div style={css('font-size:34px;line-height:1.14;font-weight:800;letter-spacing:-0.035em;color:' + p.fg)}>오늘의 요약</div>
         </div>
 
         <div ref={this.wheelRef} style={css('position:relative;z-index:1;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 20px;display:flex;flex-direction:column;gap:8px')}>
           {v.wheel.map(a => (
-            <button key={a.key} ref={a.ref} onClick={a.open} style={css(this.wheelPill)}>
+            <button key={a.key} ref={a.ref} onClick={a.open} style={css(this.wheelPillStyle(p))}>
               <span style={css('width:32px;height:32px;flex:none;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;'
                 + (a.top
-                  ? 'background:#FF5C00;border:1px solid #FF5C00;box-shadow:0 2px 6px -2px rgba(255,92,0,.55);color:#FFFDF1'
-                  : 'background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.85);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 1px 3px rgba(22,22,15,.06);color:#16160F'))}>{a.rank}</span>
-              <span style={css('font-size:19px;font-weight:700;letter-spacing:-0.02em;color:#16160F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0')}>{a.title}</span>
-              <span style={css('margin-left:auto;padding-left:12px;font-size:19px;font-weight:700;letter-spacing:-0.01em;color:#E5484D;white-space:nowrap')}>{a.chg}</span>
+                  // 크림(#FFFDF1)을 오렌지 위에 올리면 3.03:1 이라 4.5:1 을 못 넘긴다.
+                  // 17px 볼드는 WCAG large text(18.66px 볼드) 기준에도 못 미쳐
+                  // 완화가 안 된다. 시안이 오렌지 헤더의 보조 텍스트에 쓰는
+                  // #4A1608 을 그대로 써서 대비를 확보한다.
+                  ? 'background:#FF5C00;border:1px solid #FF5C00;box-shadow:0 2px 6px -2px rgba(255,92,0,.55);color:#4A1608'
+                  : 'background:' + p.badgeBg + ';border:1px solid ' + p.badgeBorder + ';box-shadow:' + p.badgeShadow + ';color:' + p.fg))}>{a.rank}</span>
+              <span style={css('font-size:19px;font-weight:700;letter-spacing:-0.02em;color:' + p.fg + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0')}>{a.title}</span>
+              <span style={css('margin-left:auto;padding-left:12px;font-size:19px;font-weight:700;letter-spacing:-0.01em;color:' + p.up + ';white-space:nowrap')}>{a.chg}</span>
             </button>
           ))}
         </div>
@@ -546,42 +644,63 @@ export default class App extends React.Component {
 
         {v.menu && <div onClick={v.closeMenu} style={css('position:absolute;inset:0;z-index:12;background:rgba(22,22,15,.28);animation:fadeIn .18s ease both')}></div>}
         {v.menu && (
-          <div style={css('position:absolute;top:0;bottom:0;left:0;z-index:13;width:300px;background:#fff;border-radius:0 26px 26px 0;box-shadow:0 20px 60px rgba(20,20,10,.28);display:flex;flex-direction:column;animation:drawerIn .26s cubic-bezier(.2,.85,.3,1) both')}>
+          <div style={css('position:absolute;top:0;bottom:0;left:0;z-index:13;width:300px;background:' + p.drawerBg + ';border-radius:0 26px 26px 0;box-shadow:0 20px 60px rgba(20,20,10,.28);display:flex;flex-direction:column;animation:drawerIn .26s cubic-bezier(.2,.85,.3,1) both')}>
             <div style={css('padding:' + this.padTop(60) + ' 22px 12px')}>
-              <div style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#16160F')}>저장한 테마</div>
-              <input value={v.savedQ} onChange={v.onSavedQ} placeholder="테마 검색" style={css('margin-top:14px;width:100%;box-sizing:border-box;padding:11px 14px;border:none;border-radius:14px;background:#F5F4F1;font-family:inherit;font-size:14px;font-weight:500;color:#16160F;outline:none')} />
+              <div style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:' + p.fg)}>저장한 테마</div>
+              <input value={v.savedQ} onChange={v.onSavedQ} placeholder="테마 검색" style={css('margin-top:14px;width:100%;box-sizing:border-box;padding:11px 14px;border:none;border-radius:14px;background:' + p.inputBg + ';font-family:inherit;font-size:14px;font-weight:500;color:' + p.fg + ';outline:none')} />
             </div>
             <div style={css('flex:1;min-height:0;overflow-y:auto;padding:6px 22px 20px')}>
               {v.savedGroups.map(g => (
                 <div key={g.key} style={css('display:flex;flex-direction:column')}>
-                  <div style={css('margin:14px 0 6px;font-size:12px;font-weight:700;letter-spacing:.02em;color:#B4B3A9')}>{g.label}</div>
+                  <div style={css('margin:14px 0 6px;font-size:12px;font-weight:700;letter-spacing:.02em;color:' + p.fg3)}>{g.label}</div>
                   {g.items.map(s => (
-                    <button key={s.key} className="row-hover" onClick={s.open} style={css('width:100%;display:flex;align-items:center;gap:10px;padding:14px 2px;border:none;border-bottom:1px solid #F3F2EE;background:none;cursor:pointer;text-align:left')}>
+                    <button key={s.key} className="row-hover" onClick={s.open} style={css('width:100%;display:flex;align-items:center;gap:10px;padding:14px 2px;border:none;border-bottom:1px solid ' + p.divider + ';background:none;cursor:pointer;text-align:left')}>
                       <span style={css('flex:1;min-width:0;display:flex;flex-direction:column;gap:4px')}>
-                        <span style={css('font-size:15.5px;font-weight:600;letter-spacing:-0.015em;color:#16160F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{s.title}</span>
-                        <span style={css('font-size:12px;font-weight:500;color:#B4B3A9')}>{s.meta}</span>
+                        <span style={css('font-size:15.5px;font-weight:600;letter-spacing:-0.015em;color:' + p.fg + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{s.title}</span>
+                        <span style={css('font-size:12px;font-weight:500;color:' + p.fg3)}>{s.meta}</span>
                       </span>
                       <span style={{ ...css('flex:none;font-size:15px;font-weight:800;letter-spacing:-0.01em'), color: s.color }}>{s.chg}</span>
                     </button>
                   ))}
                 </div>
               ))}
-              {v.savedNone && <div style={css('margin-top:70px;text-align:center;font-size:14px;font-weight:500;line-height:1.6;color:#B4B3A9')}>검색 결과가 없습니다</div>}
+              {v.savedNone && <div style={css('margin-top:70px;text-align:center;font-size:14px;font-weight:500;line-height:1.6;color:' + p.fg3)}>검색 결과가 없습니다</div>}
             </div>
-            <div style={css('padding:14px 22px 30px;border-top:1px solid #F0EFEA;display:flex;align-items:center;gap:8px')}>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8B8E96" strokeWidth="1.6" strokeLinecap="round"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 4.4v2M12 17.6v2M4.4 12h2M17.6 12h2M6.7 6.7l1.4 1.4M15.9 15.9l1.4 1.4M17.3 6.7 15.9 8.1M8.1 15.9l-1.4 1.4"></path></svg>
-              <span style={css('font-size:13.5px;font-weight:600;color:#8B8E96')}>설정</span>
+            <div style={css('padding:8px 22px ' + this.padBottom(24) + ';border-top:1px solid ' + p.drawerFoot + ';display:flex;flex-direction:column')}>
+              {/* 다크 모드 토글. 44px 이상 터치 영역을 유지하고, 스위치 색만으로
+                  상태를 알리지 않도록 aria-checked 를 함께 준다. */}
+              <button
+                role="switch"
+                aria-checked={v.dark}
+                onClick={v.toggleDark}
+                className="row-hover"
+                style={css('width:100%;min-height:44px;display:flex;align-items:center;gap:10px;padding:10px 2px;border:none;background:none;cursor:pointer;text-align:left;font-family:inherit;border-radius:12px')}
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={p.fg2} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  {v.dark
+                    ? <path d="M20 14.2A8.2 8.2 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2z"></path>
+                    : <><circle cx="12" cy="12" r="4"></circle><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6"></path></>}
+                </svg>
+                <span style={css('flex:1;font-size:13.5px;font-weight:600;color:' + p.fg2)}>다크 모드</span>
+                <span style={css('flex:none;width:40px;height:24px;border-radius:12px;padding:2px;box-sizing:border-box;display:flex;align-items:center;transition:background .16s ease;background:' + (v.dark ? '#FF5C00' : (p.dark ? 'rgba(255,255,255,.18)' : '#D8D6D0')))}>
+                  <span style={css('width:20px;height:20px;border-radius:10px;background:#fff;box-shadow:0 1px 3px rgba(22,22,15,.3);transition:transform .16s ease;transform:translateX(' + (v.dark ? '16px' : '0') + ')')}></span>
+                </span>
+              </button>
+              <div style={css('display:flex;align-items:center;gap:8px;min-height:44px;padding:10px 2px')}>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={p.fg2} strokeWidth="1.6" strokeLinecap="round"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 4.4v2M12 17.6v2M4.4 12h2M17.6 12h2M6.7 6.7l1.4 1.4M15.9 15.9l1.4 1.4M17.3 6.7 15.9 8.1M8.1 15.9l-1.4 1.4"></path></svg>
+                <span style={css('font-size:13.5px;font-weight:600;color:' + p.fg2)}>설정</span>
+              </div>
             </div>
           </div>
         )}
 
         {v.plus && <div onClick={v.closeAll} style={css('position:absolute;inset:0;z-index:8;background:rgba(22,22,15,.16);animation:fadeIn .18s ease both')}></div>}
         {v.plus && (
-          <div style={css('position:absolute;right:20px;bottom:100px;z-index:9;width:236px;background:#fff;border:1px solid #E9E8E3;border-radius:22px;padding:6px;box-shadow:0 18px 40px rgba(20,20,10,.16);animation:fadeIn .18s ease both')}>
+          <div style={css('position:absolute;right:20px;bottom:100px;z-index:9;width:236px;background:' + p.popBg + ';border:1px solid ' + p.popBorder + ';border-radius:22px;padding:6px;box-shadow:0 18px 40px rgba(20,20,10,.16);animation:fadeIn .18s ease both')}>
             {v.quick.map(q => (
               <button key={q.key} className="quick-item" onClick={q.go} style={css('width:100%;display:flex;align-items:center;gap:12px;padding:13px 12px;border:none;background:none;border-radius:16px;cursor:pointer;text-align:left')}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d={q.d}></path></svg>
-                <span style={css('font-size:15px;font-weight:600;color:#16160F')}>{q.title}</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={p.fg} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d={q.d}></path></svg>
+                <span style={css('font-size:15px;font-weight:600;color:' + p.fg)}>{q.title}</span>
               </button>
             ))}
           </div>
@@ -591,8 +710,9 @@ export default class App extends React.Component {
   }
 
   renderTheme(v) {
+    const p = v.p;
     return (
-      <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
+      <div style={css('position:absolute;inset:0;background:' + p.surface + ';display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('position:absolute;top:0;left:0;right:0;height:340px;background:#FF5C00')}></div>
         <div style={css('position:relative;z-index:1;flex:1;overflow-y:auto')}>
           <div style={css('padding:' + this.padTop(52) + ' 22px 34px')}>
@@ -613,71 +733,74 @@ export default class App extends React.Component {
             <div style={css('font-size:15px;font-weight:600;color:#4A1608')}>오늘 테마 평균 등락</div>
           </div>
 
-          <div style={css('background:linear-gradient(180deg,rgba(255,255,255,.86) 0%,rgba(252,251,248,.94) 100%);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:34px 34px 0 0;box-shadow:0 -14px 34px -18px rgba(22,22,15,.28);padding:24px 22px 0;min-height:520px')}>
-            <div style={css('border-radius:26px;padding:20px;background:linear-gradient(150deg,rgba(255,255,255,.72) 0%,rgba(255,255,255,.42) 55%,rgba(240,240,236,.4) 100%);backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);border:1px solid rgba(255,255,255,.85);box-shadow:0 0 0 1px rgba(22,22,15,.035),0 8px 22px -14px rgba(22,22,15,.18),inset 0 1.5px 1px rgba(255,255,255,.9)')}>
-              <div style={css('font-size:12.5px;font-weight:700;letter-spacing:.08em;color:#9A998F;margin-bottom:12px')}>오늘 부각된 이유</div>
-              <div style={css('font-size:18px;font-weight:700;line-height:1.42;letter-spacing:-0.02em;color:#16160F;text-wrap:pretty')}>{v.reason}</div>
+          <div style={css('background:' + p.sheetGrad + ';backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border-radius:34px 34px 0 0;box-shadow:0 -14px 34px -18px rgba(22,22,15,.28);padding:24px 22px 0;min-height:520px')}>
+            <div style={css('border-radius:26px;padding:20px;background:' + p.cardGrad + ';backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);border:1px solid ' + p.cardBorder + ';box-shadow:' + p.cardShadow)}>
+              <div style={css('font-size:12.5px;font-weight:700;letter-spacing:.08em;color:' + p.fg2 + ';margin-bottom:12px')}>오늘 부각된 이유</div>
+              <div style={css('font-size:18px;font-weight:700;line-height:1.42;letter-spacing:-0.02em;color:' + p.fg + ';text-wrap:pretty')}>{v.reason}</div>
               <div style={css('display:flex;flex-wrap:wrap;gap:8px;margin-top:16px')}>
                 {v.stocks.map(s => (
-                  <span key={s} style={css('padding:9px 14px;border-radius:16px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.85);font-size:15px;font-weight:700;letter-spacing:-0.01em;color:#16160F')}>{s}</span>
+                  <span key={s} style={css('padding:9px 14px;border-radius:16px;background:' + p.chipBg + ';border:1px solid ' + p.chipBorder + ';font-size:15px;font-weight:700;letter-spacing:-0.01em;color:' + p.fg)}>{s}</span>
                 ))}
               </div>
-              <div style={css('margin-top:14px;font-size:12.5px;font-weight:500;color:#A9A89E')}>출처 · 인포스탁</div>
+              <div style={css('margin-top:14px;font-size:12.5px;font-weight:500;color:' + p.fg2)}>출처 · 인포스탁</div>
             </div>
 
-            <div style={css('margin-top:26px;border-radius:26px;padding:20px 18px;background:linear-gradient(150deg,rgba(246,247,251,.72) 0%,rgba(246,247,251,.42) 55%,rgba(232,234,244,.4) 100%);backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);border:1px solid rgba(255,255,255,.8);box-shadow:0 0 0 1px rgba(22,22,15,.035),inset 0 1.5px 1px rgba(255,255,255,.9)')}>
-              <div style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#16160F')}>과거 부각 사례 이후</div>
-              <div style={css('margin-top:5px;font-size:13.5px;font-weight:500;color:#9A998F')}>분석 표본 34건 · 2010.03–2026.07</div>
+            <div style={css('margin-top:26px;border-radius:26px;padding:20px 18px;background:' + p.statGrad + ';backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);border:1px solid ' + p.statBorder + ';box-shadow:' + p.statShadow)}>
+              <div style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:' + p.fg)}>과거 부각 사례 이후</div>
+              <div style={css('margin-top:5px;font-size:13.5px;font-weight:500;color:' + p.fg2)}>분석 표본 34건 · 2010.03–2026.07</div>
               <div style={css('display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px')}>
                 {v.horizons.map(hz => (
-                  <div key={hz.key} style={css('border-radius:20px;background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.9);padding:16px 12px;text-align:center;box-shadow:0 1px 2px rgba(22,22,15,.05)')}>
-                    <div style={css('font-size:13px;font-weight:600;color:#9A998F')}>{hz.label}</div>
+                  <div key={hz.key} style={css('border-radius:20px;background:' + p.hzBg + ';border:1px solid ' + p.hzBorder + ';padding:16px 12px;text-align:center;box-shadow:0 1px 2px rgba(22,22,15,.05)')}>
+                    <div style={css('font-size:13px;font-weight:600;color:' + p.fg2)}>{hz.label}</div>
                     <div style={{ ...css('margin-top:8px;font-size:24px;font-weight:800;letter-spacing:-0.03em'), color: hz.color }}>{hz.val}</div>
-                    <div style={css('margin-top:6px;font-size:11.5px;font-weight:500;color:#B4B3A9')}>{hz.hit}</div>
+                    <div style={css('margin-top:6px;font-size:11.5px;font-weight:500;color:' + p.fg3)}>{hz.hit}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             <div style={css('padding:28px 0 0')}>
-              <div style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#16160F')}>오늘과 가장 유사한 과거</div>
-              <div style={css('margin-top:5px;font-size:13.5px;font-weight:500;color:#9A998F')}>최근 5건 · 5일 후 수익률</div>
+              <div style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:' + p.fg)}>오늘과 가장 유사한 과거</div>
+              <div style={css('margin-top:5px;font-size:13.5px;font-weight:500;color:' + p.fg2)}>최근 5건 · 5일 후 수익률</div>
               <div style={css('display:flex;flex-direction:column;gap:14px;margin-top:14px')}>
-                {v.topCases.map(c => this.renderCaseCard(c, false))}
+                {v.topCases.map(c => this.renderCaseCard(c, false, p))}
               </div>
             </div>
 
             <div style={css('display:flex;gap:12px;padding:18px 0 0')}>
               {v.links.map(l => (
-                <button key={l.key} className="link-btn press-sm" onClick={l.go} style={css('flex:1;padding:18px 10px;border:1px solid #E7E6E1;border-radius:20px;background:#fff;cursor:pointer;text-align:center;font-family:inherit;font-size:16px;font-weight:700;letter-spacing:-0.015em;color:#16160F;transition:background .16s ease,transform .16s ease')}>{l.label}</button>
+                <button key={l.key} className="link-btn press-sm" onClick={l.go} style={css('flex:1;padding:18px 10px;border:1px solid ' + p.linkBorder + ';border-radius:20px;background:' + p.linkBg + ';cursor:pointer;text-align:center;font-family:inherit;font-size:16px;font-weight:700;letter-spacing:-0.015em;color:' + p.fg + ';transition:background .16s ease,transform .16s ease')}>{l.label}</button>
               ))}
             </div>
 
-            <div style={css('padding:20px 0 40px;font-size:12px;font-weight:500;line-height:1.5;color:#B4B3A9')}>과거 수익률은 미래 성과를 보장하지 않으며 투자 판단의 근거로만 활용할 수 있습니다.</div>
+            <div style={css('padding:20px 0 40px;font-size:12px;font-weight:500;line-height:1.5;color:' + p.fg3)}>과거 수익률은 미래 성과를 보장하지 않으며 투자 판단의 근거로만 활용할 수 있습니다.</div>
           </div>
         </div>
       </div>
     );
   }
 
-  renderCaseCard(c, snap) {
+  // p 를 안 넘기면 라이트로 그린다. cases 화면은 아직 라이트라 그대로 두고,
+  // 다크가 적용된 theme 화면에서만 팔레트를 넘긴다.
+  renderCaseCard(c, snap, p) {
+    const q = p || this.pal(false);
     return (
       <button
         key={c.key}
         className="case-card press-sm"
         onClick={c.open}
-        style={css((snap ? 'scroll-snap-align:start;scroll-snap-stop:always;' : '') + 'width:100%;flex:none;display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:22px;border:1px solid #EEEDE8;border-radius:28px;background:#fff;cursor:pointer;text-align:left;box-shadow:0 6px 18px -14px rgba(22,22,15,.35);transition:box-shadow .16s ease,transform .16s ease')}
+        style={css((snap ? 'scroll-snap-align:start;scroll-snap-stop:always;' : '') + 'width:100%;flex:none;display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:22px;border:1px solid ' + q.caseBorder + ';border-radius:28px;background:' + q.caseBg + ';cursor:pointer;text-align:left;box-shadow:0 6px 18px -14px rgba(22,22,15,.35);transition:box-shadow .16s ease,transform .16s ease')}
       >
         <span style={css('display:flex;align-items:center;gap:10px')}>
           <span style={css('flex:1;min-width:0;display:flex;flex-direction:column;gap:7px')}>
-            <span style={css('font-size:19.5px;font-weight:500;letter-spacing:-0.015em;color:#16160F')}>{c.date}</span>
-            <span style={css('font-size:19.5px;font-weight:800;letter-spacing:-0.015em;color:#16160F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{c.title}</span>
+            <span style={css('font-size:19.5px;font-weight:500;letter-spacing:-0.015em;color:' + q.fg)}>{c.date}</span>
+            <span style={css('font-size:19.5px;font-weight:800;letter-spacing:-0.015em;color:' + q.fg + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{c.title}</span>
           </span>
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C3C2B9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={css('flex:none')}><path d="M9 6l6 6-6 6"></path></svg>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={q.chevron} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={css('flex:none')}><path d="M9 6l6 6-6 6"></path></svg>
         </span>
         <span style={css('display:flex;align-items:center;gap:8px')}>
           {c.tags.map((t, i) => (
-            <span key={i} style={css('padding:6px 12px;border-radius:10px;background:#F1F3FB;font-size:13.5px;font-weight:600;letter-spacing:-0.01em;color:#4A5680')}>{t}</span>
+            <span key={i} style={css('padding:6px 12px;border-radius:10px;background:' + q.tagBg + ';font-size:13.5px;font-weight:600;letter-spacing:-0.01em;color:' + q.tagFg)}>{t}</span>
           ))}
           <span style={{ ...css('margin-left:auto;font-size:19.5px;font-weight:800;letter-spacing:-0.02em'), color: c.color }}>{c.retLabel}</span>
         </span>
