@@ -16,7 +16,7 @@ export default class App extends React.Component {
   state = {
     screen: 'splash', theme: 'LED', hz: 1, pickIdx: 0, hover: null, plus: false,
     notif: true, saved: false, savedMap: {}, tab: 'home', byReturn: false,
-    toast: null, menu: false, savedPanel: false, savedQ: '', searchQ: '', libraryTab: 'saved', scale: 1, bare: false
+    toast: null, menu: false, savedPanel: false, savedQ: '', searchQ: '', libraryTab: 'saved', darkMode: false, scale: 1, bare: false
   };
 
   themes = [
@@ -136,6 +136,7 @@ export default class App extends React.Component {
   paintWheel = () => {
     const el = this.wheelEl;
     if (!el) return;
+    const dark = this.state.darkMode;
     const box = el.getBoundingClientRect();
     const focus = box.top + box.height / 2 - (this.focusShift || 0);
     const step = (this.wheelItems[0] ? this.wheelItems[0].offsetHeight : 62) + 8;
@@ -152,8 +153,8 @@ export default class App extends React.Component {
       item.style.filter = k > 0.6 ? 'blur(' + Math.min((k - 0.6) * 0.45, 1.6).toFixed(2) + 'px)' : 'none';
       item.style.zIndex = String(100 - Math.round(k * 5));
       item.style.boxShadow = 'none';
-      item.style.borderColor = near > 0.3 ? 'rgba(255,111,15,' + (0.35 + near * 0.55).toFixed(2) + ')' : '#E8E9EC';
-      item.style.background = near > 0.3 ? '#FFF8F3' : '#FFFFFF';
+      item.style.borderColor = near > 0.3 ? 'rgba(255,111,15,' + (0.35 + near * 0.55).toFixed(2) + ')' : (dark ? '#3B3D42' : '#E8E9EC');
+      item.style.background = near > 0.3 ? (dark ? '#3A2B24' : '#FFF8F3') : (dark ? '#292B2F' : '#FFFFFF');
     });
     this.focusedWheelTheme = this.themes[closest.index % this.themes.length];
   };
@@ -277,7 +278,7 @@ export default class App extends React.Component {
     return {
       w: 393, h: 852,
       isDark: st.screen === 'splash',
-      pageBg: st.screen === 'splash' ? '#000000' : '#FFFFFF',
+      pageBg: st.screen === 'splash' ? '#000000' : (st.darkMode ? '#202124' : '#FFFFFF'),
       isSplash: st.screen === 'splash',
       isHome: st.screen === 'home',
       isTheme: st.screen === 'theme',
@@ -287,6 +288,8 @@ export default class App extends React.Component {
       isSearch: st.screen === 'search',
       isLibrary: st.screen === 'library',
       isSettings: st.screen === 'settings',
+      darkMode: st.darkMode,
+      toggleDarkMode: () => this.setState(s => ({ darkMode: !s.darkMode }), this.paintWheel),
 
       theme: st.theme,
       themeChg: st.themeChg ?? '+3.63%',
@@ -699,8 +702,8 @@ export default class App extends React.Component {
     );
   }
 
-  renderSettingsScreen() {
-    return <div className="seed-tab-screen"><div className="seed-tab-header"><Badge tone="brand" variant="weak">SETTINGS</Badge><h1>설정</h1><p>서비스 이용 환경을 관리하세요.</p></div><div className="seed-settings-card"><div><strong>잠금화면 알림</strong><small>푸시 알림은 추후 연결 예정</small></div><span className="seed-coming-badge">준비 중</span></div><div className="seed-settings-card"><div><strong>데이터 기준</strong><small>장 마감 데이터 · KRX/인포스탁</small></div><span>›</span></div><div className="seed-settings-card"><div><strong>앱 정보</strong><small>DAY-JA-VIEW Prototype</small></div><span>›</span></div></div>;
+  renderSettingsScreen(v) {
+    return <div className="seed-tab-screen"><div className="seed-tab-header"><Badge tone="brand" variant="weak">SETTINGS</Badge><h1>설정</h1><p>서비스 이용 환경을 관리하세요.</p></div><div className="seed-settings-card"><div><strong>다크 모드</strong><small>어두운 화면 테마로 전환합니다.</small></div><button role="switch" aria-checked={v.darkMode} onClick={v.toggleDarkMode} className={'seed-theme-switch ' + (v.darkMode ? 'is-on' : '')}><span /></button></div><div className="seed-settings-card"><div><strong>잠금화면 알림</strong><small>푸시 알림은 추후 연결 예정</small></div><span className="seed-coming-badge">준비 중</span></div><div className="seed-settings-card"><div><strong>데이터 기준</strong><small>장 마감 데이터 · KRX/인포스탁</small></div><span>›</span></div><div className="seed-settings-card"><div><strong>앱 정보</strong><small>DAY-JA-VIEW Prototype</small></div><span>›</span></div></div>;
   }
 
   renderBottomNav(v) {
@@ -708,7 +711,7 @@ export default class App extends React.Component {
       { key: 'home', label: '홈', d: 'm4 10 8-6 8 6v9H4zM10 19v-5h4v5' },
       { key: 'search', label: '검색', d: 'M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm5-2 5 5' },
       { key: 'library', label: '즐겨찾기', d: 'm12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z' },
-      { key: 'settings', label: '설정', d: 'M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM19 12l2-1-2-3-2 .3L16 6l-1-2h-6L8 6 7 8.3 5 8l-2 3 2 1-2 1 2 3 2-.3L8 18l1 2h6l1-2 1-2.3 2 .3 2-3z' }
+      { key: 'settings', label: '설정', d: 'M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.12 2.12-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.56V20.5h-3v-.28a1.7 1.7 0 0 0-1.04-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-2.12-2.12.06-.06A1.7 1.7 0 0 0 7 15a1.7 1.7 0 0 0-1.56-1.04H5.2v-3h.24A1.7 1.7 0 0 0 7 9.92a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.12-2.12.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 11.7 4.7V4.5h3v.2a1.7 1.7 0 0 0 1.04 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.12 2.12-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.04h.24v3h-.24A1.7 1.7 0 0 0 19.4 15z' }
     ];
     const active = v.isHome ? 'home' : v.isSearch ? 'search' : v.isLibrary ? 'library' : v.isSettings ? 'settings' : '';
     return <nav className="seed-bottom-nav" aria-label="주요 메뉴">{items.map(item => <button key={item.key} className={active === item.key ? 'is-selected' : ''} onClick={() => this.go(item.key)}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={item.d}/></svg><span>{item.label}</span></button>)}</nav>;
@@ -1137,11 +1140,11 @@ export default class App extends React.Component {
       <IOSDevice
         width={bare ? '100%' : v.w}
         height={bare ? '100%' : v.h}
-        dark={v.isDark}
+        dark={v.isDark || v.darkMode}
         bare={bare}
         showSystemBars={false}
       >
-        <div style={{ ...css("height:100%;position:relative;overflow:hidden;font-family:'Pretendard',system-ui,sans-serif;-webkit-font-smoothing:antialiased"), background: v.pageBg }}>
+        <div className={v.darkMode ? 'app-dark' : ''} style={{ ...css("height:100%;position:relative;overflow:hidden;font-family:'Pretendard',system-ui,sans-serif;-webkit-font-smoothing:antialiased"), background: v.pageBg }}>
           {v.isSplash && this.renderSplash(v)}
           {v.isHome && this.renderSeedHome(v)}
           {v.isTheme && this.renderSeedTheme(v)}
