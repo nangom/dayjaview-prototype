@@ -277,6 +277,26 @@
 .answerBlock li b { font-size: 12px; }
 .answerBlock > button { width: 100%; height: 44px; margin-top: 12px; border: 1px solid var(--djv-color-brand); border-radius: var(--djv-radius-md); background: var(--djv-color-brand-soft); color: #a33b00; font-weight: 700; }
 
+/* Carrot SEED visual layer: neutral surfaces first, brand only for state and action. */
+.preview { background: var(--seed-color-bg-neutral-weak, #f2f3f5); }
+.phone { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--seed-color-bg-layer-default, #fff); box-shadow: 0 8px 28px -24px rgba(0,0,0,.22); }
+.app, .detail, .wireScreen { background: var(--seed-color-bg-layer-default, #fff); }
+.themeSummary { margin: 0; padding: 28px 0 24px !important; background: transparent; color: var(--seed-color-fg-neutral, #212124); }
+.themeSummary span, .themeSummary > p { color: var(--seed-color-fg-neutral-muted, #868b94); }
+.themeSummary > strong { color: var(--seed-color-fg-brand, #ff6f0f); }
+.ranking li:nth-child(-n+3) .rank, .catalysts li > b { background: var(--seed-color-bg-brand-weak, #fff0e5); color: var(--seed-color-fg-brand-contrast, #d95700); }
+.metrics article, .horizons article, .statGrid article, .answerBlock { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--seed-color-bg-layer-floating, #fff); box-shadow: none; }
+.footer, .miniFooter { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: rgba(255,255,255,.96); box-shadow: var(--djv-shadow-nav); }
+.footer .active, .miniFooter .selected { background: var(--seed-color-bg-brand-weak, #fff0e5); color: var(--seed-color-fg-brand, #ff6f0f); }
+.stateNote, .lockedBlock { background: var(--seed-color-bg-neutral-weak, #f7f7f8); color: var(--seed-color-fg-neutral-muted, #868b94); }
+.treemap { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--seed-color-bg-layer-default, #fff); }
+.treemap button, .treeTop button:first-child { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--seed-color-bg-neutral-weak, #f7f7f8); }
+.treemap button:nth-child(odd) { background: var(--seed-color-bg-brand-weak, #fff0e5); }
+.treemap small { color: var(--seed-color-fg-neutral-muted, #868b94); }
+.naturalForm textarea { border-color: var(--seed-color-stroke-neutral-muted, #eaebee); background: var(--seed-color-bg-layer-default, #fff); }
+.naturalForm button { background: var(--seed-color-bg-brand-solid, #ff6f0f); color: var(--seed-color-fg-brand-inverted, #fff); }
+.answerBlock > button { border-color: transparent; background: var(--seed-color-bg-brand-weak, #fff0e5); color: var(--seed-color-fg-brand-contrast, #d95700); }
+
 @media (max-width: 440px) {
   .preview { justify-content: flex-start; padding: 0; scroll-snap-type: x mandatory; }
   .phone { width: 100%; height: 100dvh; min-height: 640px; border: 0; border-radius: 0; }

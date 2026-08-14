@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import "@seed-design/css/base.css";
 import "@dayjaview/design-tokens/tokens.css";
 import "./globals.css";
 
