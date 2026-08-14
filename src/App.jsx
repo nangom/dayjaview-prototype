@@ -538,9 +538,9 @@ export default class App extends React.Component {
 
       picked: { date: pickedDate, title: picked.title, sub: picked.sub },
       perfCells: [
-        { key: 'p1', label: '1일 후', val: '+0.4%', hit: '상승 18/34' },
-        { key: 'p5', label: '5일 후', val: '+1.3%', hit: '상승 20/34' },
-        { key: 'p20', label: '20일 후', val: '+2.8%', hit: '상승 21/34' }
+        { key: 'p1', label: '1일 후', val: '+0.4%' },
+        { key: 'p5', label: '5일 후', val: '+1.3%' },
+        { key: 'p20', label: '20일 후', val: '+2.8%' }
       ].map(p => ({
         ...p,
         color: P.redInk,
@@ -930,7 +930,6 @@ export default class App extends React.Component {
               <div key={p.key} className="lift" style={css(p.cell)}>
                 <div style={css('font-size:13px;font-weight:700;letter-spacing:-0.01em;color:' + pl.ink2)}>{p.label}</div>
                 <div style={{ ...css('margin-top:12px;font-size:22px;line-height:1;font-weight:800;letter-spacing:-0.03em'), color: p.color }}>{p.val}</div>
-                <div style={css('margin-top:8px;font-size:12px;font-weight:600;color:' + pl.meta)}>{p.hit}</div>
               </div>
             ))}
           </div>
