@@ -135,7 +135,12 @@ export default function Home() {
       <section id="screen-home" className={`${styles.phone} ${currentScreen === "screen-home" ? styles.activePhone : ""}`} aria-label="DAY-JA-VIEW 모바일 목업">
         {isLoading ? (
           <div className={styles.loading}>
-            <div className={styles.loadingLogo} aria-label="DAY-JA-VIEW"><Image src="/dejavu-mark.png" alt="" width={64} height={74} priority /></div>
+            <div className={styles.loadingHalo} />
+            <div className={styles.loadingLogo} aria-label="DAY-JA-VIEW">
+              <i className={styles.loadingLogoBase} />
+              <span className={styles.loadingGlowSweep}><i /></span>
+              <span className={styles.loadingSharpSweep}><i /></span>
+            </div>
             <div className={styles.loadingFooter}><span>오늘의 시장을, 과거의 기록으로</span><b><i /></b></div>
           </div>
         ) : loginIntent ? (
@@ -219,9 +224,8 @@ export default function Home() {
 
             <div className={styles.detailScroll}>
               <section className={styles.themeSummary}>
-                <div><span className={styles.themeRankPill}>오늘 상승 1위</span><h1>원전수출</h1></div>
-                <strong>+2.7%</strong>
-                <p className={styles.themeReturnPill}>오늘 테마 평균 등락</p>
+                <div className={styles.themeTitle}><span className={styles.themeRankPill}>오늘 상승 1위</span><h1>원전수출</h1></div>
+                <div className={styles.themeReturnRow}><strong>+2.7%</strong><p className={styles.themeReturnPill}>오늘 테마 평균 등락</p></div>
               </section>
 
               <section className={styles.metrics}>
@@ -257,7 +261,7 @@ export default function Home() {
               </section>
 
               <section className={styles.catalystSection}>
-                <div className={styles.sectionHeading}><h2>과거 상승 소재 Top 3</h2><span>인포스탁 히스토리 기준</span></div>
+                <div className={styles.sectionHeading}><h2>과거 상승 소재 Top 3</h2><span>과거 시장 기록 기준</span></div>
                 <ol className={styles.catalysts}>
                   <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>1</b><div><strong>체코 원전 수주</strong><p>과거 9건 · 상승 동반 78%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
                   <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>2</b><div><strong>원전 수출 정책</strong><p>과거 12건 · 상승 동반 67%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
@@ -372,7 +376,7 @@ const caseRows = [
 ];
 
 function WireHeader({ title, onBack }: { title: string; onBack: () => void }) {
-  return <header className={styles.wireHeader}><button type="button" onClick={onBack} aria-label="뒤로 가기"><IconArrowLeftLine size={24} /></button><strong>{title}</strong><button type="button" className={styles.savedStar} aria-label="저장 목록에서 제거"><IconStarFill size={24} /></button></header>;
+  return <header className={styles.wireHeader}><button type="button" onClick={onBack} aria-label="뒤로 가기"><IconArrowLeftLine size={24} /></button><strong>{title}</strong><span className={styles.wireHeaderSpacer} aria-hidden="true" /></header>;
 }
 
 function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
@@ -435,9 +439,9 @@ function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; ac
         <WireHeader title="과거 사례" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
           <div className={`${styles.pageIntro} ${styles.caseHero}`}><small>원전수출 테마 · 2024.07.18</small><h1>체코 원전 우선협상대상자 선정</h1></div>
-          <section className={styles.dataBlock}><h2>사건 기록</h2><p>체코 정부가 신규 원전 사업의 우선협상대상자로 한국수력원자력을 선정하며 원전 관련주가 부각됐어요.</p><small>인포스탁 원본 · 수집 기록 보유</small></section>
+          <section className={styles.dataBlock}><h2>사건 기록</h2><p>체코 정부가 신규 원전 사업의 우선협상대상자로 한국수력원자력을 선정하며 원전 관련주가 부각됐어요.</p><small>시장 사건 원문 · 수집 기록 보유</small></section>
           <section className={styles.dataBlock}><h2>당시 테마 바스켓의 이후 흐름</h2><div className={styles.statGrid}><article><span>T+1</span><strong>+2.1%</strong></article><article><span>T+5</span><strong>+4.6%</strong></article><article><span>T+20</span><strong>+7.2%</strong></article></div><small>사건 당일 기록된 종목을 동일 비중으로 계산했어요.</small></section>
-          <section className={styles.dataBlock}><h2>당시 기록된 종목</h2><small>사건 당일 인포스탁 기록 기준</small><div className={styles.simpleRows}><button>두산에너빌리티 <b>+14.2%</b></button><button>한전기술 <b>+7.1%</b></button><button>우리기술 <b>+5.8%</b></button></div></section>
+          <section className={styles.dataBlock}><h2>당시 기록된 종목</h2><small>사건 당일 시장 기록 기준</small><div className={styles.simpleRows}><button>두산에너빌리티 <b>+14.2%</b></button><button>한전기술 <b>+7.1%</b></button><button>우리기술 <b>+5.8%</b></button></div></section>
               <p className={styles.disclaimer}>과거에 관측된 결과를 보여주며 현재의 투자 판단을 제공하지 않아요.</p>
         </div>
       </div>
@@ -487,7 +491,7 @@ function NaturalSearchScreen({ goTo, active }: { goTo: (screen: string) => void;
         <div className={styles.wireBody}><div className={styles.pageIntro}><small>데이터 리서치</small><h1>무엇이 궁금하세요?</h1><p>질문하면 보유한 과거 데이터 안에서 답을 찾아요.</p></div>
           <form className={styles.naturalForm} onSubmit={(event) => { event.preventDefault(); setHasSearched(true); }}><textarea defaultValue="원전수출 테마는 과거에 오른 뒤 5일 동안 어땠어?" aria-label="자연어 질문"/><button type="submit">검색</button></form>
           {hasSearched ? <>
-            <section className={styles.answerBlock}><div><small>DAY-JA-VIEW 리서치</small><span>과거 데이터 기준</span></div><p className={styles.researchLead}>원전수출 테마는 과거 34개 사례에서 사건 발생 5거래일 후 평균 <strong>+1.3%</strong>를 기록했어요.</p><p>이 가운데 20개 사례가 상승했습니다. 결과는 사건 당시 인포스탁에 기록된 종목을 동일 비중으로 계산한 값이에요. 가장 크게 움직인 사례는 2024년 7월 18일 체코 원전 우선협상대상자 선정 사건이었습니다.</p><p>다만 과거 관측 결과이며 현재의 상승을 예측하거나 종목을 추천하는 정보는 아니에요.</p><button type="button" onClick={() => goTo("screen-cases")}>관련 DAY-JA-VIEW 케이스 보기</button></section>
+            <section className={styles.answerBlock}><div><small>DAY-JA-VIEW 리서치</small><span>과거 데이터 기준</span></div><p className={styles.researchLead}>원전수출 테마는 과거 34개 사례에서 사건 발생 5거래일 후 평균 <strong>+1.3%</strong>를 기록했어요.</p><p>이 가운데 20개 사례가 상승했습니다. 결과는 사건 당시 시장 기록에 포함된 종목을 동일 비중으로 계산한 값이에요. 가장 크게 움직인 사례는 2024년 7월 18일 체코 원전 우선협상대상자 선정 사건이었습니다.</p><p>다만 과거 관측 결과이며 현재의 상승을 예측하거나 종목을 추천하는 정보는 아니에요.</p><button type="button" onClick={() => goTo("screen-cases")}>관련 DAY-JA-VIEW 케이스 보기</button></section>
             <p className={styles.disclaimer}>검색 결과는 DB에 저장된 사건과 가격 데이터만 사용해요.</p>
           </> : <p className={styles.searchHint}>질문을 확인한 뒤 검색을 눌러주세요.</p>}
         </div>

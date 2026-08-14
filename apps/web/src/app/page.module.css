@@ -35,20 +35,20 @@
   color: #ffffff;
 }
 
-.loadingLogo { position: relative; width: 64px; height: 74px; overflow: hidden; }
-.loadingLogo img { display: block; width: 100%; height: 100%; object-fit: contain; opacity: .92; filter: invert(18%) brightness(.95) contrast(1.15); }
-.loadingLogo::after {
-  content: "";
+.loadingHalo { position: absolute; top: 50%; left: 50%; width: 520px; height: 520px; margin: -335px 0 0 -260px; border-radius: 50%; background: radial-gradient(circle,rgba(255,92,0,.5) 0%,rgba(255,92,0,.14) 38%,rgba(255,92,0,0) 68%); filter: blur(18px); animation: orangeHalo 3.4s cubic-bezier(.45,0,.55,1) infinite; }
+.loadingLogo { position: relative; width: 258px; height: 96px; margin-bottom: 150px; }
+.loadingLogoBase {
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 42%, rgba(255,255,255,.08) 47%, rgba(255,255,255,.82) 50%, rgba(255,190,145,.28) 53%, transparent 58%);
-  background-size: 320% 100%;
-  background-position: 130% 50%;
-  background-repeat: no-repeat;
-  -webkit-mask: url("/dejavu-mark.png") center / contain no-repeat;
-  mask: url("/dejavu-mark.png") center / contain no-repeat;
-  animation: logoSheen 2.9s ease-in-out infinite;
+  background: rgba(255,92,0,.55);
+  -webkit-mask: url("/dejavu-logo-white.png") center / contain no-repeat;
+  mask: url("/dejavu-logo-white.png") center / contain no-repeat;
+  animation: orangeBreathe 3.4s cubic-bezier(.45,0,.55,1) infinite;
 }
+.loadingGlowSweep { position: absolute; inset: -40px; overflow: hidden; opacity: .85; filter: blur(9px); -webkit-mask: url("/dejavu-logo-white.png") center / 144px 96px no-repeat; mask: url("/dejavu-logo-white.png") center / 144px 96px no-repeat; }
+.loadingGlowSweep i { position: absolute; inset: 0; background: linear-gradient(100deg,rgba(255,92,0,0) 34%,rgba(255,92,0,.95) 50%,rgba(255,150,80,1) 56%,rgba(255,92,0,0) 70%); animation: orangeSweep 3.4s cubic-bezier(.45,0,.55,1) infinite; }
+.loadingSharpSweep { position: absolute; inset: 0; overflow: hidden; -webkit-mask: url("/dejavu-logo-white.png") center / contain no-repeat; mask: url("/dejavu-logo-white.png") center / contain no-repeat; }
+.loadingSharpSweep i { position: absolute; inset: 0; background: linear-gradient(100deg,rgba(255,92,0,0) 36%,rgba(255,92,0,.9) 48%,#ffb07a 55%,rgba(255,92,0,.6) 62%,rgba(255,92,0,0) 74%); animation: orangeSweep 3.4s cubic-bezier(.45,0,.55,1) infinite; }
 .loadingFooter { position: absolute; right: 0; bottom: 96px; left: 0; display: flex; flex-direction: column; align-items: center; gap: 20px; }
 .loadingFooter > span { color: rgba(255,255,255,.48); font-size: 14px; font-weight: 600; }
 .loadingFooter > b { width: 132px; height: 3px; border-radius: 2px; overflow: hidden; background: rgba(255,255,255,.12); }
@@ -71,13 +71,6 @@
 @keyframes orangeBreathe { 50% { opacity: .95; filter: sepia(1) saturate(9) hue-rotate(338deg) drop-shadow(0 0 15px rgba(255,92,0,.65)); } }
 @keyframes orangeSweep { from { transform: translateX(-115%); } to { transform: translateX(115%); } }
 @keyframes orangeBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes logoSheen {
-  0%, 18% { opacity: 0; background-position: 130% 50%; }
-  30% { opacity: 1; }
-  62% { opacity: 1; background-position: -30% 50%; }
-  72%, 100% { opacity: 0; background-position: -30% 50%; }
-}
-
 .app { position: relative; height: 100%; overflow: hidden; }
 .content { height: 100%; padding-bottom: 0; }
 .home {
@@ -442,7 +435,7 @@
 .detailScroll {
   padding-right: 12px;
   padding-left: 12px;
-  background: var(--djv-color-bg);
+  background: #ffffff;
 }
 .detailHeader {
   height: 56px;
@@ -483,11 +476,12 @@
   background: #f47b3d;
   box-shadow: none;
 }
-.themeSummary > div { gap: 12px; align-items: center; }
+.themeSummary .themeTitle { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
 .themeSummary .themeRankPill, .themeSummary .themeReturnPill { width: max-content; padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.18); color: rgba(255,255,255,.94); font-size: 10px; font-weight: 700; }
 .themeSummary h1 { font-size: 30px; line-height: 1.15; letter-spacing: -.035em; }
-.themeSummary > strong { display: inline-block; margin-top: 20px; font-size: 44px; line-height: 1; letter-spacing: -.035em; }
-.themeSummary > .themeReturnPill { display: inline-block; margin: 0 0 0 10px; vertical-align: 7px; }
+.themeReturnRow { margin-top: 20px; display: flex; align-items: baseline; gap: 10px; }
+.themeReturnRow > strong { font-size: 44px; line-height: 1; letter-spacing: -.035em; }
+.themeReturnRow > .themeReturnPill { margin: 0; }
 .detailScroll > .themeSummary + .metrics { position: relative; z-index: 2; margin-top: 0; }
 .detailScroll h2, .detailScroll strong, .wireBody h1, .wireBody h2 { color: #212124; }
 .detailScroll > .themeSummary h1, .detailScroll > .themeSummary strong { color: #ffffff; }
@@ -498,7 +492,7 @@
   box-shadow: none;
 }
 .metrics span, .metrics small, .horizons span, .horizons small { color: #868b94; }
-.metrics strong { color: #212124; }
+.metrics strong { color: #d95700; }
 .reason { background: #ffffff; }
 .reason > p { color: #4d5159; }
 .reason li span, .reason li small, .catalysts p, .leaders small { color: #868b94; }
@@ -548,12 +542,12 @@
 .cases .downValue { color: #356ae6; }
 .notice { color: #868b94; }
 
-.wireScreen { background: #f7f7f8; }
+.wireScreen { background: #ffffff; }
 .wireHeader { background: #ffffff; }
 .wireHeader strong { color: #212124; font-size: 15px; font-weight: 800; }
 .wireHeader button { width: 42px; height: 42px; justify-self: center; border-radius: 50%; display: grid; place-items: center; background: #f4f4f5; color: #212124; font-size: 23px; line-height: 1; }
 .wireHeader button svg { display: block; width: 24px !important; height: 24px !important; margin: 0; stroke-width: 2.2; }
-.wireHeader .savedStar { color: #ff6f0f !important; }
+.wireHeaderSpacer { width: 42px; height: 42px; }
 .wireBody { padding-right: 12px; padding-left: 12px; }
 .wireBody .pageIntro {
   margin: 10px 0;
@@ -564,8 +558,7 @@
 }
 .wireBody .pageIntro > small { color: #f46b2c; font-weight: 700; }
 .wireBody .pageIntro > p { color: #868b94; }
-.wireBody .caseHero { background: #fff0e9; }
-.wireBody .catalystHero { border: 1px solid #f6d8c7; background: #fff0e5; }
+.wireBody .caseHero, .wireBody .catalystHero { border: 0; background: #ffffff; }
 .wireBody .themeContext { color: #d95700; font-size: 15px; font-weight: 800; }
 .wireBody .dataBlock {
   margin: 10px 0;
