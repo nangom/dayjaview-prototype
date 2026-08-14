@@ -16,7 +16,7 @@ export default class App extends React.Component {
   state = {
     screen: 'splash', theme: 'LED', hz: 1, pickIdx: 0, hover: null, plus: false,
     notif: true, saved: false, savedMap: {}, tab: 'home', byReturn: false,
-    toast: null, menu: false, savedPanel: false, savedQ: '', scale: 1, bare: false
+    toast: null, menu: false, savedPanel: false, savedQ: '', searchQ: '', libraryTab: 'saved', scale: 1, bare: false
   };
 
   themes = [
@@ -284,6 +284,9 @@ export default class App extends React.Component {
       isCases: st.screen === 'cases',
       isCase: st.screen === 'case',
       isStats: st.screen === 'stats',
+      isSearch: st.screen === 'search',
+      isLibrary: st.screen === 'library',
+      isSettings: st.screen === 'settings',
 
       theme: st.theme,
       themeChg: st.themeChg ?? '+3.63%',
@@ -363,6 +366,14 @@ export default class App extends React.Component {
           }))
         };
       }),
+      searchQ: st.searchQ,
+      onSearchQ: e => this.setState({ searchQ: e.target.value }),
+      searchItems: this.themes.filter(t => !st.searchQ.trim() || t.title.toLowerCase().includes(st.searchQ.trim().toLowerCase())).map(t => ({
+        ...t,
+        open: () => this.go('theme', { theme: t.title, themeChg: t.chg, themeRank: String(t.rank) })
+      })),
+      libraryTab: st.libraryTab,
+      setLibraryTab: tab => this.setState({ libraryTab: tab }),
       savedQ: st.savedQ || '',
       onSavedQ: e => this.setState({ savedQ: e.target.value }),
       savedGroups: [
@@ -511,9 +522,7 @@ export default class App extends React.Component {
           <div style={css('display:flex;align-items:center;justify-content:space-between')}>
             <span style={css('width:44px;height:44px')} aria-hidden="true" />
             <img src={LOGO_MARK} alt="DAY-JA-VIEW" style={css('height:28px;width:auto;display:block')} />
-            <button className="seed-icon-button" aria-label="저장한 항목" onClick={v.openSavedPanel}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill={v.hasSavedItems ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.hasSavedItems ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg>
-            </button>
+            <span style={css('width:44px;height:44px')} aria-hidden="true" />
           </div>
           <div style={css('margin-top:26px')}>
             <Badge tone="brand" variant="weak" size="large">8월 12일 장 마감</Badge>
@@ -522,7 +531,7 @@ export default class App extends React.Component {
           </div>
         </header>
 
-        <main style={css('flex:1;min-height:0;display:flex;flex-direction:column;padding:0 20px 24px')}>
+        <main style={css('flex:1;min-height:0;display:flex;flex-direction:column;padding:0 20px 94px')}>
           <div ref={this.wheelRef} className="seed-wheel seed-flat-wheel" style={css('flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:8px')}>
             {v.wheel.map((a, index) => (
               <button key={a.key} ref={a.ref} onClick={a.open} className="seed-rank-row seed-flat-wheel-row">
@@ -628,7 +637,7 @@ export default class App extends React.Component {
           <div style={css('display:flex;align-items:center;justify-content:space-between')}>
             <button className="seed-icon-button" onClick={v.toHome} aria-label="뒤로가기"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
             <span style={css('font-size:15px;font-weight:600;color:var(--seed-color-fg-neutral-muted)')}>8월 12일 장 마감 기준</span>
-            <button className="seed-icon-button" onClick={v.openSavedPanel} aria-label="저장한 목록"><svg width="22" height="22" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.isCurrentSaved ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
+            <button className="seed-icon-button" onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '즐겨찾기 해제' : '즐겨찾기 추가'}><svg width="22" height="22" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.isCurrentSaved ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
           </div>
           <div style={css('margin-top:20px;display:flex;align-items:center;gap:8px')}><Badge tone="brand" variant="weak">상승 {v.themeRank}위</Badge><span style={css('font-size:14px;color:var(--seed-color-fg-neutral-muted)')}>오늘의 테마</span></div>
           <h1 style={css('margin:12px 0 0;font-size:30px;line-height:1.18;font-weight:800;letter-spacing:-.04em;color:var(--seed-color-fg-neutral)')}>{v.theme}</h1>
@@ -658,6 +667,51 @@ export default class App extends React.Component {
         </main>
       </div>
     );
+  }
+
+  renderSearchScreen(v) {
+    return (
+      <div className="seed-tab-screen">
+        <div className="seed-tab-header"><Badge tone="brand" variant="weak">SEARCH</Badge><h1>테마·종목 검색</h1><p>확인하고 싶은 테마나 종목을 찾아보세요.</p></div>
+        <label className="seed-main-search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input autoFocus value={v.searchQ} onChange={v.onSearchQ} placeholder="테마 또는 종목명 입력" /></label>
+        <div className="seed-tab-scroll">
+          <div className="seed-result-count">검색 결과 {v.searchItems.length}개</div>
+          {v.searchItems.map(item => <button key={item.rank} className="seed-search-row" onClick={item.open}><span><strong>{item.title}</strong><small>오늘 상승 {item.rank}위</small></span><b>{item.chg}</b><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#AEB2B9" strokeWidth="2"><path d="m9 6 6 6-6 6"/></svg></button>)}
+        </div>
+      </div>
+    );
+  }
+
+  renderLibraryScreen(v) {
+    const showSaved = v.libraryTab === 'saved';
+    return (
+      <div className="seed-tab-screen">
+        <div className="seed-tab-header"><Badge tone="brand" variant="weak">MY</Badge><h1>즐겨찾기</h1><p>저장한 항목과 최근 검색 기록을 확인하세요.</p></div>
+        <div className="seed-library-tabs"><button className={showSaved ? 'is-selected' : ''} onClick={() => v.setLibraryTab('saved')}>저장됨</button><button className={!showSaved ? 'is-selected' : ''} onClick={() => v.setLibraryTab('history')}>히스토리</button></div>
+        <div className="seed-tab-scroll">
+          {showSaved ? (
+            v.savedItems.length ? v.savedItems.map(item => <button key={item.key} onClick={item.open} className="seed-history-row"><span role="button" tabIndex="0" aria-label="저장 해제" onClick={item.remove} className="seed-history-icon seed-remove-star">★</span><span className="seed-history-copy"><strong>{item.title}</strong><small>저장한 테마</small></span><span className="seed-history-return">{item.chg}</span></button>) : <div className="seed-saved-empty"><span>☆</span><strong>아직 저장한 항목이 없어요</strong><p>테마 상세의 별을 눌러 저장해 보세요.</p></div>
+          ) : (
+            <><label className="seed-history-search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input value={v.savedQ} onChange={v.onSavedQ} placeholder="검색 기록 찾기" /></label>{v.savedGroups.map(g => <section key={g.key} className="seed-history-group"><h3>{g.label}</h3>{g.items.map(s => <button key={s.key} onClick={s.open} className="seed-history-row"><span className="seed-history-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="8"/></svg></span><span className="seed-history-copy"><strong>{s.title}</strong><small>{s.meta}</small></span><span className="seed-history-return" style={{ color: s.color }}>{s.chg}</span></button>)}</section>)}</>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  renderSettingsScreen() {
+    return <div className="seed-tab-screen"><div className="seed-tab-header"><Badge tone="brand" variant="weak">SETTINGS</Badge><h1>설정</h1><p>서비스 이용 환경을 관리하세요.</p></div><div className="seed-settings-card"><div><strong>잠금화면 알림</strong><small>푸시 알림은 추후 연결 예정</small></div><span className="seed-coming-badge">준비 중</span></div><div className="seed-settings-card"><div><strong>데이터 기준</strong><small>장 마감 데이터 · KRX/인포스탁</small></div><span>›</span></div><div className="seed-settings-card"><div><strong>앱 정보</strong><small>DAY-JA-VIEW Prototype</small></div><span>›</span></div></div>;
+  }
+
+  renderBottomNav(v) {
+    const items = [
+      { key: 'home', label: '홈', d: 'm4 10 8-6 8 6v9H4zM10 19v-5h4v5' },
+      { key: 'search', label: '검색', d: 'M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm5-2 5 5' },
+      { key: 'library', label: '즐겨찾기', d: 'm12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z' },
+      { key: 'settings', label: '설정', d: 'M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM19 12l2-1-2-3-2 .3L16 6l-1-2h-6L8 6 7 8.3 5 8l-2 3 2 1-2 1 2 3 2-.3L8 18l1 2h6l1-2 1-2.3 2 .3 2-3z' }
+    ];
+    const active = v.isHome ? 'home' : v.isSearch ? 'search' : v.isLibrary ? 'library' : v.isSettings ? 'settings' : '';
+    return <nav className="seed-bottom-nav" aria-label="주요 메뉴">{items.map(item => <button key={item.key} className={active === item.key ? 'is-selected' : ''} onClick={() => this.go(item.key)}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={item.d}/></svg><span>{item.label}</span></button>)}</nav>;
   }
 
   renderSplash(v) {
@@ -865,7 +919,7 @@ export default class App extends React.Component {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
           <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>과거 사례</span>
-          <span style={css('width:44px')}></span>
+          <button className="seed-icon-button" onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '즐겨찾기 해제' : '즐겨찾기 추가'}><svg width="21" height="21" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.isCurrentSaved ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
         </div>
         <div style={css('flex:none;padding:14px 22px 28px')}>
           <div style={css('font-size:28px;font-weight:800;letter-spacing:-0.035em;color:#16160F')}>{v.theme} 테마</div>
@@ -891,7 +945,7 @@ export default class App extends React.Component {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
           <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>사례 상세</span>
-          <span style={css('width:44px')}></span>
+          <button className="seed-icon-button" onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '즐겨찾기 해제' : '즐겨찾기 추가'}><svg width="21" height="21" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.isCurrentSaved ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
         </div>
         <div style={css('flex:1;min-height:0;overflow-y:auto;padding:14px 22px 112px')}>
           <div style={css('border-radius:26px;padding:22px;background:var(--seed-color-bg-brand-weak)')}>
@@ -982,7 +1036,7 @@ export default class App extends React.Component {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
           <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>상세 통계</span>
-          <span style={css('width:44px')}></span>
+          <button className="seed-icon-button" onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '즐겨찾기 해제' : '즐겨찾기 추가'}><svg width="21" height="21" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.isCurrentSaved ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
         </div>
         <div style={css('flex:1;min-height:0;overflow-y:auto;padding:14px 22px 112px')}>
           <div style={css('display:flex;align-items:flex-end;justify-content:space-between;gap:12px')}>
@@ -1094,11 +1148,9 @@ export default class App extends React.Component {
           {v.isCases && this.renderCases(v)}
           {v.isCase && this.renderCase(v)}
           {v.isStats && this.renderStats(v)}
-          {!v.isSplash && !v.isHome && (
-            <button className={'seed-save-fab ' + (v.isCurrentSaved ? 'is-saved' : '')} onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '현재 항목 저장 해제' : '현재 항목 저장'} title={v.isCurrentSaved ? '저장 해제' : '저장'}>
-              <svg width="27" height="27" viewBox="0 0 24 24" fill={v.isCurrentSaved ? '#fff' : 'none'} stroke="#fff" strokeWidth="1.9" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg>
-            </button>
-          )}
+          {v.isSearch && this.renderSearchScreen(v)}
+          {v.isLibrary && this.renderLibraryScreen(v)}
+          {v.isSettings && this.renderSettingsScreen(v)}
           {!v.isHome && v.savedPanel && <div onClick={v.closeSavedPanel} style={css('position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.28)')} />}
           {!v.isHome && v.savedPanel && (
             <aside className="seed-saved-drawer">
@@ -1136,6 +1188,7 @@ export default class App extends React.Component {
               </div>
             </aside>
           )}
+          {!v.isSplash && this.renderBottomNav(v)}
           {v.toast && (
             <div style={css('position:absolute;left:22px;right:22px;bottom:44px;z-index:20;padding:14px 16px;border-radius:20px;background:#16160F;color:#fff;font-size:14px;font-weight:600;box-shadow:0 12px 30px rgba(20,20,10,.24);animation:fadeIn .18s ease both')}>{v.toast}</div>
           )}
