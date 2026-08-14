@@ -426,7 +426,7 @@
 .detailScroll {
   padding-right: 12px;
   padding-left: 12px;
-  background: #f7f7f8;
+  background: #ffffff;
 }
 .detailHeader {
   height: 56px;
@@ -446,18 +446,20 @@
 }
 .detailHeader .savedStar { color: #ffffff !important; }
 .detailScroll > section {
-  margin: 10px 0;
-  padding: 20px 14px;
+  margin: 0;
+  padding: 24px 12px;
   border: 0;
-  border-radius: 20px;
+  border-bottom: 1px solid #eaebee;
+  border-radius: 0;
   background: #ffffff;
-  box-shadow: 0 3px 14px rgba(33,33,36,.055);
+  box-shadow: none;
 }
 .detailScroll > .themeSummary {
   margin: 0 -12px 10px;
   min-height: 132px;
   padding: 14px 18px 30px !important;
   border-radius: 0 0 24px 24px;
+  border-bottom: 0;
   background: #f47b3d;
   box-shadow: none;
 }
@@ -466,7 +468,7 @@
 .themeSummary h1 { font-size: 24px; }
 .themeSummary > strong { display: inline-block; margin-top: 12px; font-size: 36px; }
 .themeSummary > p { display: inline-block; margin: 0 0 0 10px; font-size: 10px; font-weight: 700; vertical-align: 4px; }
-.detailScroll > .themeSummary + .metrics { position: relative; z-index: 2; margin-top: -18px; }
+.detailScroll > .themeSummary + .metrics { position: relative; z-index: 2; margin-top: 0; }
 .detailScroll h2, .detailScroll strong, .wireBody h1, .wireBody h2 { color: #212124; }
 .detailScroll > .themeSummary h1, .detailScroll > .themeSummary strong { color: #ffffff; }
 .detailScroll > .themeSummary span, .detailScroll > .themeSummary p { color: rgba(255,255,255,.82); }
