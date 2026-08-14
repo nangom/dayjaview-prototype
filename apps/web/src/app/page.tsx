@@ -420,13 +420,17 @@ function LeaderDetailScreen({ goTo, active }: { goTo: (screen: string) => void; 
 }
 
 function NaturalSearchScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
+  const [hasSearched, setHasSearched] = useState(false);
+
   return (
     <section id="screen-natural" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="자연어 검색 와이어프레임">
       <div className={styles.wireScreen}>
         <div className={styles.wireBody}><div className={styles.pageIntro}><small>테마·종목 데이터 검색</small><h1>무엇이 궁금하세요?</h1><p>질문하면 보유한 과거 데이터 안에서 답을 찾아요.</p></div>
-          <form className={styles.naturalForm} onSubmit={(event) => event.preventDefault()}><textarea defaultValue="원전수출 테마는 과거에 오른 뒤 5일 동안 어땠어?" aria-label="자연어 질문"/><button type="submit">검색</button></form>
-          <section className={styles.answerBlock}><div><small>검색 결과</small><span>과거 데이터 기준</span></div><h2>과거 34개 사례에서 5일 후 평균은 +1.3%였어요.</h2><p>34개 사례 중 20개가 상승했고, 당시 주도 종목을 기준으로 계산했어요. 가장 큰 상승 사례는 2024년 7월 18일 체코 원전 우선협상대상자 선정 사건이었어요.</p><ul><li><span>평균 수익률</span><b>+1.3%</b></li><li><span>상승 사례</span><b>20/34</b></li><li><span>대표 과거 사건</span><b>2024.07.18</b></li></ul><button type="button" onClick={() => goTo("screen-cases")}>관련 과거 사례 보기</button></section>
-          <p className={styles.disclaimer}>검색 결과는 DB에 저장된 사건과 가격 데이터만 사용하며 투자 자문이 아니에요.</p>
+          <form className={styles.naturalForm} onSubmit={(event) => { event.preventDefault(); setHasSearched(true); }}><textarea defaultValue="원전수출 테마는 과거에 오른 뒤 5일 동안 어땠어?" aria-label="자연어 질문"/><button type="submit">검색</button></form>
+          {hasSearched ? <>
+            <section className={styles.answerBlock}><div><small>검색 결과</small><span>과거 데이터 기준</span></div><h2>과거 34개 사례에서 5일 후 평균은 +1.3%였어요.</h2><p>34개 사례 중 20개가 상승했고, 당시 주도 종목을 기준으로 계산했어요. 가장 큰 상승 사례는 2024년 7월 18일 체코 원전 우선협상대상자 선정 사건이었어요.</p><ul><li><span>평균 수익률</span><b>+1.3%</b></li><li><span>상승 사례</span><b>20/34</b></li><li><span>대표 과거 사건</span><b>2024.07.18</b></li></ul><button type="button" onClick={() => goTo("screen-cases")}>관련 과거 사례 보기</button></section>
+            <p className={styles.disclaimer}>검색 결과는 DB에 저장된 사건과 가격 데이터만 사용해요.</p>
+          </> : <p className={styles.searchHint}>질문을 확인한 뒤 검색을 눌러주세요.</p>}
         </div>
         <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button onClick={() => goTo("screen-realtime")}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button onClick={() => goTo("screen-saved")}><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button className={styles.selected}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button></nav>
       </div>
