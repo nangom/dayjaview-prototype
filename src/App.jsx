@@ -845,8 +845,13 @@ export default class App extends React.Component {
               않는다 (fixed 였다면 시트에 헤더 높이만큼 여백을 따로 줘야 한다).
               값은 전부 t(스크롤 위치)의 함수라 손가락을 따라온다. CSS
               transition 을 걸면 오히려 스크롤보다 늦게 따라와 미끄러진다. */}
+          {/* 아래 모서리는 접힐수록 편다. 접힌 헤더(76px)에서 20px 을 그대로
+              두면, 기기 프레임의 48px 상단 곡선과 헤더의 하단 곡선 사이에
+              직선이 8px 밖에 안 남아 좌우가 잘록하게 눌린 모양이 된다.
+              펼친 상태에서만 둥글고, 상단에 붙은 바가 되면 각지게 만든다. */}
           <div style={{
-            ...css('position:sticky;top:0;z-index:2;background:#FF5C00;border-radius:0 0 20px 20px'),
+            ...css('position:sticky;top:0;z-index:2;background:#FF5C00'),
+            borderRadius: '0 0 ' + (20 * (1 - t)).toFixed(1) + 'px ' + (20 * (1 - t)).toFixed(1) + 'px',
             paddingTop: this.padTop(52),
             paddingLeft: 22, paddingRight: 22,
             paddingBottom: 20 - 8 * t
