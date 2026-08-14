@@ -775,7 +775,8 @@
 /* Interaction polish: visited themes are the useful history, while research
    remains the only place for free-form questions. */
 .homeMark {
-  filter: brightness(0) saturate(100%) invert(48%) sepia(96%) saturate(2945%) hue-rotate(359deg) brightness(101%) contrast(104%);
+  opacity: .72;
+  filter: brightness(0) saturate(100%) invert(48%) sepia(72%) saturate(2050%) hue-rotate(359deg) brightness(88%) contrast(96%);
 }
 .libraryHistory > button {
   grid-template-columns: minmax(0, 1fr) auto 18px;
