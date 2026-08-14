@@ -44,6 +44,18 @@
 .loadingFooter > span { color: rgba(255,255,255,.48); font-size: 14px; font-weight: 600; }
 .loadingFooter > b { width: 132px; height: 3px; border-radius: 2px; overflow: hidden; background: rgba(255,255,255,.12); }
 .loadingFooter > b > i { display: block; width: 100%; height: 100%; border-radius: inherit; background: #ff5c00; transform-origin: left; animation: orangeBar 2.6s cubic-bezier(.3,.7,.2,1) both; }
+.login { height: 100%; padding: 92px 28px 36px; display: flex; flex-direction: column; background: linear-gradient(180deg,#f1eee8,#fff 62%); }
+.loginMark { width: 38px; height: 48px; fill: #ff5c00; }
+.loginCopy { margin: 26px 0 38px; }
+.loginCopy small { color: #eb5e28; font-size: 12px; font-weight: 800; letter-spacing: .12em; }
+.loginCopy h1 { margin: 8px 0 0; font-size: 29px; letter-spacing: -.04em; }
+.loginCopy p { margin: 9px 0 0; color: #777; font-size: 14px; }
+.login label { margin-top: 16px; }
+.login label span { display: block; margin-bottom: 7px; color: #555; font-size: 12px; font-weight: 700; }
+.login input { width: 100%; height: 52px; padding: 0 15px; border: 1px solid #ddd9d2; border-radius: 15px; background: rgba(255,255,255,.86); color: #16160f; font: inherit; outline: none; }
+.login input:focus { border-color: #ff7a33; box-shadow: 0 0 0 3px rgba(255,92,0,.1); }
+.login > button { height: 54px; margin-top: 28px; border: 0; border-radius: 16px; background: #ff5c00; color: #fff; font: inherit; font-weight: 800; }
+.login > em { margin-top: 13px; color: #999; font-size: 11px; font-style: normal; text-align: center; }
 @keyframes orangeHalo { 50% { opacity: .72; transform: scale(.92); } }
 @keyframes orangeBreathe { 50% { opacity: .95; filter: sepia(1) saturate(9) hue-rotate(338deg) drop-shadow(0 0 15px rgba(255,92,0,.65)); } }
 @keyframes orangeSweep { from { transform: translateX(-115%); } to { transform: translateX(115%); } }
@@ -80,6 +92,7 @@
 .home .orangeHomeHeader { margin-bottom: 0; align-items: center; padding: 11px 0 0; }
 .homeMark { width: 24px; height: 30px; fill: #111; }
 .homeHeaderSpacer { width: 44px; height: 44px; }
+.homeSavedButton { width: 44px; height: 44px; border: 0; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.45); color: #16160f; }
 .menuButton { width: 44px; height: 44px; padding: 0 10px; border: 0; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; gap: 4px; background: transparent; }
 .menuButton span { display: block; height: 1.5px; border-radius: 2px; background: #1a1a18; }
 .menuButton span:last-child { width: 62%; }
@@ -246,6 +259,8 @@
 .cases article > .rowChevron { position: absolute; top: 50%; right: 0; transform: translateY(-50%); }
 .cases span, .cases small { color: #777777; font-size: 10px; }
 .cases strong { font-size: 14px; }
+.matchTags { display: flex; flex-wrap: wrap; gap: 5px; }
+.matchTags i { padding: 4px 7px; border-radius: 8px; background: #fff0e5; color: #b74600; font-size: 9px; font-style: normal; font-weight: 700; }
 .notice { margin: 20px 0 0; color: #888888; font-size: 10px; line-height: 1.5; }
 
 .wireScreen { position: relative; height: 100%; overflow: hidden; background: #fff; }
@@ -375,7 +390,7 @@
 .ranking li:nth-child(-n+3) .rank { border-radius: var(--djv-radius-sm); background: var(--djv-color-brand-soft); color: #a33b00; font-weight: 800; }
 .ranking strong, .liveList em, .caseList b, .leaders strong { color: var(--djv-color-market-up); }
 .footer, .miniFooter { right: 12px; bottom: 8px; left: 12px; height: 58px; border: 1px solid rgba(0,0,0,.08); border-radius: 19px; background: rgba(255,255,255,.94); box-shadow: var(--djv-shadow-nav); backdrop-filter: blur(18px); }
-.content { padding-bottom: 0; }
+.content { padding-bottom: 76px; }
 .footer button, .miniFooter button { border-radius: 14px; }
 .footer .active, .miniFooter .selected { background: var(--djv-color-brand-soft); color: var(--djv-color-brand); }
 .detailHeader, .wireHeader { border-bottom-color: var(--djv-color-border); background: var(--djv-color-surface); }

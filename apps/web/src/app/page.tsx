@@ -14,14 +14,14 @@ import { ThemeRankingWheel } from "../components/ThemeRankingWheel";
 import styles from "./page.module.css";
 
 const footerItems = [
-  { id: "home", Icon: IconHouseLine, label: "홈" },
-  { id: "realtime", Icon: IconGridLine, label: "실시간 테마주" },
-  { id: "saved", Icon: IconStarLine, label: "즐겨찾기" },
-  { id: "natural", Icon: IconMagnifyingglassLine, label: "자연어 검색" },
+  { id: "home", Icon: IconHouseLine, label: "오늘" },
+  { id: "analysis", Icon: IconMagnifyingglassLine, label: "분석" },
+  { id: "saved", Icon: IconStarLine, label: "저장" },
 ];
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
   const [currentScreen, setCurrentScreen] = useState("screen-home");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -43,7 +43,7 @@ export default function Home() {
   const goTo = (screen: string) => {
     if (screen === "screen-home") setActiveTab("home");
     if (screen === "screen-realtime") setActiveTab("realtime");
-    if (screen === "screen-natural") setActiveTab("natural");
+    if (screen === "screen-natural") setActiveTab("analysis");
     if (screen === "screen-saved") {
       setActiveTab("saved");
       setCurrentScreen("screen-home");
@@ -84,6 +84,15 @@ export default function Home() {
             <div className={styles.loadingLogo} aria-label="DAY-JA-VIEW"><svg viewBox="0 0 48 64" aria-hidden="true"><path d="M9 5h30c0 12-6 17-15 27C15 22 9 17 9 5Zm0 54h30c0-12-6-17-15-27C15 42 9 47 9 59Z" /></svg><b /></div>
             <div className={styles.loadingFooter}><span>오늘의 시장을, 과거의 기록으로</span><b><i /></b></div>
           </div>
+        ) : !isLoggedIn ? (
+          <form className={styles.login} onSubmit={(event) => { event.preventDefault(); setIsLoggedIn(true); }}>
+            <svg className={styles.loginMark} viewBox="0 0 48 64" aria-hidden="true"><path d="M9 5h30c0 12-6 17-15 27C15 22 9 17 9 5Zm0 54h30c0-12-6-17-15-27C15 42 9 47 9 59Z" /></svg>
+            <div className={styles.loginCopy}><small>DAY-JA-VIEW</small><h1>다시 만나 반가워요</h1><p>저장한 분석 결과를 이어서 확인하세요.</p></div>
+            <label><span>이메일</span><input type="email" defaultValue="demo@dayjaview.kr" /></label>
+            <label><span>비밀번호</span><input type="password" defaultValue="dayjaview" /></label>
+            <button type="submit">로그인</button>
+            <em>데모 계정이 입력되어 있어 바로 시작할 수 있어요.</em>
+          </form>
         ) : (
           <div className={styles.app}>
             <div className={styles.content}>
@@ -95,7 +104,7 @@ export default function Home() {
                   <header className={styles.orangeHomeHeader}>
                     <button className={styles.menuButton} type="button" aria-label="메뉴 열기"><span /><span /><span /></button>
                     <svg className={styles.homeMark} viewBox="0 0 48 64" role="img" aria-label="DAY-JA-VIEW"><path d="M9 5h30c0 12-6 17-15 27C15 22 9 17 9 5Zm0 54h30c0-12-6-17-15-27C15 42 9 47 9 59Z" /></svg>
-                    <span className={styles.homeHeaderSpacer} />
+                    <button className={styles.homeSavedButton} type="button" onClick={() => goTo("screen-saved")} aria-label="저장한 결과 보기"><IconStarLine size={22} /></button>
                   </header>
                   <div className={styles.orangeHomeTitle}><strong>2026년 08월 12일</strong><h1>오늘의 요약</h1></div>
 
@@ -112,19 +121,19 @@ export default function Home() {
                 />
               ) : (
                 <div className={styles.placeholder}>
-                  <h1>{activeTab === "realtime" ? "실시간 테마주" : activeTab === "saved" ? "즐겨찾기" : "자연어 검색"}</h1>
+                  <h1>{activeTab === "saved" ? "저장" : "분석"}</h1>
                   <p>이 화면의 내용은 다음 단계에서 채울 예정이에요.</p>
                 </div>
               )}
             </div>
 
-            {activeTab !== "home" && <nav className={styles.footer} aria-label="주요 메뉴">
+            <nav className={styles.footer} aria-label="주요 메뉴">
               {footerItems.map(({ id, Icon, label }) => (
-                <button key={id} type="button" className={activeTab === id ? styles.active : ""} onClick={() => { setActiveTab(id); if (id === "realtime") goTo("screen-realtime"); if (id === "saved") goTo("screen-saved"); if (id === "natural") goTo("screen-natural"); }}>
+                <button key={id} type="button" className={activeTab === id ? styles.active : ""} onClick={() => { setActiveTab(id); if (id === "home") goTo("screen-home"); if (id === "saved") goTo("screen-saved"); if (id === "analysis") goTo("screen-natural"); }}>
                   <Icon className={styles.navIcon} size={20} aria-hidden="true" /><small>{label}</small>
                 </button>
               ))}
-            </nav>}
+            </nav>
 
             {isSearchOpen && <button className={styles.scrim} type="button" aria-label="검색 닫기" onClick={() => setIsSearchOpen(false)} />}
             <aside className={`${styles.searchDrawer} ${isSearchOpen ? styles.drawerOpen : ""}`} aria-hidden={!isSearchOpen}>
@@ -151,7 +160,7 @@ export default function Home() {
             <header className={styles.detailHeader}>
               <button type="button" aria-label="뒤로 가기" onClick={() => goTo("screen-home")}>←</button>
               <span>8월 14일 장중 기준</span>
-              <button type="button" aria-label={isSaved ? "즐겨찾기에서 제거" : "즐겨찾기에 추가"} className={isSaved ? styles.savedStar : ""} onClick={toggleSaved}>{isSaved ? <IconStarFill size={24} /> : <IconStarLine size={24} />}</button>
+              <button type="button" aria-label={isSaved ? "저장 목록에서 제거" : "분석 결과 저장"} className={isSaved ? styles.savedStar : ""} onClick={toggleSaved}>{isSaved ? <IconStarFill size={24} /> : <IconStarLine size={24} />}</button>
             </header>
 
             <div className={styles.detailScroll}>
@@ -210,13 +219,13 @@ export default function Home() {
               <section className={styles.similarSection}>
                 <div className={styles.sectionHeading}><h2>오늘과 비슷했던 과거</h2><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div>
                 <div className={styles.cases}>
-                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2024.07.18 · 유사도 87%</span><strong>체코 원전 우선협상대상자 선정</strong><small>T+5 +4.6%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
-                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2023.04.25 · 유사도 74%</span><strong>한미 원전 협력 확대 발표</strong><small className={styles.downValue}>T+5 -1.2%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
-                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2022.10.31 · 유사도 69%</span><strong>폴란드 원전 개발계획 협력</strong><small>T+5 +3.3%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
+                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2024.07.18</span><strong>체코 원전 우선협상대상자 선정</strong><div className={styles.matchTags}><i>수출 계약</i><i>정책 지원</i></div><small>T+5 +4.6%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
+                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2023.04.25</span><strong>한미 원전 협력 확대 발표</strong><div className={styles.matchTags}><i>국가 협력</i><i>원전 수출</i></div><small className={styles.downValue}>T+5 -1.2%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
+                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2022.10.31</span><strong>폴란드 원전 개발계획 협력</strong><div className={styles.matchTags}><i>해외 수주</i><i>개발 계획</i></div><small>T+5 +3.3%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
                 </div>
               </section>
 
-              <p className={styles.notice}>장중 정보는 이후 정정될 수 있습니다. 과거 데이터 기반 참고 정보이며 투자 자문이나 종목 추천이 아닙니다.</p>
+              <p className={styles.notice}>장중 정보는 이후 정정될 수 있습니다. 과거에 관측된 데이터와 확인된 뉴스 근거를 함께 보여줍니다.</p>
             </div>
             <nav className={styles.miniFooter} aria-label="테마 상세 주요 메뉴">
               <button type="button" onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button>
@@ -257,18 +266,18 @@ function SavedLibrary({
     <div className={styles.library}>
       <header>
         <p>나중에 다시 볼 항목과 검색 기록이에요.</p>
-        <h1>즐겨찾기</h1>
+        <h1>저장</h1>
       </header>
 
       <section>
-        <div className={styles.libraryHeading}><h2>저장한 항목</h2><span>{isSaved ? "1개" : "0개"}</span></div>
+        <div className={styles.libraryHeading}><h2>저장한 분석</h2><span>{isSaved ? "1개" : "0개"}</span></div>
         {isSaved ? (
           <article className={styles.savedRow}>
             <button type="button" onClick={onOpenSaved}>
               <span><small>테마 · 8월 14일 장중 기준</small><strong>원전수출</strong></span>
               <b>+2.7%</b>
             </button>
-            <button type="button" className={styles.removeSaved} onClick={onRemoveSaved} aria-label="원전수출 즐겨찾기에서 제거"><IconStarFill size={20} /></button>
+            <button type="button" className={styles.removeSaved} onClick={onRemoveSaved} aria-label="원전수출 저장 목록에서 제거"><IconStarFill size={20} /></button>
           </article>
         ) : <div className={styles.libraryEmpty}><IconStarLine size={28} /><strong>저장한 항목이 없어요.</strong><p>테마 상세의 별을 누르면 여기에 모아볼 수 있어요.</p></div>}
       </section>
@@ -303,7 +312,7 @@ const caseRows = [
 ];
 
 function WireHeader({ title, onBack }: { title: string; onBack: () => void }) {
-  return <header className={styles.wireHeader}><button type="button" onClick={onBack}>←</button><strong>{title}</strong><button type="button" className={styles.savedStar} aria-label="즐겨찾기에서 제거"><IconStarFill size={24} /></button></header>;
+  return <header className={styles.wireHeader}><button type="button" onClick={onBack}>←</button><strong>{title}</strong><button type="button" className={styles.savedStar} aria-label="저장 목록에서 제거"><IconStarFill size={24} /></button></header>;
 }
 
 function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
@@ -360,7 +369,7 @@ function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; ac
           <section className={styles.dataBlock}><h2>사건 기록</h2><p>체코 정부가 신규 원전 사업의 우선협상대상자로 한국수력원자력을 선정하며 원전 관련주가 부각됐어요.</p><small>인포스탁 원본 · 수집 기록 보유</small></section>
           <section className={styles.dataBlock}><h2>당시 주도 종목의 이후 흐름</h2><div className={styles.statGrid}><article><span>T+1</span><strong>+2.1%</strong></article><article><span>T+5</span><strong>+4.6%</strong></article><article><span>T+20</span><strong>+7.2%</strong></article></div></section>
           <section className={styles.dataBlock}><h2>당시 기록된 종목</h2><div className={styles.simpleRows}><button>두산에너빌리티 <b>+14.2%</b></button><button>한전기술 <b>+7.1%</b></button><button>우리기술 <b>+5.8%</b></button></div></section>
-          <p className={styles.disclaimer}>과거 관측 결과이며 현재의 수익률을 예측하거나 종목을 추천하지 않아요.</p>
+              <p className={styles.disclaimer}>과거에 관측된 결과를 보여주며 현재의 투자 판단을 제공하지 않아요.</p>
         </div>
       </div>
     </section>
@@ -393,7 +402,7 @@ function LeaderDetailScreen({ goTo, active }: { goTo: (screen: string) => void; 
           <div className={styles.pageIntro}><small>2024.07.18 · 원전수출</small><h1>두산에너빌리티</h1><p>이 사건 당시 기록된 종목의 가격 반응이에요.</p></div>
           <section className={styles.dataBlock}><h2>사건 이후 등락률</h2><div className={styles.statGrid}><article><span>당일</span><strong>+14.2%</strong></article><article><span>T+5</span><strong>+8.4%</strong></article><article><span>T+20</span><strong>+12.1%</strong></article></div></section>
           <section className={styles.dataBlock}><h2>같은 테마에서 기록된 과거</h2><div className={styles.simpleRows}><button>원전수출 사건에 등장 <b>18회</b></button><button>보유 일봉 범위 <b>2005~2026</b></button></div></section>
-          <section className={styles.lockedBlock}><strong>현재 종목 상세 정보</strong><p>현재가·기업정보·실시간 차트는 서비스 API가 연결된 뒤 제공할 영역이에요.</p></section>
+          <section className={styles.lockedBlock}><strong>현재 종목 상세 정보</strong><p>현재가와 기업정보는 데이터 연결 범위를 확인한 뒤 제공할 영역이에요.</p></section>
         </div>
       </div>
     </section>
