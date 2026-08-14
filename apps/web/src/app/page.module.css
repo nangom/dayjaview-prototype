@@ -265,8 +265,8 @@
 .notice { margin: 20px 0 0; color: #888888; font-size: 10px; line-height: 1.5; }
 
 .wireScreen { position: relative; height: 100%; overflow: hidden; background: #fff; }
-.wireBody { height: 100%; overflow-y: auto; padding: 0 20px 88px; scrollbar-width: none; -ms-overflow-style: none; }
-.wireBody::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.wireBody { height: 100%; overflow-y: auto; padding: 0 20px 88px; scrollbar-width: none !important; scrollbar-color: transparent transparent; -ms-overflow-style: none; }
+.wireBody::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; background: transparent; }
 .wireHeader { height: 60px; padding: 0 12px; border-bottom: 1px solid #ddd; display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; }
 .wireHeader strong { text-align: center; font-size: 14px; }
 .wireHeader button { width: 44px; height: 44px; border: 0; background: transparent; font-size: 21px; cursor: pointer; }
@@ -409,7 +409,7 @@
 .filterRow button { border-color: var(--djv-color-border); border-radius: var(--djv-radius-pill); background: var(--djv-color-surface); }
 .filterRow .filterActive { border-color: var(--djv-color-brand); background: var(--djv-color-brand-soft); color: #a33b00; }
 .liveList { scrollbar-width: thin; }
-.wireBody { scrollbar-width: none; }
+.wireBody { scrollbar-width: none !important; }
 
 /* Reference palette: preserve the wireframe, clarify hierarchy with quiet filled surfaces. */
 .detailScroll {

@@ -395,7 +395,7 @@ function CatalystDetailScreen({ goTo, active }: { goTo: (screen: string) => void
           <div className={styles.pageIntro}><small>원전수출 · 상승 동반 소재</small><h1>체코 원전 수주</h1><p>이 소재가 과거 같은 테마와 함께 등장했던 기록을 모았어요.</p></div>
           <section className={styles.dataBlock}><div className={styles.blockHeading}><h2>과거 동반 기록</h2><span>키워드 통계</span></div><div className={styles.statGrid}><article><span>발생</span><strong>9회</strong></article><article><span>상승 동반</span><strong>78%</strong></article><article><span>D+5 차이</span><strong>+2.6%p</strong></article></div></section>
           <section className={styles.dataBlock}><h2>기간별 평균 반응</h2><div className={styles.statGrid}><article><span>D+1</span><strong>+0.8%</strong></article><article><span>D+5</span><strong>+2.6%</strong></article><article><span>D+20</span><strong>+3.1%</strong></article></div></section>
-          <section className={styles.dataBlock}><div className={styles.blockHeading}><h2>연결된 과거 사건</h2><button>전체 보기</button></div><div className={styles.simpleRows}><button>2024.07.18 · 체코 원전 우선협상자 <b>›</b></button><button>2022.10.31 · 폴란드 원전 협력 <b>›</b></button></div></section>
+          <section className={styles.dataBlock}><div className={styles.blockHeading}><h2>연결된 과거 사건</h2><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div><div className={styles.simpleRows}><button type="button" onClick={() => goTo("screen-case-detail")}>2024.07.18 · 체코 원전 우선협상자 <b>›</b></button><button type="button" onClick={() => goTo("screen-case-detail")}>2022.10.31 · 폴란드 원전 협력 <b>›</b></button></div></section>
           <p className={styles.disclaimer}>현재 룰 기반 키워드는 검수 전 노이즈가 있을 수 있어요.</p>
         </div>
       </div>
