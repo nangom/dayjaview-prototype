@@ -508,7 +508,11 @@ export default class App extends React.Component {
         label,
         pick: () => this.setState({ hz: i }),
         style: 'flex:1;padding:12px 0;border:none;border-radius:17px;cursor:pointer;font-family:inherit;font-size:15px;letter-spacing:-0.01em;transition:background .16s ease,color .16s ease;'
-          + (i === hz ? 'background:#50FFEB;color:#0B3A35;font-weight:700;box-shadow:0 6px 14px -8px rgba(11,58,53,.45);' : 'background:transparent;color:' + P.fg2 + ';font-weight:600;')
+          // 선택된 탭도 1위 배지와 같은 오렌지로 통일한다. 글자는 크림
+          // (#FFFDF1)이 아니라 #4A1608 이어야 한다 — 15px 볼드는 WCAG large
+          // text(18.66px 볼드) 기준에 못 미쳐 4.5:1 이 그대로 적용되는데,
+          // 크림은 오렌지 위에서 3.03:1 밖에 안 된다.
+          + (i === hz ? 'background:#FF5C00;color:#4A1608;font-weight:700;box-shadow:0 6px 14px -8px rgba(255,92,0,.45);' : 'background:transparent;color:' + P.fg2 + ';font-weight:600;')
       })),
       allCases: this.cases.map(caseRow),
 
