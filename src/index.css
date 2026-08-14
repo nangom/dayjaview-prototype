@@ -281,7 +281,7 @@ a { color: #16160F; }
 }
 .seed-sort-control button.is-selected {
   background: #fff;
-  color: var(--seed-color-fg-brand, #ff6f0f);
+  color: #212124;
   box-shadow: 0 1px 5px rgba(0, 0, 0, .1);
 }
 
