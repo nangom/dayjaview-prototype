@@ -64,6 +64,10 @@ export default class App extends React.Component {
       dark: d,
       bg: d ? '#1C1917' : '#EAE8E3',
       surface: d ? '#262321' : '#FFFFFF',
+      // 화면 바닥. 라이트에서는 바닥과 카드가 둘 다 흰색이어도 테두리(#EEEDE8)가
+      // 충분히 보이지만, 다크에서 둘 다 #262321 이면 0.09 흰 테두리 하나로
+      // 버텨야 해서 카드가 안 떠오른다. 바닥만 한 단계 낮춘다.
+      screenBg: d ? '#1C1917' : '#FFFFFF',
       fg: d ? '#F5F3F0' : '#16160F',
       fg2: d ? '#A8A29E' : '#9A998F',
       // 처음 잡았던 #7C7570 은 #262321 위에서 3.36:1 이라 본문 기준 4.5:1 에
@@ -112,7 +116,44 @@ export default class App extends React.Component {
       caseBorder: d ? 'rgba(255,255,255,.09)' : '#EEEDE8',
       tagBg: d ? 'rgba(122,142,222,.18)' : '#F1F3FB',
       tagFg: d ? '#AFBBE8' : '#4A5680',
-      chevron: d ? '#6B6560' : '#C3C2B9'
+      chevron: d ? '#6B6560' : '#C3C2B9',
+
+      // cases·case·stats 는 홈/테마와 다른 색 계열을 쓴다 (보라 잉크 #321E37,
+      // 회색 #8B8E96, 라인 #ECEEF3). 다크에서는 웜 뉴트럴로 합류시켜 화면을
+      // 넘나들 때 색 계열이 갈리지 않게 한다.
+      ink2: d ? '#F5F3F0' : '#321E37',
+      meta: d ? '#A8A29E' : '#8B8E96',
+      line: d ? 'rgba(255,255,255,.10)' : '#ECEEF3',
+      lineStrong: d ? 'rgba(255,255,255,.16)' : '#DDE1E8',
+      panelBg: d ? '#262321' : '#FFFFFF',
+      subtleBg: d ? 'rgba(255,255,255,.055)' : '#F6F7FB',
+      segTrack: d ? 'rgba(255,255,255,.08)' : '#EFEFF0',
+      segOnBg: d ? 'rgba(255,255,255,.14)' : '#FFFFFF',
+      tabTrack: d ? 'rgba(255,255,255,.06)' : '#F4F3EF',
+      barTrack: d ? 'rgba(255,255,255,.12)' : '#ECEEF3',
+      // 민트 카드: 라이트는 옅은 민트 배경 + 진한 청록 글자인데, 다크에서
+      // 그대로 두면 형광 판이 된다. 배경을 투명 청록으로 낮추고 글자를 뒤집는다.
+      mintBg: d ? 'rgba(11,127,114,.20)' : '#E4FFFB',
+      mintFg: d ? '#5FD9C8' : '#0B7F72',
+      mintBody: d ? '#A9C9C4' : '#4E6B67',
+      mintChip: d ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.72)',
+      redInk: d ? '#FF6B6E' : '#D83A43',
+      blueInk: d ? '#6EA0FF' : '#3267D6',
+      perfCellBg: d ? 'rgba(216,58,67,.20)' : '#FFE9EA',
+
+      // stats 화면 전용
+      cardLine: d ? 'rgba(255,255,255,.10)' : '#EDECE7',
+      faintLine: d ? 'rgba(255,255,255,.07)' : '#F2F1EC',
+      rowLine: d ? 'rgba(255,255,255,.08)' : '#F5F4EF',
+      qualityFg: d ? '#C9C3BE' : '#6E6D65',
+      // 차트 선: 라이트의 #12B5A2 는 다크 배경에서 가라앉아 밝은 쪽으로 올린다.
+      // 비교선(KOSPI)은 주선보다 확실히 낮은 명도를 유지해야 둘이 구분된다.
+      chartLine: d ? '#3FD9C4' : '#12B5A2',
+      chartRef: d ? '#7C7570' : '#C3C2B9',
+      barOn: d ? '#3FD9C4' : '#12B5A2',
+      barIdle: d ? 'rgba(63,217,196,.55)' : '#7FE9DC',
+      barMuted: d ? 'rgba(63,217,196,.22)' : '#CFF6F0',
+      tipBg: d ? '#0F0D0C' : '#16160F'
     };
   }
 
@@ -325,10 +366,10 @@ export default class App extends React.Component {
   };
 
   vals() {
-    // 다크는 홈·테마에만 걸려 있고 화면은 서로 배타적이라, 지금 그려지는
-    // 화면이 다크일 때만 등락 색을 밝은 쪽으로 올린다. 원래 값(#E5484D)은
-    // #262321 위에서 대비가 3:1 을 못 넘긴다.
-    const dm = this.state.dark && (this.state.screen === 'home' || this.state.screen === 'theme');
+    // 다크에서 원래 등락 색(#E5484D / #2F6BE0)은 #262321 위에서 3:1 을
+    // 못 넘겨 밝은 쪽으로 올린다.
+    const P = this.pal();
+    const dm = P.dark;
     const up = dm ? '#FF6B6E' : '#E5484D', down = dm ? '#6EA0FF' : '#2F6BE0', ink = dm ? '#F5F3F0' : '#16160F';
     const tone = v => (String(v).trim().startsWith('-') || String(v).trim().startsWith('−') ? down : up);
     const st = this.state, hz = st.hz, hv = st.hover;
@@ -366,14 +407,11 @@ export default class App extends React.Component {
 
     return {
       w: 393, h: 852,
-      // 다크는 홈·테마에만 적용된다. 나머지 화면은 아직 라이트라 pageBg 도
-      // 흰색을 유지해야 전환 순간에 색이 튀지 않는다.
-      p: this.pal(),
+      p: P,
       dark: st.dark,
       toggleDark: () => this.setState(s => ({ dark: !s.dark }), () => this.paintWheel()),
-      isDark: st.screen === 'splash' || (st.dark && (st.screen === 'home' || st.screen === 'theme')),
-      pageBg: st.screen === 'splash' ? '#000000'
-        : (st.dark && (st.screen === 'home' || st.screen === 'theme')) ? '#1C1917' : '#FFFFFF',
+      isDark: st.screen === 'splash' || st.dark,
+      pageBg: st.screen === 'splash' ? '#000000' : (st.dark ? '#1C1917' : '#FFFFFF'),
       isSplash: st.screen === 'splash',
       isHome: st.screen === 'home',
       isTheme: st.screen === 'theme',
@@ -470,7 +508,7 @@ export default class App extends React.Component {
         label,
         pick: () => this.setState({ hz: i }),
         style: 'flex:1;padding:12px 0;border:none;border-radius:17px;cursor:pointer;font-family:inherit;font-size:15px;letter-spacing:-0.01em;transition:background .16s ease,color .16s ease;'
-          + (i === hz ? 'background:#50FFEB;color:#0B3A35;font-weight:700;box-shadow:0 6px 14px -8px rgba(11,58,53,.45);' : 'background:transparent;color:#9A998F;font-weight:600;')
+          + (i === hz ? 'background:#50FFEB;color:#0B3A35;font-weight:700;box-shadow:0 6px 14px -8px rgba(11,58,53,.45);' : 'background:transparent;color:' + P.fg2 + ';font-weight:600;')
       })),
       allCases: this.cases.map(caseRow),
 
@@ -481,8 +519,8 @@ export default class App extends React.Component {
         { key: 'p20', label: '20일 후', val: '+2.8%', hit: '상승 21/34' }
       ].map(p => ({
         ...p,
-        color: '#D83A43',
-        cell: 'border-radius:22px;padding:16px 14px 18px;text-align:center;background:#FFE9EA;transition:transform .16s ease,box-shadow .16s ease'
+        color: P.redInk,
+        cell: 'border-radius:22px;padding:16px 14px 18px;text-align:center;background:' + P.perfCellBg + ';transition:transform .16s ease,box-shadow .16s ease'
       })),
       perfStats: [
         { key: 's1', label: '평균 지속', val: '6.2 거래일' },
@@ -499,7 +537,7 @@ export default class App extends React.Component {
         word: k.word,
         lift: k.lift,
         meta: '표본 ' + k.n + '건 · 상승 ' + k.rate + '%',
-        bar: 'display:block;height:100%;width:' + k.rate + '%;border-radius:3px;background:#D83A43'
+        bar: 'display:block;height:100%;width:' + k.rate + '%;border-radius:3px;background:' + P.redInk
       })),
       caseTags: picked.sub.split(' ').slice(0, 3),
       members: (() => {
@@ -512,10 +550,10 @@ export default class App extends React.Component {
           val: (r.n > 0 ? '+' : r.n < 0 ? '−' : '') + Math.abs(r.n).toFixed(1) + '%',
           rowStyle: 'display:flex;align-items:center;padding:16px 18px;'
             + (r.basket
-              ? 'background:#F6F7FB;border-top:1px solid #DDE1E8;'
-              : (i === rows.length - 1 ? '' : 'border-bottom:1px solid #ECEEF3;')),
-          nameStyle: 'flex:1;min-width:0;font-size:16px;font-weight:' + (r.basket ? 800 : 500) + ';letter-spacing:-0.015em;color:#321E37;white-space:nowrap;overflow:hidden;text-overflow:ellipsis',
-          valStyle: 'width:88px;text-align:right;font-size:16px;font-weight:800;letter-spacing:-0.01em;color:' + (r.n < 0 ? '#3267D6' : '#D83A43')
+              ? 'background:' + P.subtleBg + ';border-top:1px solid ' + P.lineStrong + ';'
+              : (i === rows.length - 1 ? '' : 'border-bottom:1px solid ' + P.line + ';')),
+          nameStyle: 'flex:1;min-width:0;font-size:16px;font-weight:' + (r.basket ? 800 : 500) + ';letter-spacing:-0.015em;color:' + P.ink2 + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis',
+          valStyle: 'width:88px;text-align:right;font-size:16px;font-weight:800;letter-spacing:-0.01em;color:' + (r.n < 0 ? P.blueInk : P.redInk)
         }));
       })(),
       sortLabel: st.byReturn ? '수익률순' : '종목명순',
@@ -525,8 +563,8 @@ export default class App extends React.Component {
         pick: () => this.setState({ byReturn: sg.key === 'ret' }),
         style: 'appearance:none;border:none;cursor:pointer;font-family:inherit;padding:5px 12px;border-radius:7px;font-size:12.5px;letter-spacing:-0.01em;transition:background .16s ease,color .16s ease,box-shadow .16s ease;'
           + (sg.on
-            ? 'background:#FFFFFF;color:#321E37;font-weight:700;box-shadow:0 1px 3px rgba(22,22,15,.14),0 0 0 .5px rgba(22,22,15,.04);'
-            : 'background:transparent;color:#8B8E96;font-weight:600;')
+            ? 'background:' + P.segOnBg + ';color:' + P.ink2 + ';font-weight:700;box-shadow:0 1px 3px rgba(22,22,15,.14),0 0 0 .5px rgba(22,22,15,.04);'
+            : 'background:transparent;color:' + P.meta + ';font-weight:600;')
       })),
       toggleSort: () => this.setState(s => ({ byReturn: !s.byReturn })),
 
@@ -534,7 +572,7 @@ export default class App extends React.Component {
       statRows: stats.map((s, i) => ({
         key: s.label,
         label: s.label,
-        rowStyle: 'display:flex;align-items:center;padding:15px 0;' + (i === stats.length - 1 ? '' : 'border-bottom:1px solid #F5F4EF;'),
+        rowStyle: 'display:flex;align-items:center;padding:15px 0;' + (i === stats.length - 1 ? '' : 'border-bottom:1px solid ' + P.rowLine + ';'),
         cells: s.vals.map((v, vi) => ({
           key: vi,
           val: v,
@@ -548,22 +586,22 @@ export default class App extends React.Component {
           n: b.n,
           hover: () => this.setState({ hover: i }),
           label: 'font-size:11.5px;font-weight:700;transition:color .14s ease,opacity .14s ease;'
-            + (on ? 'color:#16160F;opacity:1' : 'color:#A9A89E;opacity:' + (hv === null ? '1' : '.35')),
+            + (on ? 'color:' + P.fg + ';opacity:1' : 'color:' + P.fg2 + ';opacity:' + (hv === null ? '1' : '.35')),
           bar: 'width:100%;height:' + Math.round((b.n / maxN) * 84) + 'px;border-radius:8px 8px 4px 4px;transform-origin:bottom;animation:grow .5s cubic-bezier(.2,.8,.3,1) both;transition:background .14s ease,box-shadow .14s ease;'
-            + (on ? 'background:#12B5A2;box-shadow:0 8px 16px -8px rgba(18,181,162,.65)' : 'background:' + (hv === null ? '#7FE9DC' : '#CFF6F0'))
+            + (on ? 'background:' + P.barOn + ';box-shadow:0 8px 16px -8px rgba(18,181,162,.65)' : 'background:' + (hv === null ? P.barIdle : P.barMuted))
         };
       }),
       tip: hv === null ? null : {
         range: bins[hv].range,
         count: bins[hv].n + '건',
-        style: 'position:absolute;bottom:100%;left:' + ((hv + 0.5) / bins.length * 100) + '%;transform:translate(-50%,-6px);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 12px;border-radius:14px;background:#16160F;box-shadow:0 10px 24px -12px rgba(22,22,15,.7);white-space:nowrap;pointer-events:none;animation:fadeIn .12s ease both'
+        style: 'position:absolute;bottom:100%;left:' + ((hv + 0.5) / bins.length * 100) + '%;transform:translate(-50%,-6px);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 12px;border-radius:14px;background:' + P.tipBg + ';box-shadow:0 10px 24px -12px rgba(22,22,15,.7);white-space:nowrap;pointer-events:none;animation:fadeIn .12s ease both'
       },
       clearHover: () => this.setState({ hover: null }),
       axis: ['−10%', '0%', '+10%', '+20%'],
       quality: quality.map((q, i) => ({
         ...q,
         key: q.k,
-        rowStyle: 'display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;' + (i === quality.length - 1 ? '' : 'border-bottom:1px solid #F5F4EF;')
+        rowStyle: 'display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;' + (i === quality.length - 1 ? '' : 'border-bottom:1px solid ' + P.rowLine + ';')
       })),
 
       toast: st.toast,
@@ -712,7 +750,7 @@ export default class App extends React.Component {
   renderTheme(v) {
     const p = v.p;
     return (
-      <div style={css('position:absolute;inset:0;background:' + p.surface + ';display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
+      <div style={css('position:absolute;inset:0;background:' + p.screenBg + ';display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('position:absolute;top:0;left:0;right:0;height:340px;background:#FF5C00')}></div>
         <div style={css('position:relative;z-index:1;flex:1;overflow-y:auto')}>
           <div style={css('padding:' + this.padTop(52) + ' 22px 34px')}>
@@ -780,10 +818,8 @@ export default class App extends React.Component {
     );
   }
 
-  // p 를 안 넘기면 라이트로 그린다. cases 화면은 아직 라이트라 그대로 두고,
-  // 다크가 적용된 theme 화면에서만 팔레트를 넘긴다.
   renderCaseCard(c, snap, p) {
-    const q = p || this.pal(false);
+    const q = p || this.pal();
     return (
       <button
         key={c.key}
@@ -809,99 +845,101 @@ export default class App extends React.Component {
   }
 
   renderCases(v) {
+    const p = v.p;
     return (
-      <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
+      <div style={css('position:absolute;inset:0;background:' + p.screenBg + ';display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
           <button className="icon-btn press" onClick={v.toTheme} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={p.fg} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
-          <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>과거 사례</span>
+          <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:' + p.fg)}>과거 사례</span>
           <span style={css('width:44px')}></span>
         </div>
         <div style={css('flex:none;padding:14px 22px 0')}>
-          <div style={css('font-size:28px;font-weight:800;letter-spacing:-0.035em;color:#16160F')}>{v.theme} 테마</div>
-          <div style={css('margin-top:6px;font-size:13.5px;font-weight:500;color:#9A998F')}>분석 표본 34건 · 최신 날짜순</div>
-          <div style={css('display:flex;gap:6px;margin-top:16px;padding:6px;border-radius:22px;background:#F4F3EF')}>
+          <div style={css('font-size:28px;font-weight:800;letter-spacing:-0.035em;color:' + p.fg)}>{v.theme} 테마</div>
+          <div style={css('margin-top:6px;font-size:13.5px;font-weight:500;color:' + p.fg2)}>분석 표본 34건 · 최신 날짜순</div>
+          <div style={css('display:flex;gap:6px;margin-top:16px;padding:6px;border-radius:22px;background:' + p.tabTrack)}>
             {v.tabs.map(t => (
               <button key={t.key} onClick={t.pick} style={css(t.style)}>{t.label}</button>
             ))}
           </div>
         </div>
         <div style={css('flex:1;min-height:0;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;padding:34px 22px 40px;display:flex;flex-direction:column;gap:14px')}>
-          {v.allCases.map(c => this.renderCaseCard(c, true))}
+          {v.allCases.map(c => this.renderCaseCard(c, true, p))}
         </div>
       </div>
     );
   }
 
   renderCase(v) {
+    const pl = v.p;
     return (
-      <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
+      <div style={css('position:absolute;inset:0;background:' + pl.screenBg + ';display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
           <button className="icon-btn press" onClick={v.toCases} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={pl.fg} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
-          <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>사례 상세</span>
+          <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:' + pl.fg)}>사례 상세</span>
           <span style={css('width:44px')}></span>
         </div>
         <div style={css('flex:1;min-height:0;overflow-y:auto;padding:14px 22px 40px')}>
-          <div style={css('border-radius:26px;padding:22px;background:#E4FFFB')}>
-            <div style={css('font-size:13.5px;font-weight:700;color:#0B7F72')}>{v.picked.date}</div>
-            <div style={css('margin-top:8px;font-size:24px;font-weight:800;line-height:1.28;letter-spacing:-0.035em;color:#16160F;text-wrap:pretty')}>{v.picked.title}</div>
-            <div style={css('margin-top:10px;font-size:15px;font-weight:500;line-height:1.55;color:#4E6B67;text-wrap:pretty')}>{v.picked.sub} 소식이 전해지며 관련주가 함께 움직였습니다.</div>
-            <div style={css('margin-top:16px;display:inline-flex;padding:7px 13px;border-radius:14px;background:rgba(255,255,255,.72);font-size:12.5px;font-weight:700;color:#0B7F72')}>출처 · 인포스탁</div>
+          <div style={css('border-radius:26px;padding:22px;background:' + pl.mintBg)}>
+            <div style={css('font-size:13.5px;font-weight:700;color:' + pl.mintFg)}>{v.picked.date}</div>
+            <div style={css('margin-top:8px;font-size:24px;font-weight:800;line-height:1.28;letter-spacing:-0.035em;color:' + pl.fg + ';text-wrap:pretty')}>{v.picked.title}</div>
+            <div style={css('margin-top:10px;font-size:15px;font-weight:500;line-height:1.55;color:' + pl.mintBody + ';text-wrap:pretty')}>{v.picked.sub} 소식이 전해지며 관련주가 함께 움직였습니다.</div>
+            <div style={css('margin-top:16px;display:inline-flex;padding:7px 13px;border-radius:14px;background:' + pl.mintChip + ';font-size:12.5px;font-weight:700;color:' + pl.mintFg)}>출처 · 인포스탁</div>
           </div>
 
-          <div style={css('margin-top:26px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>과거 사례 이후 성과</div>
-          <div style={css('margin-top:5px;font-size:12.5px;font-weight:600;color:#8B8E96')}>34건 · 상승 21건 · 2010.03–2026.07</div>
+          <div style={css('margin-top:26px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + pl.ink2)}>과거 사례 이후 성과</div>
+          <div style={css('margin-top:5px;font-size:12.5px;font-weight:600;color:' + pl.meta)}>34건 · 상승 21건 · 2010.03–2026.07</div>
           <div style={css('margin-top:14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px')}>
             {v.perfCells.map(p => (
               <div key={p.key} className="lift" style={css(p.cell)}>
-                <div style={css('font-size:13px;font-weight:700;letter-spacing:-0.01em;color:#321E37')}>{p.label}</div>
+                <div style={css('font-size:13px;font-weight:700;letter-spacing:-0.01em;color:' + pl.ink2)}>{p.label}</div>
                 <div style={{ ...css('margin-top:12px;font-size:22px;line-height:1;font-weight:800;letter-spacing:-0.03em'), color: p.color }}>{p.val}</div>
-                <div style={css('margin-top:8px;font-size:12px;font-weight:600;color:#8B8E96')}>{p.hit}</div>
+                <div style={css('margin-top:8px;font-size:12px;font-weight:600;color:' + pl.meta)}>{p.hit}</div>
               </div>
             ))}
           </div>
           <div style={css('display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px')}>
             {v.perfStats.map(p => (
-              <div key={p.key} className="lift-soft" style={css('border-radius:20px;background:#F6F7FB;padding:16px 18px;transition:transform .16s ease,box-shadow .16s ease')}>
-                <div style={css('font-size:12.5px;font-weight:600;color:#8B8E96')}>{p.label}</div>
-                <div style={css('margin-top:8px;font-size:20px;line-height:1;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>{p.val}</div>
+              <div key={p.key} className="lift-soft" style={css('border-radius:20px;background:' + pl.subtleBg + ';padding:16px 18px;transition:transform .16s ease,box-shadow .16s ease')}>
+                <div style={css('font-size:12.5px;font-weight:600;color:' + pl.meta)}>{p.label}</div>
+                <div style={css('margin-top:8px;font-size:20px;line-height:1;font-weight:800;letter-spacing:-0.03em;color:' + pl.ink2)}>{p.val}</div>
               </div>
             ))}
           </div>
 
-          <div style={css('margin-top:28px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>상승 동반 키워드</div>
-          <div style={css('margin-top:5px;font-size:12.5px;font-weight:600;color:#8B8E96')}>5일 후 영향 · 등장 vs 미등장</div>
-          <div style={css('margin-top:14px;border:1px solid #ECEEF3;border-radius:26px;background:#FFFFFF;padding:20px 18px;display:flex;flex-direction:column;gap:16px')}>
+          <div style={css('margin-top:28px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + pl.ink2)}>상승 동반 키워드</div>
+          <div style={css('margin-top:5px;font-size:12.5px;font-weight:600;color:' + pl.meta)}>5일 후 영향 · 등장 vs 미등장</div>
+          <div style={css('margin-top:14px;border:1px solid ' + pl.line + ';border-radius:26px;background:' + pl.panelBg + ';padding:20px 18px;display:flex;flex-direction:column;gap:16px')}>
             {v.kwRows.map(k => (
               <div key={k.key} style={css('display:flex;align-items:center;gap:14px')}>
-                <span style={css('width:60px;flex:none;font-size:17px;font-weight:800;letter-spacing:-0.02em;color:#321E37')}>{k.word}</span>
+                <span style={css('width:60px;flex:none;font-size:17px;font-weight:800;letter-spacing:-0.02em;color:' + pl.ink2)}>{k.word}</span>
                 <span style={css('flex:1;min-width:0;display:flex;flex-direction:column;gap:7px')}>
-                  <span style={css('font-size:12px;font-weight:600;color:#8B8E96')}>{k.meta}</span>
-                  <span style={css('height:5px;border-radius:3px;background:#ECEEF3;overflow:hidden')}>
+                  <span style={css('font-size:12px;font-weight:600;color:' + pl.meta)}>{k.meta}</span>
+                  <span style={css('height:5px;border-radius:3px;background:' + pl.barTrack + ';overflow:hidden')}>
                     <span style={css(k.bar)}></span>
                   </span>
                 </span>
-                <span style={css('flex:none;font-size:15.5px;font-weight:800;letter-spacing:-0.01em;color:#D83A43')}>{k.lift}</span>
+                <span style={css('flex:none;font-size:15.5px;font-weight:800;letter-spacing:-0.01em;color:' + pl.redInk)}>{k.lift}</span>
               </div>
             ))}
           </div>
-          <div style={css('margin-top:14px;font-size:12.5px;font-weight:500;line-height:1.55;color:#8B8E96;text-wrap:pretty')}>키워드가 등장한 과거 사건이 미등장 사건보다 5일 후 얼마나 더 올랐는지를 뜻합니다 (상승 동반 강도, 인과 아님). 표본 5~9건은 참고용이며 일반어는 제외했습니다.</div>
+          <div style={css('margin-top:14px;font-size:12.5px;font-weight:500;line-height:1.55;color:' + pl.meta + ';text-wrap:pretty')}>키워드가 등장한 과거 사건이 미등장 사건보다 5일 후 얼마나 더 올랐는지를 뜻합니다 (상승 동반 강도, 인과 아님). 표본 5~9건은 참고용이며 일반어는 제외했습니다.</div>
 
           <div style={css('margin-top:28px;display:flex;align-items:baseline;justify-content:space-between')}>
-            <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>5일 후 등락률</span>
-            <span style={css('display:inline-flex;align-items:center;padding:2px;border-radius:9px;background:#EFEFF0')}>
+            <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + pl.ink2)}>5일 후 등락률</span>
+            <span style={css('display:inline-flex;align-items:center;padding:2px;border-radius:9px;background:' + pl.segTrack)}>
               {v.sortSegs.map(sg => (
                 <button key={sg.key} onClick={sg.pick} style={css(sg.style)}>{sg.label}</button>
               ))}
             </span>
           </div>
-          <div style={css('margin-top:12px;border:1px solid #ECEEF3;border-radius:26px;background:#FFFFFF;overflow:hidden')}>
-            <div style={css('display:flex;align-items:center;padding:14px 18px;background:#F6F7FB')}>
-              <span style={css('flex:1;font-size:12.5px;font-weight:600;color:#8B8E96')}>종목</span>
-              <span style={css('width:88px;text-align:right;font-size:12.5px;font-weight:600;color:#8B8E96')}>5일 후 등락률</span>
+          <div style={css('margin-top:12px;border:1px solid ' + pl.line + ';border-radius:26px;background:' + pl.panelBg + ';overflow:hidden')}>
+            <div style={css('display:flex;align-items:center;padding:14px 18px;background:' + pl.subtleBg)}>
+              <span style={css('flex:1;font-size:12.5px;font-weight:600;color:' + pl.meta)}>종목</span>
+              <span style={css('width:88px;text-align:right;font-size:12.5px;font-weight:600;color:' + pl.meta)}>5일 후 등락률</span>
             </div>
             {v.members.map(m => (
               <div key={m.key} style={css(m.rowStyle)}>
@@ -911,53 +949,54 @@ export default class App extends React.Component {
             ))}
           </div>
 
-          <div style={css('margin-top:26px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>이 사례의 키워드</div>
+          <div style={css('margin-top:26px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + pl.ink2)}>이 사례의 키워드</div>
           <div style={css('display:flex;flex-wrap:wrap;gap:8px;margin-top:12px')}>
             {v.caseTags.map((t, i) => (
-              <span key={i} style={css('padding:9px 14px;border-radius:12px;background:#F1F3FB;font-size:14.5px;font-weight:600;letter-spacing:-0.01em;color:#4A5680')}>{t}</span>
+              <span key={i} style={css('padding:9px 14px;border-radius:12px;background:' + pl.tagBg + ';font-size:14.5px;font-weight:600;letter-spacing:-0.01em;color:' + pl.tagFg)}>{t}</span>
             ))}
           </div>
 
-          <div style={css('margin-top:14px;font-size:13px;font-weight:500;line-height:1.55;color:#8B8E96;text-wrap:pretty')}>사례 상세에서도 원인 문장에서 키워드를 추출합니다. 오늘 사건과 공통되는 키워드가 유사도의 근거가 됩니다.</div>
-          <div style={css('margin-top:16px;font-size:12px;font-weight:500;line-height:1.5;color:#8B8E96')}>현재 가격이나 매수·매도 판단이 아닌, 해당 사건 이후의 과거 반응을 보여줍니다.</div>
+          <div style={css('margin-top:14px;font-size:13px;font-weight:500;line-height:1.55;color:' + pl.meta + ';text-wrap:pretty')}>사례 상세에서도 원인 문장에서 키워드를 추출합니다. 오늘 사건과 공통되는 키워드가 유사도의 근거가 됩니다.</div>
+          <div style={css('margin-top:16px;font-size:12px;font-weight:500;line-height:1.5;color:' + pl.meta)}>현재 가격이나 매수·매도 판단이 아닌, 해당 사건 이후의 과거 반응을 보여줍니다.</div>
         </div>
       </div>
     );
   }
 
   renderStats(v) {
+    const p = v.p;
     return (
-      <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
+      <div style={css('position:absolute;inset:0;background:' + p.screenBg + ';display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
           <button className="icon-btn press" onClick={v.toTheme} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={p.fg} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
-          <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>상세 통계</span>
+          <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:' + p.fg)}>상세 통계</span>
           <span style={css('width:44px')}></span>
         </div>
         <div style={css('flex:1;min-height:0;overflow-y:auto;padding:14px 22px 40px')}>
           <div style={css('display:flex;align-items:flex-end;justify-content:space-between;gap:12px')}>
             <span style={css('display:flex;flex-direction:column;gap:6px')}>
-              <span style={css('font-size:28px;font-weight:800;letter-spacing:-0.035em;color:#16160F')}>{v.theme} 테마</span>
-              <span style={css('font-size:13.5px;font-weight:500;color:#9A998F')}>과거 부각 사례 34건</span>
+              <span style={css('font-size:28px;font-weight:800;letter-spacing:-0.035em;color:' + p.fg)}>{v.theme} 테마</span>
+              <span style={css('font-size:13.5px;font-weight:500;color:' + p.fg2)}>과거 부각 사례 34건</span>
             </span>
-            <span style={css('flex:none;padding:8px 13px;border-radius:15px;background:#E4FFFB;font-size:12.5px;font-weight:700;color:#0B7F72')}>2010.03–2026.07</span>
+            <span style={css('flex:none;padding:8px 13px;border-radius:15px;background:' + p.mintBg + ';font-size:12.5px;font-weight:700;color:' + p.mintFg)}>2010.03–2026.07</span>
           </div>
 
           <div style={css('margin-top:26px;display:flex;align-items:baseline;justify-content:space-between')}>
-            <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#16160F')}>핵심 통계</span>
-            <span style={css('font-size:12.5px;font-weight:600;color:#A9A89E')}>수익률 %</span>
+            <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + p.fg)}>핵심 통계</span>
+            <span style={css('font-size:12.5px;font-weight:600;color:' + p.fg2)}>수익률 %</span>
           </div>
-          <div style={css('margin-top:12px;border:1px solid #EDECE7;border-radius:26px;padding:6px 18px 8px')}>
-            <div style={css('display:flex;padding:14px 0 10px;border-bottom:1px solid #EDECE7')}>
-              <span style={css('flex:1;font-size:12px;font-weight:600;color:#A9A89E')}>구분</span>
+          <div style={css('margin-top:12px;border:1px solid ' + p.cardLine + ';border-radius:26px;padding:6px 18px 8px')}>
+            <div style={css('display:flex;padding:14px 0 10px;border-bottom:1px solid ' + p.cardLine)}>
+              <span style={css('flex:1;font-size:12px;font-weight:600;color:' + p.fg2)}>구분</span>
               {v.statCols.map(c => (
-                <span key={c} style={css('width:54px;text-align:right;font-size:12px;font-weight:600;color:#A9A89E')}>{c}</span>
+                <span key={c} style={css('width:54px;text-align:right;font-size:12px;font-weight:600;color:' + p.fg2)}>{c}</span>
               ))}
             </div>
             {v.statRows.map(r => (
               <div key={r.key} style={css(r.rowStyle)}>
-                <span style={css('flex:1;font-size:15px;font-weight:700;letter-spacing:-0.015em;color:#16160F')}>{r.label}</span>
+                <span style={css('flex:1;font-size:15px;font-weight:700;letter-spacing:-0.015em;color:' + p.fg)}>{r.label}</span>
                 {r.cells.map(cell => (
                   <span key={cell.key} style={css(cell.style)}>{cell.val}</span>
                 ))}
@@ -966,35 +1005,35 @@ export default class App extends React.Component {
           </div>
 
           <div style={css('margin-top:28px;display:flex;align-items:baseline;justify-content:space-between')}>
-            <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#16160F')}>평균 누적 흐름</span>
-            <span style={css('font-size:12.5px;font-weight:600;color:#A9A89E')}>사건일을 0%로 환산</span>
+            <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + p.fg)}>평균 누적 흐름</span>
+            <span style={css('font-size:12.5px;font-weight:600;color:' + p.fg2)}>사건일을 0%로 환산</span>
           </div>
-          <div style={css('margin-top:12px;border:1px solid #EDECE7;border-radius:26px;padding:18px 18px 14px')}>
+          <div style={css('margin-top:12px;border:1px solid ' + p.cardLine + ';border-radius:26px;padding:18px 18px 14px')}>
             <svg viewBox="0 0 300 120" width="100%" height="132" style={css('display:block;overflow:visible')}>
-              <text x="0" y="12" fontSize="9" fontWeight="600" fill="#B4B3A9">+4%</text>
-              <text x="0" y="58" fontSize="9" fontWeight="600" fill="#B4B3A9">+2%</text>
-              <text x="0" y="104" fontSize="9" fontWeight="600" fill="#B4B3A9">0%</text>
-              <line x1="26" y1="8" x2="300" y2="8" stroke="#F2F1EC" strokeWidth="1"></line>
-              <line x1="26" y1="54" x2="300" y2="54" stroke="#F2F1EC" strokeWidth="1"></line>
-              <line x1="26" y1="100" x2="300" y2="100" stroke="#EDECE7" strokeWidth="1"></line>
-              <path d="M30 100 L46 92 L64 96 L82 80 L100 84 L120 66 L140 70 L160 54 L182 58 L204 44 L226 48 L250 32 L276 26 L296 18" fill="none" stroke="#12B5A2" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="640" style={css('animation:draw 1.2s ease both')}></path>
-              <path d="M30 100 L60 99 L92 96 L126 95 L160 92 L196 90 L232 88 L268 86 L296 84" fill="none" stroke="#C3C2B9" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"></path>
-              <circle cx="296" cy="18" r="4.6" fill="#12B5A2"></circle>
-              <text x="26" y="118" fontSize="9.5" fontWeight="600" fill="#B4B3A9">D+1</text>
-              <text x="150" y="118" fontSize="9.5" fontWeight="600" fill="#B4B3A9">D+5</text>
-              <text x="272" y="118" fontSize="9.5" fontWeight="600" fill="#B4B3A9">D+20</text>
+              <text x="0" y="12" fontSize="9" fontWeight="600" fill={p.fg3}>+4%</text>
+              <text x="0" y="58" fontSize="9" fontWeight="600" fill={p.fg3}>+2%</text>
+              <text x="0" y="104" fontSize="9" fontWeight="600" fill={p.fg3}>0%</text>
+              <line x1="26" y1="8" x2="300" y2="8" stroke={p.faintLine} strokeWidth="1"></line>
+              <line x1="26" y1="54" x2="300" y2="54" stroke={p.faintLine} strokeWidth="1"></line>
+              <line x1="26" y1="100" x2="300" y2="100" stroke={p.cardLine} strokeWidth="1"></line>
+              <path d="M30 100 L46 92 L64 96 L82 80 L100 84 L120 66 L140 70 L160 54 L182 58 L204 44 L226 48 L250 32 L276 26 L296 18" fill="none" stroke={p.chartLine} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="640" style={css('animation:draw 1.2s ease both')}></path>
+              <path d="M30 100 L60 99 L92 96 L126 95 L160 92 L196 90 L232 88 L268 86 L296 84" fill="none" stroke={p.chartRef} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"></path>
+              <circle cx="296" cy="18" r="4.6" fill={p.chartLine}></circle>
+              <text x="26" y="118" fontSize="9.5" fontWeight="600" fill={p.fg3}>D+1</text>
+              <text x="150" y="118" fontSize="9.5" fontWeight="600" fill={p.fg3}>D+5</text>
+              <text x="272" y="118" fontSize="9.5" fontWeight="600" fill={p.fg3}>D+20</text>
             </svg>
-            <div style={css('display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid #F2F1EC')}>
-              <span style={css('display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#16160F')}><span style={css('width:16px;height:3px;border-radius:2px;background:#12B5A2')}></span>{v.theme} 테마</span>
-              <span style={css('display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#9A998F')}><span style={css('width:16px;height:3px;border-radius:2px;background:#C3C2B9')}></span>KOSPI</span>
+            <div style={css('display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid ' + p.faintLine)}>
+              <span style={css('display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:' + p.fg)}><span style={css('width:16px;height:3px;border-radius:2px;background:' + p.chartLine)}></span>{v.theme} 테마</span>
+              <span style={css('display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:' + p.fg2)}><span style={css('width:16px;height:3px;border-radius:2px;background:' + p.chartRef)}></span>KOSPI</span>
             </div>
           </div>
 
           <div style={css('margin-top:28px;display:flex;align-items:baseline;justify-content:space-between')}>
-            <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#16160F')}>20일 후 수익률 분포</span>
-            <span style={css('font-size:12.5px;font-weight:600;color:#A9A89E')}>사례 34건</span>
+            <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + p.fg)}>20일 후 수익률 분포</span>
+            <span style={css('font-size:12.5px;font-weight:600;color:' + p.fg2)}>사례 34건</span>
           </div>
-          <div style={css('margin-top:12px;border:1px solid #EDECE7;border-radius:26px;padding:20px 18px 16px')}>
+          <div style={css('margin-top:12px;border:1px solid ' + p.cardLine + ';border-radius:26px;padding:20px 18px 16px')}>
             <div onPointerLeave={v.clearHover} style={css('position:relative;display:flex;align-items:flex-end;gap:8px;height:118px')}>
               {v.tip && (
                 <span style={css(v.tip.style)}>
@@ -1009,24 +1048,24 @@ export default class App extends React.Component {
                 </div>
               ))}
             </div>
-            <div style={css('display:flex;margin-top:10px;padding-top:10px;border-top:1px solid #F2F1EC')}>
+            <div style={css('display:flex;margin-top:10px;padding-top:10px;border-top:1px solid ' + p.faintLine)}>
               {v.axis.map(t => (
-                <span key={t} style={css('flex:1;text-align:center;font-size:11px;font-weight:600;color:#B4B3A9')}>{t}</span>
+                <span key={t} style={css('flex:1;text-align:center;font-size:11px;font-weight:600;color:' + p.fg3)}>{t}</span>
               ))}
             </div>
           </div>
 
-          <div style={css('margin-top:28px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#16160F')}>위험과 데이터 품질</div>
-          <div style={css('margin-top:12px;border:1px solid #EDECE7;border-radius:26px;padding:6px 18px 8px')}>
+          <div style={css('margin-top:28px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + p.fg)}>위험과 데이터 품질</div>
+          <div style={css('margin-top:12px;border:1px solid ' + p.cardLine + ';border-radius:26px;padding:6px 18px 8px')}>
             {v.quality.map(q => (
               <div key={q.key} style={css(q.rowStyle)}>
-                <span style={css('font-size:14.5px;font-weight:600;color:#6E6D65')}>{q.k}</span>
+                <span style={css('font-size:14.5px;font-weight:600;color:' + p.qualityFg)}>{q.k}</span>
                 <span style={{ ...css('font-size:15px;font-weight:800;letter-spacing:-0.01em'), color: q.color }}>{q.v}</span>
               </div>
             ))}
           </div>
 
-          <div style={css('margin-top:18px;font-size:12px;font-weight:500;line-height:1.5;color:#B4B3A9')}>과거 수익률은 미래 성과를 보장하지 않으며, 통계와 표본 구간을 함께 확인해 주세요.</div>
+          <div style={css('margin-top:18px;font-size:12px;font-weight:500;line-height:1.5;color:' + p.fg3)}>과거 수익률은 미래 성과를 보장하지 않으며, 통계와 표본 구간을 함께 확인해 주세요.</div>
         </div>
       </div>
     );
@@ -1050,8 +1089,11 @@ export default class App extends React.Component {
           {v.isCases && this.renderCases(v)}
           {v.isCase && this.renderCase(v)}
           {v.isStats && this.renderStats(v)}
+          {/* 토스트는 원래 잉크색(#16160F) 판인데 다크 배경(#1C1917)과 명도가
+              거의 같아 안 보인다. 다크에서는 밝은 판으로 뒤집는다. */}
           {v.toast && (
-            <div style={css('position:absolute;left:22px;right:22px;bottom:44px;z-index:20;padding:14px 16px;border-radius:20px;background:#16160F;color:#fff;font-size:14px;font-weight:600;box-shadow:0 12px 30px rgba(20,20,10,.24);animation:fadeIn .18s ease both')}>{v.toast}</div>
+            <div style={css('position:absolute;left:22px;right:22px;bottom:44px;z-index:20;padding:14px 16px;border-radius:20px;font-size:14px;font-weight:600;box-shadow:0 12px 30px rgba(20,20,10,.24);animation:fadeIn .18s ease both;'
+              + (v.p.dark ? 'background:#F5F3F0;color:#1C1917' : 'background:#16160F;color:#fff'))}>{v.toast}</div>
           )}
         </div>
       </IOSDevice>
