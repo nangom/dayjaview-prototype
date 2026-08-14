@@ -1,8 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  IconGridLine,
+  IconHouseLine,
+  IconMagnifyingglassLine,
+  IconStarLine,
+} from "@karrotmarket/react-monochrome-icon";
 import { marketSnapshot } from "../data/prototype";
 import styles from "./page.module.css";
+
+const footerItems = [
+  { id: "home", Icon: IconHouseLine, label: "홈" },
+  { id: "realtime", Icon: IconGridLine, label: "실시간 테마주" },
+  { id: "saved", Icon: IconStarLine, label: "즐겨찾기" },
+  { id: "natural", Icon: IconMagnifyingglassLine, label: "자연어 검색" },
+];
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -65,14 +78,9 @@ export default function Home() {
             </div>
 
             <nav className={styles.footer} aria-label="주요 메뉴">
-              {[
-                ["home", "⌂", "홈"],
-                ["realtime", "▦", "실시간 테마주"],
-                ["saved", "☆", "즐겨찾기"],
-                ["natural", "⌕", "자연어 검색"],
-              ].map(([id, icon, label]) => (
+              {footerItems.map(({ id, Icon, label }) => (
                 <button key={id} type="button" className={activeTab === id ? styles.active : ""} onClick={() => { setActiveTab(id); if (id === "realtime") goTo("screen-realtime"); if (id === "natural") goTo("screen-natural"); }}>
-                  <span>{icon}</span><small>{label}</small>
+                  <Icon className={styles.navIcon} size={20} aria-hidden="true" /><small>{label}</small>
                 </button>
               ))}
             </nav>
@@ -170,10 +178,10 @@ export default function Home() {
               <p className={styles.notice}>장중 정보는 이후 정정될 수 있습니다. 과거 데이터 기반 참고 정보이며 투자 자문이나 종목 추천이 아닙니다.</p>
             </div>
             <nav className={styles.miniFooter} aria-label="테마 상세 주요 메뉴">
-              <button type="button" onClick={() => goTo("screen-home")}>⌂<small>홈</small></button>
-              <button type="button" onClick={() => goTo("screen-realtime")}>▦<small>실시간</small></button>
-              <button type="button">☆<small>즐겨찾기</small></button>
-              <button type="button" onClick={() => goTo("screen-natural")}>⌕<small>자연어</small></button>
+              <button type="button" onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button>
+              <button type="button" onClick={() => goTo("screen-realtime")}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button>
+              <button type="button"><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button>
+              <button type="button" onClick={() => goTo("screen-natural")}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button>
             </nav>
           </div>
         </section>
@@ -231,7 +239,7 @@ function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void;
           </div>
         </div>
         <div className={styles.treeLegend}><span><i />면적: 테마 강도</span><span>수치는 장중 갱신</span></div>
-        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}>⌂<small>홈</small></button><button className={styles.selected}>▦<small>실시간</small></button><button>☆<small>즐겨찾기</small></button><button onClick={() => goTo("screen-natural")}>⌕<small>자연어</small></button></nav>
+        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button className={styles.selected}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button onClick={() => goTo("screen-natural")}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button></nav>
       </div>
     </section>
   );
@@ -311,7 +319,7 @@ function NaturalSearchScreen({ goTo, active }: { goTo: (screen: string) => void;
           <section className={styles.answerBlock}><div><small>검색 결과</small><span>과거 데이터 기준</span></div><h2>과거 34개 사례에서 5일 후 평균은 +1.3%였어요.</h2><p>34개 사례 중 20개가 상승했고, 당시 주도 종목을 기준으로 계산했어요. 가장 큰 상승 사례는 2024년 7월 18일 체코 원전 우선협상대상자 선정 사건이었어요.</p><ul><li><span>평균 수익률</span><b>+1.3%</b></li><li><span>상승 사례</span><b>20/34</b></li><li><span>대표 과거 사건</span><b>2024.07.18</b></li></ul><button type="button" onClick={() => goTo("screen-cases")}>관련 과거 사례 보기</button></section>
           <p className={styles.disclaimer}>검색 결과는 DB에 저장된 사건과 가격 데이터만 사용하며 투자 자문이 아니에요.</p>
         </div>
-        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}>⌂<small>홈</small></button><button onClick={() => goTo("screen-realtime")}>▦<small>실시간</small></button><button>☆<small>즐겨찾기</small></button><button className={styles.selected}>⌕<small>자연어</small></button></nav>
+        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button onClick={() => goTo("screen-realtime")}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button className={styles.selected}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button></nav>
       </div>
     </section>
   );

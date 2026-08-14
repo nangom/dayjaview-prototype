@@ -145,7 +145,7 @@
 .placeholder p { margin: 8px 0 0; color: #777777; font-size: 14px; }
 .footer { position: absolute; left: 0; right: 0; bottom: 0; height: 68px; border-top: 1px solid #dddddd; display: grid; grid-template-columns: repeat(4, 1fr); background: #ffffff; }
 .footer button { border: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: transparent; color: #888888; cursor: pointer; }
-.footer button > span { font-size: 20px; line-height: 1; }
+.navIcon { display: block; flex: 0 0 auto; }
 .footer button > small { font-size: 10px; white-space: nowrap; }
 .footer .active { color: #111111; font-weight: 700; }
 .scrim { position: absolute; inset: 0; z-index: 20; border: 0; background: rgba(0, 0, 0, .28); }
