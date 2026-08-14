@@ -522,14 +522,20 @@ export default class App extends React.Component {
     return (
       <div className="seed-pilot seed-home" style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
         <header style={css('flex:none;padding:' + this.padTop(50) + ' 20px 14px')}>
-          <div style={css('display:flex;align-items:center;justify-content:space-between')}>
-            <span style={css('width:44px;height:44px')} aria-hidden="true" />
-            <img src={LOGO_MARK} alt="DAY-JA-VIEW" style={css('height:28px;width:auto;display:block')} />
-            <span style={css('width:44px;height:44px')} aria-hidden="true" />
+          <div style={css('display:flex;align-items:center;justify-content:flex-end')}>
+            <button className="seed-icon-button seed-home-search" onClick={() => this.go('search')} aria-label="테마·종목 검색">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m16.5 16.5 4 4" />
+              </svg>
+            </button>
           </div>
           <div style={css('margin-top:26px')}>
             <Badge tone="brand" variant="weak" size="large">8월 12일 장 마감</Badge>
-            <h1 style={css('margin:13px 0 6px;font-size:30px;line-height:1.22;font-weight:800;letter-spacing:-.04em;color:var(--seed-color-fg-neutral)')}>오늘 많이 오른 테마예요</h1>
+            <div className="seed-home-title">
+              <img src={LOGO_MARK} alt="" aria-hidden="true" />
+              <h1>오늘 많이 오른 테마예요</h1>
+            </div>
             <p style={css('margin:0;font-size:15px;line-height:1.5;color:var(--seed-color-fg-neutral-muted)')}>상승률과 과거 움직임을 한눈에 확인해 보세요.</p>
           </div>
         </header>
@@ -708,7 +714,6 @@ export default class App extends React.Component {
   renderBottomNav(v) {
     const items = [
       { key: 'home', label: '홈', d: 'm4 10 8-6 8 6v9H4zM10 19v-5h4v5' },
-      { key: 'search', label: '검색', d: 'M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm5-2 5 5' },
       { key: 'library', label: '즐겨찾기', d: 'm12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z' },
       { key: 'settings', label: '설정', solid: true, d: 'M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.62l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.2 7.2 0 0 0-1.62-.94L14.4 2.8a.49.49 0 0 0-.48-.4h-3.84a.49.49 0 0 0-.48.4l-.36 2.54c-.58.24-1.12.56-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.72 8.86a.49.49 0 0 0 .12.62l2.03 1.58c-.05.31-.07.64-.07.94s.02.63.07.94l-2.03 1.58a.49.49 0 0 0-.12.62l1.92 3.32c.12.22.38.31.59.22l2.39-.96c.5.39 1.04.7 1.62.94l.36 2.54c.04.23.24.4.48.4h3.84c.24 0 .44-.17.48-.4l.36-2.54a7.2 7.2 0 0 0 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.62l-2.02-1.58ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z' }
     ];
