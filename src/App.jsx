@@ -86,6 +86,8 @@ export default class App extends React.Component {
         const box = el.getBoundingClientRect();
         const r = mid.getBoundingClientRect();
         el.scrollTop += (r.top + r.height / 2) - (box.top + box.height / 2 - this.focusShift);
+        // 첫 화면에서는 1위와 2위 사이에 초점을 둬 두 항목을 함께 강조한다.
+        el.scrollTop += (itemH + 8) / 2;
         this.baseTop = el.scrollTop;
       }
 
