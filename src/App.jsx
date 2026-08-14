@@ -564,10 +564,6 @@ export default class App extends React.Component {
         return rows.map(k => ({
           key: k.word,
           word: k.word,
-          // 최상위 키워드만 오렌지 칩으로 감싼다. 홈 1~3위 배지·기간 탭과
-          // 같은 값(#FF7A33)이라 '가장 강한 것 = 오렌지'가 앱 전체에서
-          // 하나의 언어로 읽힌다.
-          top: k.lift === maxLift,
           lift: '+' + k.lift.toFixed(1) + '%p',
           meta: '표본 ' + k.n + '건 · 상승 ' + k.rate + '%',
           bar: 'display:block;height:100%;border-radius:999px;width:'
@@ -973,13 +969,7 @@ export default class App extends React.Component {
             {v.kwRows.map(k => (
               <div key={k.key} style={css('display:flex;flex-direction:column;gap:8px')}>
                 <div style={css('display:flex;align-items:baseline;gap:10px')}>
-                  {/* 칩에 좌우 패딩을 주면 1위 글자만 오른쪽으로 밀려 아래
-                      키워드들과 좌측 정렬이 깨진다. 패딩만큼 음수 마진으로
-                      당겨 글자 시작점을 나머지 행과 맞춘다. */}
-                  <span style={css('font-size:24px;font-weight:800;letter-spacing:-0.03em;'
-                    + (k.top
-                      ? 'margin-left:-10px;padding:3px 10px 5px;border-radius:14px;background:#FF7A33;color:#4A1608'
-                      : 'color:' + pl.ink2))}>{k.word}</span>
+                  <span style={css('font-size:24px;font-weight:800;letter-spacing:-0.03em;color:' + pl.ink2)}>{k.word}</span>
                   <span style={{ ...css('margin-left:auto;flex:none;font-size:16px;font-weight:800;letter-spacing:-0.01em'), color: pl.redInk }}>{k.lift}</span>
                 </div>
                 <span style={css('height:6px;border-radius:999px;background:' + pl.barTrack + ';overflow:hidden')}>
