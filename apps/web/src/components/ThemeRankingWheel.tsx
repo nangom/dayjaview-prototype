@@ -97,8 +97,6 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== "mouse" || event.button !== 0 || !wheelRef.current) return;
     dragRef.current = { pointerId: event.pointerId, startY: event.clientY, startTop: wheelRef.current.scrollTop, moved: false };
-    wheelRef.current.setPointerCapture(event.pointerId);
-    wheelRef.current.dataset.dragging = "true";
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -106,14 +104,18 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     const drag = dragRef.current;
     if (!wheel || event.pointerId !== drag.pointerId) return;
     const delta = event.clientY - drag.startY;
-    if (Math.abs(delta) > 5) drag.moved = true;
+    if (Math.abs(delta) > 12 && !drag.moved) {
+      drag.moved = true;
+      wheel.setPointerCapture(event.pointerId);
+      wheel.dataset.dragging = "true";
+    }
     if (drag.moved) wheel.scrollTop = drag.startTop - delta;
   };
 
   const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
     const wheel = wheelRef.current;
     if (!wheel || event.pointerId !== dragRef.current.pointerId) return;
-    wheel.releasePointerCapture(event.pointerId);
+    if (wheel.hasPointerCapture(event.pointerId)) wheel.releasePointerCapture(event.pointerId);
     delete wheel.dataset.dragging;
     dragRef.current.pointerId = -1;
   };
@@ -145,7 +147,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
           }}
         >
           <span className={styles.rank}>{theme.rank}</span>
-          <span className={styles.copy}><strong>{theme.name}</strong></span>
+          <span className={styles.copy}><strong>{theme.name}</strong><small>{theme.metadata}</small></span>
           <b>{theme.value}</b>
         </button>
       ))}
