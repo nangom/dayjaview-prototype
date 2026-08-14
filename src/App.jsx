@@ -431,9 +431,9 @@ export default class App extends React.Component {
           rank: String(t.rank),
           title: t.title,
           chg: t.chg,
-          // 1위만 오렌지로 채워 시선 앵커를 만든다. 채도 있는 색이 날짜와
-          // 등락률 빨강뿐이라 어디를 먼저 볼지가 없었다.
-          top: t.rank === 1,
+          // 상위 3위까지 오렌지로 채운다. 채도 있는 색이 날짜와 등락률
+          // 빨강뿐이라 어디를 먼저 볼지가 없었다.
+          top: t.rank <= 3,
           open: () => { this.wheelPick = j; this.go('theme', { theme: t.title, themeChg: t.chg, themeRank: String(t.rank) }); },
           ref: el => { this.wheelItems[idx] = el; }
         };
@@ -666,11 +666,12 @@ export default class App extends React.Component {
             <button key={a.key} ref={a.ref} onClick={a.open} style={css(this.wheelPillStyle(p))}>
               <span style={css('width:32px;height:32px;flex:none;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;'
                 + (a.top
-                  // 크림(#FFFDF1)을 오렌지 위에 올리면 3.03:1 이라 4.5:1 을 못 넘긴다.
-                  // 17px 볼드는 WCAG large text(18.66px 볼드) 기준에도 못 미쳐
-                  // 완화가 안 된다. 시안이 오렌지 헤더의 보조 텍스트에 쓰는
-                  // #4A1608 을 그대로 써서 대비를 확보한다.
-                  ? 'background:#FF5C00;border:1px solid #FF5C00;box-shadow:0 2px 6px -2px rgba(255,92,0,.55);color:#4A1608'
+                  // 3개가 나란히 붙으면서 원색 #FF5C00 은 화면에서 너무 세다.
+                  // 같은 색상각을 유지한 채 한 단계 연한 #FF7A33 을 쓴다.
+                  // 글자는 크림(#FFFDF1)이 아니라 #4A1608 이어야 한다 — 17px
+                  // 볼드는 WCAG large text(18.66px 볼드) 기준에 못 미쳐 4.5:1 이
+                  // 그대로 적용되는데, 크림은 이 배경에서 기준을 못 넘긴다.
+                  ? 'background:#FF7A33;border:1px solid #FF7A33;box-shadow:0 2px 6px -2px rgba(255,122,51,.45);color:#4A1608'
                   : 'background:' + p.badgeBg + ';border:1px solid ' + p.badgeBorder + ';box-shadow:' + p.badgeShadow + ';color:' + p.fg))}>{a.rank}</span>
               <span style={css('font-size:19px;font-weight:700;letter-spacing:-0.02em;color:' + p.fg + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0')}>{a.title}</span>
               <span style={css('margin-left:auto;padding-left:12px;font-size:19px;font-weight:700;letter-spacing:-0.01em;color:' + p.up + ';white-space:nowrap')}>{a.chg}</span>
