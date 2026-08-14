@@ -16,7 +16,7 @@ export default class App extends React.Component {
   state = {
     screen: 'splash', theme: 'LED', hz: 1, pickIdx: 0, hover: null, plus: false,
     notif: true, saved: false, savedMap: {}, tab: 'home', byReturn: false,
-    toast: null, menu: false, savedPanel: false, savedQ: '', searchQ: '', libraryTab: 'saved', darkMode: false, scale: 1, bare: false
+    toast: null, menu: false, savedPanel: false, keywordDetail: null, savedQ: '', searchQ: '', libraryTab: 'saved', darkMode: false, scale: 1, bare: false
   };
 
   themes = [
@@ -95,7 +95,8 @@ export default class App extends React.Component {
         this._wheelBound = true;
         el.addEventListener('scroll', this.onWheelScroll, { passive: true });
         ['pointerdown', 'wheel', 'touchstart'].forEach(ev => el.addEventListener(ev, this.holdAuto, { passive: true }));
-        this.scheduleAuto(2600);
+        // 첫 진입에서는 1·2위 강조 상태를 충분히 보여준 뒤 회전을 시작한다.
+        this.scheduleAuto(7000);
       }
       this.paintWheel();
     });
@@ -129,8 +130,22 @@ export default class App extends React.Component {
       if (el.scrollTop < this.cycleH * 0.5) el.scrollTop += this.cycleH;
       else if (el.scrollTop > this.cycleH * 1.5) el.scrollTop -= this.cycleH;
     }
+    if (!this._auto) {
+      clearTimeout(this._snapT);
+      this._snapT = setTimeout(this.snapWheel, 140);
+    }
     if (this._paintRaf) return;
     this._paintRaf = requestAnimationFrame(() => { this._paintRaf = 0; this.paintWheel(); });
+  };
+
+  snapWheel = () => {
+    const el = this.wheelEl;
+    if (!el || this.baseTop == null) return;
+    const step = (this.wheelItems[0] ? this.wheelItems[0].offsetHeight : 62) + 8;
+    const target = this.baseTop + Math.round((el.scrollTop - this.baseTop) / step) * step;
+    this._auto = true;
+    el.scrollTo({ top: target, behavior: 'smooth' });
+    setTimeout(() => { this._auto = false; }, 420);
   };
 
   paintWheel = () => {
@@ -166,7 +181,7 @@ export default class App extends React.Component {
   }
 
   go(screen, extra) {
-    this.setState(Object.assign({ screen, plus: false, hover: null }, extra || {}));
+    this.setState(Object.assign({ screen, plus: false, hover: null, keywordDetail: null }, extra || {}));
   }
 
   componentDidMount() {
@@ -187,6 +202,7 @@ export default class App extends React.Component {
     clearTimeout(this._t);
     clearTimeout(this._splash);
     clearTimeout(this._autoT);
+    clearTimeout(this._snapT);
     cancelAnimationFrame(this._wheelRaf);
     window.removeEventListener('resize', this.fitFrame);
     if (this._ro) this._ro.disconnect();
@@ -452,7 +468,7 @@ export default class App extends React.Component {
         rate: k.rate,
         bubbleSize: [132, 116, 104, 94, 84][index],
         bubbleFont: [18, 17, 16, 15, 14][index],
-        bubbleBg: 'rgba(229,72,77,' + (0.1 + (k.rate - 55) * 0.009).toFixed(2) + ')',
+        bubbleBg: 'rgba(255,111,15,' + (0.1 + (k.rate - 55) * 0.009).toFixed(2) + ')',
         meta: '표본 ' + k.n + '건 · 상승 ' + k.rate + '%',
         bar: 'display:block;height:100%;width:' + k.rate + '%;border-radius:3px;background:#D83A43'
       })),
@@ -525,10 +541,11 @@ export default class App extends React.Component {
   renderSeedHome(v) {
     const rankedThemes = v.wheel.slice(0, 10);
     return (
-      <div className="seed-pilot seed-home" style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
+      <div className="seed-pilot seed-home" style={css('position:absolute;inset:0;background:#EAE8E3;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
+        <div className="seed-home-warm-glow" aria-hidden="true" />
         <header style={css('flex:none;padding:' + this.padTop(50) + ' 20px 14px')}>
           <div style={css('display:flex;align-items:center;justify-content:space-between')}>
-            <img src={LOGO_MARK} alt="DAY-JA-VIEW" className="seed-home-corner-logo" />
+            <span role="img" aria-label="DAY-JA-VIEW" className="seed-home-corner-logo" />
             <button className="seed-icon-button seed-home-search" onClick={() => this.go('search')} aria-label="테마·종목 검색">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
                 <circle cx="11" cy="11" r="7" />
@@ -997,11 +1014,10 @@ export default class App extends React.Component {
           <div style={css('margin-top:5px;font-size:12.5px;font-weight:600;color:#8B8E96')}>5일 후 영향 · 등장 vs 미등장</div>
           <div className="seed-keyword-bubbles">
             {v.kwRows.map(k => (
-              <div key={k.key} className="seed-keyword-bubble" style={{ width: k.bubbleSize, height: k.bubbleSize, background: k.bubbleBg }}>
+              <button key={k.key} className="seed-keyword-bubble" onClick={() => this.setState({ keywordDetail: k })} style={{ width: k.bubbleSize, height: k.bubbleSize, background: k.bubbleBg }} aria-label={k.word + ' 상세 정보 보기'}>
                 <strong style={{ fontSize: k.bubbleFont }}>{k.word}</strong>
                 <b>{k.lift}</b>
-                <small>표본 {k.n}건 · 상승 {k.rate}%</small>
-              </div>
+              </button>
             ))}
           </div>
           <div style={css('margin-top:14px;font-size:12.5px;font-weight:500;line-height:1.55;color:#8B8E96;text-wrap:pretty')}>키워드가 등장한 과거 사건이 미등장 사건보다 5일 후 얼마나 더 올랐는지를 뜻합니다 (상승 동반 강도, 인과 아님). 표본 5~9건은 참고용이며 일반어는 제외했습니다.</div>
@@ -1037,6 +1053,23 @@ export default class App extends React.Component {
           <div style={css('margin-top:14px;font-size:13px;font-weight:500;line-height:1.55;color:#8B8E96;text-wrap:pretty')}>사례 상세에서도 원인 문장에서 키워드를 추출합니다. 오늘 사건과 공통되는 키워드가 유사도의 근거가 됩니다.</div>
           <div style={css('margin-top:16px;font-size:12px;font-weight:500;line-height:1.5;color:#8B8E96')}>현재 가격이나 매수·매도 판단이 아닌, 해당 사건 이후의 과거 반응을 보여줍니다.</div>
         </div>
+        {this.state.keywordDetail && (
+          <div className="seed-keyword-modal-layer" onClick={() => this.setState({ keywordDetail: null })}>
+            <section className="seed-keyword-modal" onClick={event => event.stopPropagation()} role="dialog" aria-modal="true" aria-label={this.state.keywordDetail.word + ' 상세 정보'}>
+              <div className="seed-keyword-modal-head">
+                <span>상승 동반 키워드</span>
+                <button onClick={() => this.setState({ keywordDetail: null })} aria-label="닫기">×</button>
+              </div>
+              <h3>{this.state.keywordDetail.word}</h3>
+              <strong>{this.state.keywordDetail.lift}</strong>
+              <div className="seed-keyword-modal-stats">
+                <span><small>과거 표본</small><b>{this.state.keywordDetail.n}건</b></span>
+                <span><small>상승 비율</small><b>{this.state.keywordDetail.rate}%</b></span>
+              </div>
+              <p>이 키워드가 등장한 과거 사건은 등장하지 않은 사건보다 5일 후 수익률이 더 높게 나타났습니다. 인과관계가 아닌 상승 동반 강도입니다.</p>
+            </section>
+          </div>
+        )}
       </div>
     );
   }
