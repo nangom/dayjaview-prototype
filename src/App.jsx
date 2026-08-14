@@ -148,13 +148,14 @@ export default class App extends React.Component {
       faintLine: d ? 'rgba(255,255,255,.07)' : '#F2F1EC',
       rowLine: d ? 'rgba(255,255,255,.08)' : '#F5F4EF',
       qualityFg: d ? '#C9C3BE' : '#6E6D65',
-      // 차트 선: 라이트의 #12B5A2 는 다크 배경에서 가라앉아 밝은 쪽으로 올린다.
-      // 비교선(KOSPI)은 주선보다 확실히 낮은 명도를 유지해야 둘이 구분된다.
-      chartLine: d ? '#3FD9C4' : '#12B5A2',
+      // 차트도 브랜드 오렌지로 통일. 원색 #FF5C00 은 다크 배경에서 가라앉아
+      // 밝은 쪽(#FF8B4D)으로 올린다. 비교선(KOSPI)은 계열색을 쓰지 않는다 —
+      // 중립 회색으로 둬야 주선과 한눈에 갈린다.
+      chartLine: d ? '#FF8B4D' : '#FF5C00',
       chartRef: d ? '#7C7570' : '#C3C2B9',
-      barOn: d ? '#3FD9C4' : '#12B5A2',
-      barIdle: d ? 'rgba(63,217,196,.55)' : '#7FE9DC',
-      barMuted: d ? 'rgba(63,217,196,.22)' : '#CFF6F0',
+      barOn: d ? '#FF8B4D' : '#FF5C00',
+      barIdle: d ? 'rgba(255,139,77,.55)' : '#FF9C5C',
+      barMuted: d ? 'rgba(255,139,77,.22)' : '#FFDCC7',
       tipBg: d ? '#0F0D0C' : '#16160F'
     };
   }
@@ -594,7 +595,7 @@ export default class App extends React.Component {
           label: 'font-size:11.5px;font-weight:700;transition:color .14s ease,opacity .14s ease;'
             + (on ? 'color:' + P.fg + ';opacity:1' : 'color:' + P.fg2 + ';opacity:' + (hv === null ? '1' : '.35')),
           bar: 'width:100%;height:' + Math.round((b.n / maxN) * 84) + 'px;border-radius:8px 8px 4px 4px;transform-origin:bottom;animation:grow .5s cubic-bezier(.2,.8,.3,1) both;transition:background .14s ease,box-shadow .14s ease;'
-            + (on ? 'background:' + P.barOn + ';box-shadow:0 8px 16px -8px rgba(18,181,162,.65)' : 'background:' + (hv === null ? P.barIdle : P.barMuted))
+            + (on ? 'background:' + P.barOn + ';box-shadow:0 8px 16px -8px rgba(255,92,0,.5)' : 'background:' + (hv === null ? P.barIdle : P.barMuted))
         };
       }),
       tip: hv === null ? null : {
