@@ -42,7 +42,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
         const cardBounds = card.getBoundingClientRect();
         const distance = Math.abs(cardBounds.top + cardBounds.height / 2 - focusY) / step;
         const emphasis = Math.max(0, 1 - distance);
-        card.style.setProperty("--wheel-scale", String(0.94 + emphasis * 0.06));
+        card.style.setProperty("--wheel-scale", String(0.92 + emphasis * 0.08));
         card.style.setProperty("--wheel-opacity", String(Math.max(0.24, 1 - Math.max(0, distance - 1) * 0.2)));
         card.dataset.focused = distance < 0.72 ? "true" : "false";
       });
