@@ -473,9 +473,9 @@ export default class App extends React.Component {
       reason: '정부 공공 조명 교체 예산 확대와 마이크로 LED 신규 수주 소식이 겹치며 관련 종목 전반이 강세를 보였습니다.',
       stocks: ['서울반도체', '루멘스', '엘이디코리아'],
       horizons: [
-        { key: 'h1', label: '1일 후', val: '+0.4%', hit: '18/34 상승', color: up },
-        { key: 'h5', label: '5일 후', val: '+1.3%', hit: '20/34 상승', color: up },
-        { key: 'h20', label: '20일 후', val: '+2.8%', hit: '21/34 상승', color: up }
+        { key: 'h1', label: '1일 후', val: '+0.4%', color: up },
+        { key: 'h5', label: '5일 후', val: '+1.3%', color: up },
+        { key: 'h20', label: '20일 후', val: '+2.8%', color: up }
       ],
       topCases: this.cases.slice(0, 5).map(caseRow),
       links: [
@@ -827,7 +827,6 @@ export default class App extends React.Component {
                   <div key={hz.key} style={css('border-radius:20px;background:' + p.hzBg + ';border:1px solid ' + p.hzBorder + ';padding:16px 12px;text-align:center;box-shadow:0 1px 2px rgba(22,22,15,.05)')}>
                     <div style={css('font-size:13px;font-weight:600;color:' + p.fg2)}>{hz.label}</div>
                     <div style={{ ...css('margin-top:8px;font-size:24px;font-weight:800;letter-spacing:-0.03em'), color: hz.color }}>{hz.val}</div>
-                    <div style={css('margin-top:6px;font-size:11.5px;font-weight:500;color:' + p.fg3)}>{hz.hit}</div>
                   </div>
                 ))}
               </div>
