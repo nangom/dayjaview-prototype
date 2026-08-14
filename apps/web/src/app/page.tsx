@@ -23,7 +23,7 @@ const footerItems = [
   { id: "natural", Icon: IconMagnifyingglassLine, label: "리서치" },
 ];
 
-const LOADING_DURATION_MS = 3400;
+const LOADING_DURATION_MS = 4000;
 const homeThemes = marketSnapshot.themes.slice(0, 10);
 
 const leaderRows = [
@@ -237,6 +237,7 @@ export default function Home() {
                 <div className={styles.themeReturnRow}><strong>+2.7%</strong><p className={styles.themeReturnPill}>오늘 평균 등락률</p></div>
               </section>
 
+              <div className={styles.detailContentCard}>
               <section className={styles.metrics}>
                 <h2>현재 테마 상태</h2>
                 <div>
@@ -297,6 +298,7 @@ export default function Home() {
                   <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2022.10.31</span><strong>폴란드 원전 개발계획 협력</strong><div className={styles.matchTags}><i>해외 수주</i><i>개발 계획</i></div><small>T+5 +3.3%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
                 </div>
               </section>
+              </div>
 
               <p className={styles.notice}>장중 정보는 이후 정정될 수 있습니다. 과거에 관측된 데이터와 확인된 뉴스 근거를 함께 보여줍니다.</p>
             </div>
@@ -456,7 +458,8 @@ function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; ac
     <section id="screen-case-detail" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="과거 개별 사례 와이어프레임">
       <div className={styles.wireScreen}>
         <WireHeader title="과거 사례" onBack={() => goTo("screen-detail")} />
-        <div className={styles.wireBody}>
+        <div className={`${styles.wireBody} ${styles.caseDetailBody}`}>
+          <div className={styles.caseDetailCard}>
           <div className={`${styles.pageIntro} ${styles.caseHero}`}><small>원전수출 테마 · 2024.07.18</small><h1>체코 원전 우선협상대상자 선정</h1></div>
           <section className={styles.dataBlock}><h2>사건 기록</h2><p>체코 정부가 신규 원전 사업의 우선협상대상자로 한국수력원자력을 선정하며 원전 관련주가 부각됐어요.</p><small>시장 사건 원문 · 수집 기록 보유</small><div className={styles.caseKeywords} aria-label="사건 키워드"><span>체코 원전</span><span>우선협상대상자</span><span>원전 수출</span></div></section>
           <section className={styles.dataBlock}><h2>당시 테마 바스켓의 이후 흐름</h2><div className={styles.statGrid}><article><span>T+1</span><strong>+2.1%</strong></article><article><span>T+5</span><strong>+4.6%</strong></article><article><span>T+20</span><strong>+7.2%</strong></article></div><small>사건 당일 기록된 종목을 동일 비중으로 계산했어요.</small></section>
@@ -480,7 +483,8 @@ function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; ac
               </button>
             ) : null}
           </section>
-              <p className={styles.disclaimer}>과거에 관측된 결과를 보여주며 현재의 투자 판단을 제공하지 않아요.</p>
+               <p className={styles.disclaimer}>과거에 관측된 결과를 보여주며 현재의 투자 판단을 제공하지 않아요.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -525,13 +529,16 @@ function NaturalSearchScreen({ goTo, active }: { goTo: (screen: string) => void;
 
   return (
     <section id="screen-natural" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="리서치 와이어프레임">
-      <div className={styles.wireScreen}>
-        <div className={styles.wireBody}><div className={styles.pageIntro}><small>데이터 리서치</small><h1>무엇이 궁금하세요?</h1><p>질문하면 보유한 과거 데이터 안에서 답을 찾아요.</p></div>
+      <div className={`${styles.wireScreen} ${styles.researchScreen}`}>
+        <div className={styles.wireBody}>
+          <div className={styles.pageIntro}><small>데이터 리서치</small><h1>무엇이 궁금하세요?</h1><p>질문하면 보유한 과거 데이터 안에서 답을 찾아요.</p></div>
+          <div className={styles.researchChatBox}>
           <form className={styles.naturalForm} onSubmit={(event) => { event.preventDefault(); setHasSearched(true); }}><textarea defaultValue="원전수출 테마는 과거에 오른 뒤 5일 동안 어땠어?" aria-label="자연어 질문"/><button type="submit">검색</button></form>
           {hasSearched ? <>
             <section className={styles.answerBlock}><div><small>DAY-JA-VIEW 리서치</small><span>과거 데이터 기준</span></div><p className={styles.researchLead}>원전수출 테마는 과거 34개 사례에서 사건 발생 5거래일 후 평균 <strong>+1.3%</strong>를 기록했어요.</p><p>이 가운데 20개 사례가 상승했습니다. 결과는 사건 당시 시장 기록에 포함된 종목을 동일 비중으로 계산한 값이에요. 가장 크게 움직인 사례는 2024년 7월 18일 체코 원전 우선협상대상자 선정 사건이었습니다.</p><p>다만 과거 관측 결과이며 현재의 상승을 예측하거나 종목을 추천하는 정보는 아니에요.</p><button type="button" onClick={() => goTo("screen-cases")}>관련 DAY-JA-VIEW 케이스 보기</button></section>
             <p className={styles.disclaimer}>검색 결과는 DB에 저장된 사건과 가격 데이터만 사용해요.</p>
           </> : <p className={styles.searchHint}>질문을 확인한 뒤 검색을 눌러주세요.</p>}
+          </div>
         </div>
         <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button onClick={() => goTo("screen-realtime")}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button onClick={() => goTo("screen-saved")}><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button className={styles.selected}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>리서치</small></button></nav>
       </div>

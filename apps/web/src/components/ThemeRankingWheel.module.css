@@ -1,14 +1,14 @@
 .wheel {
   min-height: 0;
   flex: 1;
-  padding: 4px 0;
+  padding: 4px 14px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scroll-behavior: auto;
   overflow-anchor: none;
   scrollbar-width: none;
   touch-action: pan-y;
-  perspective: 720px;
+  perspective: 650px;
   cursor: grab;
   user-select: none;
   -webkit-overflow-scrolling: touch;
@@ -40,15 +40,17 @@
   font: inherit;
   text-align: left;
   opacity: var(--wheel-opacity);
-  transform: perspective(720px) rotateX(var(--wheel-rotate)) translateZ(var(--wheel-depth)) translateX(var(--wheel-curve)) scale(var(--wheel-scale));
+  transform: perspective(650px) rotateX(var(--wheel-rotate)) translateZ(var(--wheel-depth)) translateX(var(--wheel-curve)) scale(var(--wheel-scale));
   transform-origin: center;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  transition: opacity 150ms ease, transform 180ms cubic-bezier(.2,.75,.2,1), border-color 120ms ease, background 120ms ease;
+  will-change: transform;
+  -webkit-font-smoothing: antialiased;
+  transition: opacity 150ms ease, transform 220ms cubic-bezier(.2,.75,.2,1), border-color 120ms ease, background 120ms ease;
 }
 
 .card[data-focused="true"] { border-color: rgba(255,255,255,.98); background: rgba(255,255,255,.94); }
-.wheel[data-intro="true"] .card { animation: themeWheelIntro 680ms cubic-bezier(.22,.78,.2,1) both; }
+.wheel[data-intro="true"] .card { animation: themeWheelIntro 760ms cubic-bezier(.22,.78,.2,1) both; }
 @keyframes themeWheelIntro {
   0% { transform: perspective(720px) rotateX(2deg) translateZ(var(--wheel-depth)) translateX(var(--wheel-curve)) scale(calc(var(--wheel-scale) * .985)); }
   58% { transform: perspective(720px) rotateX(-.5deg) translateZ(var(--wheel-depth)) translateX(var(--wheel-curve)) scale(var(--wheel-scale)); }
