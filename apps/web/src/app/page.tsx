@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   IconChevronRightSmallLine,
   IconGridLine,
@@ -14,9 +15,10 @@ import { ThemeRankingWheel } from "../components/ThemeRankingWheel";
 import styles from "./page.module.css";
 
 const footerItems = [
-  { id: "home", Icon: IconHouseLine, label: "오늘" },
-  { id: "analysis", Icon: IconMagnifyingglassLine, label: "분석" },
-  { id: "saved", Icon: IconStarLine, label: "저장" },
+  { id: "home", Icon: IconHouseLine, label: "홈" },
+  { id: "realtime", Icon: IconGridLine, label: "실시간" },
+  { id: "saved", Icon: IconStarLine, label: "즐겨찾기" },
+  { id: "natural", Icon: IconMagnifyingglassLine, label: "자연어" },
 ];
 
 const leaderRows = [
@@ -31,6 +33,7 @@ const leaderRows = [
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loginIntent, setLoginIntent] = useState<"save" | "library" | null>(null);
   const [activeTab, setActiveTab] = useState("home");
   const [currentScreen, setCurrentScreen] = useState("screen-home");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -51,6 +54,10 @@ export default function Home() {
   }, []);
 
   const goTo = (screen: string) => {
+    if (screen === "screen-saved" && !isLoggedIn) {
+      setLoginIntent("library");
+      return;
+    }
     if (screen === "screen-home") setActiveTab("home");
     if (screen === "screen-realtime") setActiveTab("realtime");
     if (screen === "screen-natural") setActiveTab("analysis");
@@ -68,6 +75,32 @@ export default function Home() {
       window.localStorage.setItem("dayjaview:saved:원전수출", String(next));
       return next;
     });
+  };
+
+  const requestToggleSaved = () => {
+    if (!isLoggedIn) {
+      setLoginIntent("save");
+      return;
+    }
+    toggleSaved();
+  };
+
+  const requestSavedLibrary = () => {
+    if (!isLoggedIn) {
+      setLoginIntent("library");
+      return;
+    }
+    goTo("screen-saved");
+  };
+
+  const completeLogin = () => {
+    setIsLoggedIn(true);
+    if (loginIntent === "save" && !isSaved) toggleSaved();
+    if (loginIntent === "library") {
+      setActiveTab("saved");
+      setCurrentScreen("screen-home");
+    }
+    setLoginIntent(null);
   };
 
   const submitSearch = () => {
@@ -91,12 +124,13 @@ export default function Home() {
         {isLoading ? (
           <div className={styles.loading}>
             <div className={styles.loadingHalo} />
-            <div className={styles.loadingLogo} aria-label="DAY-JA-VIEW"><svg viewBox="0 0 48 64" aria-hidden="true"><path d="M9 5h30c0 12-6 17-15 27C15 22 9 17 9 5Zm0 54h30c0-12-6-17-15-27C15 42 9 47 9 59Z" /></svg><b /></div>
+            <div className={styles.loadingLogo} aria-label="DAY-JA-VIEW"><Image src="/dejavu-mark.png" alt="" width={92} height={108} priority /><b /></div>
             <div className={styles.loadingFooter}><span>오늘의 시장을, 과거의 기록으로</span><b><i /></b></div>
           </div>
-        ) : !isLoggedIn ? (
-          <form className={styles.login} onSubmit={(event) => { event.preventDefault(); setIsLoggedIn(true); }}>
-            <svg className={styles.loginMark} viewBox="0 0 48 64" aria-hidden="true"><path d="M9 5h30c0 12-6 17-15 27C15 22 9 17 9 5Zm0 54h30c0-12-6-17-15-27C15 42 9 47 9 59Z" /></svg>
+        ) : loginIntent ? (
+          <form className={styles.login} onSubmit={(event) => { event.preventDefault(); completeLogin(); }}>
+            <button className={styles.loginClose} type="button" onClick={() => setLoginIntent(null)} aria-label="로그인 닫기">×</button>
+            <Image className={styles.loginMark} src="/dejavu-mark.png" alt="DAY-JA-VIEW" width={38} height={48} />
             <div className={styles.loginCopy}><small>DAY-JA-VIEW</small><h1>다시 만나 반가워요</h1><p>저장한 분석 결과를 이어서 확인하세요.</p></div>
             <label><span>이메일</span><input type="email" defaultValue="demo@dayjaview.kr" /></label>
             <label><span>비밀번호</span><input type="password" defaultValue="dayjaview" /></label>
@@ -108,13 +142,10 @@ export default function Home() {
             <div className={styles.content}>
               {activeTab === "home" ? (
                 <div className={styles.home}>
-                  <div className={styles.statusBar} aria-hidden="true">
-                    <strong>9:41</strong><i /><span className={styles.signal}>▮▮▮</span><span className={styles.wifi}>⌁</span><span className={styles.battery} />
-                  </div>
                   <header className={styles.orangeHomeHeader}>
-                    <button className={styles.menuButton} type="button" aria-label="메뉴 열기"><span /><span /><span /></button>
-                    <svg className={styles.homeMark} viewBox="0 0 48 64" role="img" aria-label="DAY-JA-VIEW"><path d="M9 5h30c0 12-6 17-15 27C15 22 9 17 9 5Zm0 54h30c0-12-6-17-15-27C15 42 9 47 9 59Z" /></svg>
-                    <button className={styles.homeSavedButton} type="button" onClick={() => goTo("screen-saved")} aria-label="저장한 결과 보기"><IconStarLine size={22} /></button>
+                    <span className={styles.homeHeaderSpacer} aria-hidden="true" />
+                    <Image className={styles.homeMark} src="/dejavu-mark.png" alt="DAY-JA-VIEW" width={24} height={30} priority />
+                    <button className={styles.homeSavedButton} type="button" onClick={requestSavedLibrary} aria-label="저장한 결과 보기"><IconStarLine size={22} /></button>
                   </header>
                   <div className={styles.orangeHomeTitle}><strong>2026년 08월 12일</strong><h1>오늘의 요약</h1></div>
 
@@ -125,7 +156,7 @@ export default function Home() {
                   isSaved={isSaved}
                   history={searchHistory}
                   onOpenSaved={() => goTo("screen-detail")}
-                  onRemoveSaved={toggleSaved}
+                  onRemoveSaved={requestToggleSaved}
                   onOpenHistory={(item) => { setQuery(item); setIsSearchOpen(true); }}
                   onClearHistory={clearSearchHistory}
                 />
@@ -139,7 +170,7 @@ export default function Home() {
 
             <nav className={styles.footer} aria-label="주요 메뉴">
               {footerItems.map(({ id, Icon, label }) => (
-                <button key={id} type="button" className={activeTab === id ? styles.active : ""} onClick={() => { setActiveTab(id); if (id === "home") goTo("screen-home"); if (id === "saved") goTo("screen-saved"); if (id === "analysis") goTo("screen-natural"); }}>
+                <button key={id} type="button" className={activeTab === id ? styles.active : ""} onClick={() => { if (id === "home") goTo("screen-home"); if (id === "realtime") goTo("screen-realtime"); if (id === "saved") requestSavedLibrary(); if (id === "natural") goTo("screen-natural"); }}>
                   <Icon className={styles.navIcon} size={20} aria-hidden="true" /><small>{label}</small>
                 </button>
               ))}
@@ -170,7 +201,7 @@ export default function Home() {
             <header className={styles.detailHeader}>
               <button type="button" aria-label="뒤로 가기" onClick={() => goTo("screen-home")}>←</button>
               <span>8월 14일 장중 기준</span>
-              <button type="button" aria-label={isSaved ? "저장 목록에서 제거" : "분석 결과 저장"} className={isSaved ? styles.savedStar : ""} onClick={toggleSaved}>{isSaved ? <IconStarFill size={24} /> : <IconStarLine size={24} />}</button>
+              <button type="button" aria-label={isSaved ? "저장 목록에서 제거" : "분석 결과 저장"} className={isSaved ? styles.savedStar : ""} onClick={requestToggleSaved}>{isSaved ? <IconStarFill size={24} /> : <IconStarLine size={24} />}</button>
             </header>
 
             <div className={styles.detailScroll}>
