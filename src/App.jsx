@@ -11,11 +11,17 @@ const FRAME_H = 852;
 const FRAME_PAD = 40;      // 목업 바깥 여백 (넓은 화면에서만)
 const BARE_MAX_W = 520;    // 이 폭 미만이면 프레임 없이 꽉 채운다
 
+// 테마 화면 주황 헤더가 완전히 접히기까지의 스크롤 거리.
+// 접힘 정도(t)를 스크롤 위치의 함수로 직접 계산한다 — 스크롤을 가로채거나
+// 별도 타이머로 굴리지 않으므로 손가락을 따라오지 못해 미끄러지는 느낌이 없다.
+const THEME_COLLAPSE = 130;
+
 export default class App extends React.Component {
   state = {
     screen: 'splash', theme: 'LED', hz: 1, pickIdx: 0, hover: null, plus: false,
     notif: true, saved: false, savedMap: {}, tab: 'home', byReturn: false,
-    toast: null, menu: false, savedQ: '', scale: 1, bare: false, dark: false
+    toast: null, menu: false, savedQ: '', scale: 1, bare: false, dark: false,
+    themeT: 0, themeExpH: null
   };
 
   themes = [
@@ -309,8 +315,44 @@ export default class App extends React.Component {
   }
 
   go(screen, extra) {
-    this.setState(Object.assign({ screen, plus: false, hover: null }, extra || {}));
+    // 화면을 옮길 때마다 테마 헤더 접힘 상태를 초기화한다. 접힌 채로
+    // 나갔다가 돌아오면 스크롤은 맨 위인데 헤더만 접혀 있게 된다.
+    this._themeMeasured = false;
+    this.setState(Object.assign({ screen, plus: false, hover: null, themeT: 0, themeExpH: null }, extra || {}));
   }
+
+  // ── 테마 화면 접히는 헤더 ─────────────────────────────────
+  // 스크롤 컨테이너를 잡아 스크롤 위치를 접힘 정도(t)로 환산한다.
+  themeScrollRef = el => {
+    if (el === this.themeEl) return;
+    if (this.themeEl) this.themeEl.removeEventListener('scroll', this.onThemeScroll);
+    this.themeEl = el;
+    if (el) el.addEventListener('scroll', this.onThemeScroll, { passive: true });
+  };
+
+  // rAF 로 묶지 않는다. rAF 는 창이 렌더링될 때만 돌아서, 화면이 그려지지
+  // 않는 환경(백그라운드 탭 등)에서는 콜백이 아예 안 불린다. 스크롤 이벤트는
+  // 브라우저가 이미 프레임당 한 번꼴로만 주고 React 가 배치하므로, 여기서
+  // 바로 계산하는 편이 단순하고 환경을 안 탄다.
+  onThemeScroll = () => {
+    const el = this.themeEl;
+    if (!el) return;
+    const t = Math.max(0, Math.min(1, el.scrollTop / THEME_COLLAPSE));
+    // 눈에 안 보이는 차이로 다시 그리지 않는다.
+    if (Math.abs(t - this.state.themeT) > 0.004) this.setState({ themeT: t });
+  };
+
+  // 펼친 영역의 자연 높이를 한 번 재둔다. 이 값이 있어야 t 에 비례해 높이를
+  // 줄일 수 있다. 상수로 박으면 테마명이 길어질 때 잘린다.
+  themeExpRef = el => {
+    if (!el || this._themeMeasured) return;
+    this._themeMeasured = true;
+    // 렌더 중 setState 를 피하려 한 틱 미룬다. rAF 는 위와 같은 이유로 안 쓴다.
+    setTimeout(() => {
+      const h = el.scrollHeight;
+      if (h && this.state.themeExpH !== h) this.setState({ themeExpH: h });
+    }, 0);
+  };
 
   componentDidMount() {
     const q = new URLSearchParams(location.search).get('screen');
@@ -333,6 +375,7 @@ export default class App extends React.Component {
     cancelAnimationFrame(this._wheelRaf);
     window.removeEventListener('resize', this.fitFrame);
     if (this._ro) this._ro.disconnect();
+    if (this.themeEl) this.themeEl.removeEventListener('scroll', this.onThemeScroll);
     if (this.wheelEl) this.wheelEl.removeEventListener('scroll', this.onWheelScroll);
   }
 
@@ -438,6 +481,10 @@ export default class App extends React.Component {
 
       theme: st.theme,
       themeChg: st.themeChg ?? '+3.63%',
+      themeT: st.themeT,
+      themeExpH: st.themeExpH,
+      // 접힌 헤더에 남길 상승·하락 상태
+      themeDown: /^[-−]/.test(st.themeChg ?? '+3.63%'),
       themeRank: st.themeRank ?? '10',
       hasRank: !!(st.themeRank ?? '10'),
 
@@ -783,35 +830,80 @@ export default class App extends React.Component {
 
   renderTheme(v) {
     const p = v.p;
+    const t = v.themeT;
     return (
       <div style={css('position:absolute;inset:0;background:' + p.screenBg + ';display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
-        <div style={css('position:absolute;top:0;left:0;right:0;height:340px;background:#FF5C00')}></div>
-        <div style={css('position:relative;z-index:1;flex:1;overflow-y:auto')}>
-          <div style={css('padding:' + this.padTop(52) + ' 22px 34px')}>
-            <div style={css('display:flex;align-items:center;justify-content:space-between;margin-bottom:26px')}>
-              <button className="press" onClick={v.toHome} aria-label="Back" style={css('width:46px;height:46px;border-radius:23px;border:none;cursor:pointer;background:rgba(255,253,241,.18);display:flex;align-items:center;justify-content:center')}>
+        {/* overflow-anchor:none 이 없으면 헤더가 줄 때 브라우저가 보이는 위치를
+            지키려고 스크롤을 되돌리고, 그 때문에 t 가 바뀌어 높이가 또 바뀌는
+            되먹임이 생긴다 (스크롤 값이 20 -> 138 -> 40 -> 60 처럼 진동했다). */}
+        <div ref={this.themeScrollRef} style={css('position:relative;z-index:1;flex:1;overflow-y:auto;overflow-anchor:none')}>
+          {/* 접히는 주황 헤더.
+              position:sticky 라 흐름 안에 남아 있어 아래 흰 시트를 가리지
+              않는다 (fixed 였다면 시트에 헤더 높이만큼 여백을 따로 줘야 한다).
+              값은 전부 t(스크롤 위치)의 함수라 손가락을 따라온다. CSS
+              transition 을 걸면 오히려 스크롤보다 늦게 따라와 미끄러진다. */}
+          <div style={{
+            ...css('position:sticky;top:0;z-index:2;background:#FF5C00'),
+            paddingTop: this.padTop(52),
+            paddingLeft: 22, paddingRight: 22,
+            paddingBottom: 20 - 8 * t
+          }}>
+            <div style={css('display:flex;align-items:center;gap:10px')}>
+              <button className="press" onClick={v.toHome} aria-label="Back" style={css('flex:none;width:46px;height:46px;border-radius:23px;border:none;cursor:pointer;background:rgba(255,253,241,.18);display:flex;align-items:center;justify-content:center')}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFDF1" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
               </button>
-              <span style={css('font-size:17px;font-weight:600;letter-spacing:-0.01em;color:#4A1608')}>8월 12일 장 마감 기준</span>
-              <button className="press" onClick={v.toggleSave} aria-label="Save" style={css('width:46px;height:46px;border-radius:23px;border:none;cursor:pointer;background:rgba(255,253,241,.18);display:flex;align-items:center;justify-content:center')}>
+              {/* 날짜 문구와 접힌 요약이 같은 자리를 나눠 쓴다. 둘 다 항상
+                  DOM 에 있고 투명도만 엇갈리게 바뀌므로 화면이 통째로 갈리는
+                  순간이 없다. 겹쳐 보이지 않도록 구간을 나눴다 — 날짜는 앞쪽
+                  절반에서 사라지고, 요약은 뒤쪽 절반에서 나타난다. */}
+              <span style={css('position:relative;flex:1;min-width:0;height:46px;display:block')}>
+                <span style={{
+                  ...css('position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;letter-spacing:-0.01em;color:#4A1608;white-space:nowrap'),
+                  opacity: Math.max(0, 1 - t * 2.2),
+                  pointerEvents: t > 0.4 ? 'none' : 'auto'
+                }}>8월 12일 장 마감 기준</span>
+                <span style={{
+                  ...css('position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:7px;min-width:0'),
+                  opacity: Math.max(0, (t - 0.55) / 0.45),
+                  pointerEvents: t > 0.55 ? 'auto' : 'none'
+                }}>
+                  <span style={css('font-size:16px;font-weight:800;letter-spacing:-0.02em;color:#4A1608;white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{v.theme}</span>
+                  <svg width="11" height="11" viewBox="0 0 12 12" style={css('flex:none')} aria-hidden="true">
+                    <path d={v.themeDown ? 'M6 10.5 1 3h10z' : 'M6 1.5 11 9H1z'} fill="#4A1608"></path>
+                  </svg>
+                  <span style={css('flex:none;font-size:16px;font-weight:800;letter-spacing:-0.01em;color:#4A1608;white-space:nowrap')}>{v.themeChg}</span>
+                </span>
+              </span>
+              <button className="press" onClick={v.toggleSave} aria-label="Save" style={css('flex:none;width:46px;height:46px;border-radius:23px;border:none;cursor:pointer;background:rgba(255,253,241,.18);display:flex;align-items:center;justify-content:center')}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill={v.saveFill} stroke="#FFFDF1" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M7 4.5h10a1 1 0 0 1 1 1V20l-6-3.6L6 20V5.5a1 1 0 0 1 1-1z"></path></svg>
               </button>
             </div>
-            <div style={css('display:flex;align-items:center;gap:10px;margin-bottom:6px')}>
-              <span style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#FFFDF1')}>{v.theme}</span>
-              {v.hasRank && <span style={css('padding:5px 12px;border-radius:14px;background:rgba(255,253,241,.2);font-size:13px;font-weight:700;color:#FFFDF1')}>상승 {v.themeRank}위</span>}
+
+            {/* 펼친 요약. 높이를 t 에 비례해 줄여 아래 시트가 그만큼 올라온다.
+                높이 애니메이션은 transform 보다 비싸지만, 시트를 실제로 밀어
+                올려야 하는 동작이라 transform 으로는 대체가 안 된다. 대상이
+                이 한 요소뿐이고 rAF 로 프레임당 한 번만 갱신한다. */}
+            <div ref={this.themeExpRef} style={{
+              overflow: 'hidden',
+              height: v.themeExpH == null ? 'auto' : Math.round(v.themeExpH * (1 - t)),
+              opacity: Math.max(0, 1 - t * 1.35)
+            }}>
+              <div style={css('padding-top:26px;display:flex;align-items:center;gap:10px;margin-bottom:6px')}>
+                <span style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#FFFDF1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{v.theme}</span>
+                {v.hasRank && <span style={css('flex:none;padding:5px 12px;border-radius:14px;background:rgba(255,253,241,.2);font-size:13px;font-weight:700;color:#FFFDF1')}>상승 {v.themeRank}위</span>}
+              </div>
+              <div style={css('font-size:48px;line-height:1;font-weight:800;letter-spacing:-0.03em;color:#FFFDF1;margin:6px 0 6px')}>{v.themeChg}</div>
+              <div style={css('font-size:15px;font-weight:600;color:#4A1608')}>오늘 테마 평균 등락</div>
             </div>
-            {/* 부호·단위를 0.55em 으로 줄여 쓰다가, 숫자까지 같은 크기로
-                맞추기로 했다. 셋이 한 크기이므로 나눠 그릴 이유가 없어져
-                다시 한 덩어리로 되돌린다. 크기는 기존 % 가 그려지던 값
-                (86 x 0.55 = 47.3) 에 맞춰 48px.
-                자간은 86px 에 맞춰 조였던 -0.055em 이 이 크기에서는 너무
-                붙어서, 앱의 다른 큰 수치와 같은 -0.03em 으로 되돌린다. */}
-            <div style={css('font-size:48px;line-height:1;font-weight:800;letter-spacing:-0.03em;color:#FFFDF1;margin:6px 0 6px')}>{v.themeChg}</div>
-            <div style={css('font-size:15px;font-weight:600;color:#4A1608')}>오늘 테마 평균 등락</div>
           </div>
 
-          <div style={css('background:' + p.sheetBg + ';border-radius:34px 34px 0 0;box-shadow:0 -14px 34px -18px rgba(22,22,15,.28);padding:24px 22px 0;min-height:520px')}>
+          {/* 헤더가 줄어든 만큼을 그대로 채우는 자리. 이게 없으면 시트 위쪽
+              흐름 높이가 줄어 시트가 스크롤의 2배 속도로 올라오고, 전체
+              스크롤 가능 높이도 같이 줄어든다. 헤더(줄어듦) + 스페이서(늘어남)
+              합이 항상 일정하므로 시트는 손가락과 같은 속도로 움직인다. */}
+          <div aria-hidden="true" style={{ height: v.themeExpH == null ? 0 : Math.round(v.themeExpH * t) }}></div>
+
+          <div style={css('position:relative;z-index:1;background:' + p.sheetBg + ';border-radius:34px 34px 0 0;box-shadow:0 -14px 34px -18px rgba(22,22,15,.28);padding:24px 22px 0;min-height:520px')}>
             <div style={css('border-radius:26px;padding:20px;background:' + p.cardGrad + ';backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);border:1px solid ' + p.cardBorder + ';box-shadow:' + p.cardShadow)}>
               <div style={css('font-size:12.5px;font-weight:700;letter-spacing:.08em;color:' + p.fg2 + ';margin-bottom:12px')}>오늘 부각된 이유</div>
               <div style={css('font-size:18px;font-weight:700;line-height:1.42;letter-spacing:-0.02em;color:' + p.fg + ';text-wrap:pretty')}>{v.reason}</div>
