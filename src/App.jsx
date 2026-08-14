@@ -831,8 +831,11 @@ export default class App extends React.Component {
   renderTheme(v) {
     const p = v.p;
     const t = v.themeT;
+    // 바닥색을 시트색으로 맞춘다. 주황 헤더의 둥근 아래 모서리 안쪽으로
+    // 이 색이 비치는데, 다크에서 screenBg(#1C1917)와 sheetBg(#262321)가
+    // 달라 모서리마다 어두운 삼각형이 진다.
     return (
-      <div style={css('position:absolute;inset:0;background:' + p.screenBg + ';display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
+      <div style={css('position:absolute;inset:0;background:' + p.sheetBg + ';display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         {/* overflow-anchor:none 이 없으면 헤더가 줄 때 브라우저가 보이는 위치를
             지키려고 스크롤을 되돌리고, 그 때문에 t 가 바뀌어 높이가 또 바뀌는
             되먹임이 생긴다 (스크롤 값이 20 -> 138 -> 40 -> 60 처럼 진동했다). */}
@@ -843,7 +846,7 @@ export default class App extends React.Component {
               값은 전부 t(스크롤 위치)의 함수라 손가락을 따라온다. CSS
               transition 을 걸면 오히려 스크롤보다 늦게 따라와 미끄러진다. */}
           <div style={{
-            ...css('position:sticky;top:0;z-index:2;background:#FF5C00'),
+            ...css('position:sticky;top:0;z-index:2;background:#FF5C00;border-radius:0 0 34px 34px'),
             paddingTop: this.padTop(52),
             paddingLeft: 22, paddingRight: 22,
             paddingBottom: 20 - 8 * t
@@ -903,7 +906,7 @@ export default class App extends React.Component {
               합이 항상 일정하므로 시트는 손가락과 같은 속도로 움직인다. */}
           <div aria-hidden="true" style={{ height: v.themeExpH == null ? 0 : Math.round(v.themeExpH * t) }}></div>
 
-          <div style={css('position:relative;z-index:1;background:' + p.sheetBg + ';border-radius:34px 34px 0 0;box-shadow:0 -14px 34px -18px rgba(22,22,15,.28);padding:24px 22px 0;min-height:520px')}>
+          <div style={css('position:relative;z-index:1;background:' + p.sheetBg + ';padding:24px 22px 0;min-height:520px')}>
             <div style={css('border-radius:26px;padding:20px;background:' + p.cardGrad + ';backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);border:1px solid ' + p.cardBorder + ';box-shadow:' + p.cardShadow)}>
               <div style={css('font-size:12.5px;font-weight:700;letter-spacing:.08em;color:' + p.fg2 + ';margin-bottom:12px')}>오늘 부각된 이유</div>
               <div style={css('font-size:18px;font-weight:700;line-height:1.42;letter-spacing:-0.02em;color:' + p.fg + ';text-wrap:pretty')}>{v.reason}</div>
