@@ -30,6 +30,14 @@ const leaderRows = [
   { name: "한전산업", volume: "거래대금 480억", change: "+3.6%" },
 ];
 
+const intradayReasonNews = [
+  { time: "10:06", title: "체코 원전 계약 관련 후속 일정 보도", source: "특징주 뉴스" },
+  { time: "09:42", title: "국내 원전 공급망 수출 지원 정책 발표", source: "정책 뉴스" },
+  { time: "09:31", title: "유럽 원전 프로젝트 수주 기대 재부각", source: "산업 뉴스" },
+  { time: "09:18", title: "원전 기자재 기업으로 매수세 확산", source: "시장 뉴스" },
+  { time: "09:07", title: "원전 수출 지원 관련 발언 보도", source: "정책 뉴스" },
+];
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -40,6 +48,8 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [isSaved, setIsSaved] = useState(false);
   const [showAllLeaders, setShowAllLeaders] = useState(false);
+  const [reasonSource, setReasonSource] = useState<"live" | "infostock">("live");
+  const [showAllReasons, setShowAllReasons] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   useEffect(() => {
@@ -222,13 +232,14 @@ export default function Home() {
               </section>
 
               <section className={styles.reason}>
-                <div className={styles.sectionHeading}><h2>오늘 왜 올랐을까요?</h2><span className={styles.liveBadge}>장중 분석 중</span></div>
-                <p>체코 신규 원전 사업 관련 기대가 다시 부각되며 설계·기자재 종목으로 상승이 확산됐어요.</p>
-                <ul>
-                  <li><span>10:06</span><p>체코 원전 계약 관련 후속 일정 보도</p><small>특징주 뉴스</small></li>
-                  <li><span>09:42</span><p>국내 원전 공급망 수출 지원 정책 발표</p><small>정책 뉴스</small></li>
-                </ul>
-                <p className={styles.confirmationNote}>장 마감 후 인포스탁 기록이 등록되면 확정 요약으로 바뀝니다.</p>
+                <div className={styles.sectionHeading}><h2>오늘 왜 올랐을까요?</h2>{reasonSource === "live" && intradayReasonNews.length > 3 ? <button type="button" className={styles.reasonExpand} aria-label={showAllReasons ? "뉴스 근거 접기" : "뉴스 근거 전체 보기"} aria-expanded={showAllReasons} onClick={() => setShowAllReasons((current) => !current)}><span /><span /><span /></button> : <span className={styles.liveBadge}>장후 확정</span>}</div>
+                <div className={styles.reasonTabs} role="tablist" aria-label="상승 이유 데이터 출처"><button type="button" role="tab" aria-selected={reasonSource === "live"} className={reasonSource === "live" ? styles.reasonTabActive : ""} onClick={() => setReasonSource("live")}>실시간</button><button type="button" role="tab" aria-selected={reasonSource === "infostock"} className={reasonSource === "infostock" ? styles.reasonTabActive : ""} onClick={() => setReasonSource("infostock")}>인포스탁</button></div>
+                {reasonSource === "live" ? <>
+                  <div className={styles.sourceStatus}><span className={styles.liveDot} />장중 뉴스 분석 중</div>
+                  <p>체코 신규 원전 사업 관련 기대가 다시 부각되며 설계·기자재 종목으로 상승이 확산됐어요.</p>
+                  <ul>{intradayReasonNews.slice(0, showAllReasons ? intradayReasonNews.length : 3).map((news) => <li key={`${news.time}-${news.title}`}><span>{news.time}</span><p>{news.title}</p><small>{news.source}</small></li>)}</ul>
+                  <p className={styles.confirmationNote}>뉴스 근거는 장중 계속 갱신되며 이후 정정될 수 있습니다.</p>
+                </> : <div className={styles.infostockPending}><strong>장후 확정 대기</strong><p>장 마감 후 인포스탁 부각 사유가 등록되면 LLM이 근거 안에서 요약해 보여줍니다.</p><small>장중 뉴스 요약과 달라진 내용은 확정 결과를 우선 표시합니다.</small></div>}
               </section>
 
               <section className={styles.leaderSection}>
@@ -257,6 +268,7 @@ export default function Home() {
                   <article><span>T+5</span><strong>+1.3%</strong><small>20/34 상승</small></article>
                   <article><span>T+20</span><strong>+2.8%</strong><small>21/34 상승</small></article>
                 </div>
+                <div className={styles.peakObservation}><span>관측 최대 상승폭</span><strong>+8.6%</strong><small>과거 34건의 사건별 최고 반응 중앙값 · T+20 관측</small></div>
               </section>
 
               <section className={styles.similarSection}>
