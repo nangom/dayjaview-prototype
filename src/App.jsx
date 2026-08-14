@@ -471,7 +471,8 @@ export default class App extends React.Component {
       closeAll: () => this.setState({ plus: false }),
 
       reason: '정부 공공 조명 교체 예산 확대와 마이크로 LED 신규 수주 소식이 겹치며 관련 종목 전반이 강세를 보였습니다.',
-      stocks: ['서울반도체', '루멘스', '엘이디코리아'],
+      // 가로 스크롤이 실제로 동작하는지 보이도록 목업 종목을 늘렸다.
+      stocks: ['서울반도체', '루멘스', '엘이디코리아', '금호전기', 'LG이노텍', '대진디엠피', '우리조명', '한국단자'],
       horizons: [
         { key: 'h1', label: '1일 후', val: '+0.4%', color: up },
         { key: 'h5', label: '5일 후', val: '+1.3%', color: up },
@@ -811,9 +812,19 @@ export default class App extends React.Component {
             <div style={css('border-radius:26px;padding:20px;background:' + p.cardGrad + ';backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);border:1px solid ' + p.cardBorder + ';box-shadow:' + p.cardShadow)}>
               <div style={css('font-size:12.5px;font-weight:700;letter-spacing:.08em;color:' + p.fg2 + ';margin-bottom:12px')}>오늘 부각된 이유</div>
               <div style={css('font-size:18px;font-weight:700;line-height:1.42;letter-spacing:-0.02em;color:' + p.fg + ';text-wrap:pretty')}>{v.reason}</div>
-              <div style={css('display:flex;flex-wrap:wrap;gap:8px;margin-top:16px')}>
+              {/* 종목이 많아 줄바꿈으로는 카드가 계속 길어진다. 한 줄로 두고
+                  가로로 넘겨 보게 한다.
+                  - 카드 좌우 패딩(20px)만큼 음수 마진으로 빼내 카드 끝까지
+                    스크롤되게 한다. 마지막 칩이 가장자리에서 잘려 보이는 게
+                    '더 있다'는 신호가 된다.
+                  - overscroll-behavior-x:contain 이 없으면 끝까지 밀었을 때
+                    뒤의 세로 스크롤이나 브라우저 뒤로가기 제스처로 넘어간다.
+                  - 칩은 flex:none 이라야 줄어들지 않고 제 폭을 유지한다.
+                  - scroll-padding 이 없으면 스냅이 padding 을 무시하고 첫 칩을
+                    카드 가장자리까지 당겨서 위 본문과 좌측 정렬이 어긋난다. */}
+              <div style={css('margin:16px -20px 0;padding:0 20px;scroll-padding:0 20px;display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity')}>
                 {v.stocks.map(s => (
-                  <span key={s} style={css('padding:9px 14px;border-radius:16px;background:' + p.chipBg + ';border:1px solid ' + p.chipBorder + ';font-size:15px;font-weight:700;letter-spacing:-0.01em;color:' + p.fg)}>{s}</span>
+                  <span key={s} style={css('flex:none;scroll-snap-align:start;touch-action:manipulation;padding:9px 14px;border-radius:16px;background:' + p.chipBg + ';border:1px solid ' + p.chipBorder + ';font-size:15px;font-weight:700;letter-spacing:-0.01em;white-space:nowrap;color:' + p.fg)}>{s}</span>
                 ))}
               </div>
               <div style={css('margin-top:14px;font-size:12.5px;font-weight:500;color:' + p.fg2)}>출처 · 인포스탁</div>
