@@ -663,20 +663,20 @@ export default class App extends React.Component {
   renderSplash(v) {
     return (
       <div onClick={v.toHome} style={css('position:absolute;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;animation:fadeIn .3s ease both')}>
-        <div style={css('position:absolute;top:50%;left:50%;width:520px;height:520px;margin:-335px 0 0 -260px;border-radius:50%;background:radial-gradient(circle,rgba(80,255,235,.5) 0%,rgba(80,255,235,.14) 38%,rgba(80,255,235,0) 68%);filter:blur(18px);animation:halo 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
+        <div style={css('position:absolute;top:50%;left:50%;width:520px;height:520px;margin:-335px 0 0 -260px;border-radius:50%;background:radial-gradient(circle,rgba(255,111,15,.5) 0%,rgba(255,111,15,.14) 38%,rgba(255,111,15,0) 68%);filter:blur(18px);animation:halo 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
         <div style={css('position:relative;width:258px;height:96px;margin-bottom:150px')}>
           <div style={css(`position:absolute;inset:0;background:rgba(255,255,255,.5);-webkit-mask:url(${LOGO_WHITE}) center/contain no-repeat;mask:url(${LOGO_WHITE}) center/contain no-repeat;animation:breathe 3.4s cubic-bezier(.45,0,.55,1) infinite`)}></div>
           <div style={css(`position:absolute;inset:-40px;overflow:hidden;-webkit-mask:url(${LOGO_WHITE}) center/144px 96px no-repeat;mask:url(${LOGO_WHITE}) center/144px 96px no-repeat;filter:blur(9px);opacity:.85`)}>
-            <div style={css('position:absolute;inset:0;background:linear-gradient(100deg,rgba(80,255,235,0) 34%,rgba(80,255,235,.95) 50%,rgba(255,255,255,1) 56%,rgba(80,255,235,0) 70%);animation:sweep 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
+            <div style={css('position:absolute;inset:0;background:linear-gradient(100deg,rgba(255,111,15,0) 34%,rgba(255,111,15,.95) 50%,rgba(255,255,255,1) 56%,rgba(255,111,15,0) 70%);animation:sweep 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
           </div>
           <div style={css(`position:absolute;inset:0;overflow:hidden;-webkit-mask:url(${LOGO_WHITE}) center/contain no-repeat;mask:url(${LOGO_WHITE}) center/contain no-repeat`)}>
-            <div style={css('position:absolute;inset:0;background:linear-gradient(100deg,rgba(255,255,255,0) 36%,rgba(80,255,235,.9) 48%,#FFFFFF 55%,rgba(80,255,235,.55) 62%,rgba(255,255,255,0) 74%);animation:sweep 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
+            <div style={css('position:absolute;inset:0;background:linear-gradient(100deg,rgba(255,255,255,0) 36%,rgba(255,111,15,.9) 48%,#FFFFFF 55%,rgba(255,111,15,.55) 62%,rgba(255,255,255,0) 74%);animation:sweep 3.4s cubic-bezier(.45,0,.55,1) infinite')}></div>
           </div>
         </div>
         <div style={css('position:absolute;left:0;right:0;bottom:96px;display:flex;flex-direction:column;align-items:center;gap:20px')}>
           <div style={css('font-size:14.5px;font-weight:600;letter-spacing:.02em;color:rgba(255,255,255,.44)')}>오늘의 시장을, 과거의 기록으로</div>
           <div style={css('width:132px;height:3px;border-radius:2px;background:rgba(255,255,255,.12);overflow:hidden')}>
-            <div style={css('height:100%;border-radius:2px;background:#50FFEB;transform-origin:left;animation:barFill 2.6s cubic-bezier(.3,.7,.2,1) both')}></div>
+            <div style={css('height:100%;border-radius:2px;background:#FF6F0F;transform-origin:left;animation:barFill 2.6s cubic-bezier(.3,.7,.2,1) both')}></div>
           </div>
         </div>
       </div>
