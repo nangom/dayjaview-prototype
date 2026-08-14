@@ -47,11 +47,11 @@
   animation: orangeBreathe 4s cubic-bezier(.45,0,.55,1) infinite;
 }
 .loadingGlowSweep { position: absolute; inset: -40px; overflow: hidden; opacity: .85; filter: blur(9px); -webkit-mask: url("/dejavu-logo-white.png") center / 144px 96px no-repeat; mask: url("/dejavu-logo-white.png") center / 144px 96px no-repeat; }
-.loadingGlowSweep i { position: absolute; inset: 0; background: linear-gradient(100deg,rgba(255,111,15,0) 34%,rgba(255,111,15,.82) 50%,rgba(255,156,92,.88) 56%,rgba(255,111,15,0) 70%); animation: orangeSweep 4s cubic-bezier(.45,0,.55,1) infinite; }
+.loadingGlowSweep i { position: absolute; inset: 0; background: linear-gradient(100deg,rgba(255,111,15,0) 34%,rgba(255,111,15,.82) 50%,rgba(255,156,92,.88) 56%,rgba(255,111,15,0) 70%); animation: orangeSweep 4s cubic-bezier(.45,0,.55,1) infinite both; }
 .loadingSharpSweep { position: absolute; inset: 0; overflow: hidden; -webkit-mask: url("/dejavu-logo-white.png") center / contain no-repeat; mask: url("/dejavu-logo-white.png") center / contain no-repeat; }
-.loadingSharpSweep i { position: absolute; inset: 0; background: linear-gradient(100deg,rgba(255,111,15,0) 36%,rgba(255,111,15,.82) 48%,#ffad76 55%,rgba(255,111,15,.55) 62%,rgba(255,111,15,0) 74%); animation: orangeSweep 4s cubic-bezier(.45,0,.55,1) infinite; }
+.loadingSharpSweep i { position: absolute; inset: 0; background: linear-gradient(100deg,rgba(255,111,15,0) 36%,rgba(255,111,15,.82) 48%,#ffad76 55%,rgba(255,111,15,.55) 62%,rgba(255,111,15,0) 74%); animation: orangeSweep 4s cubic-bezier(.45,0,.55,1) infinite both; }
 .loadingLateSweep { position: absolute; inset: -28px; overflow: hidden; opacity: .58; filter: blur(6px); -webkit-mask: url("/dejavu-logo-white.png") center / 144px 96px no-repeat; mask: url("/dejavu-logo-white.png") center / 144px 96px no-repeat; }
-.loadingLateSweep i { position: absolute; inset: 0; background: linear-gradient(100deg,rgba(255,111,15,0) 35%,rgba(255,159,96,.72) 49%,rgba(255,210,171,.92) 55%,rgba(255,111,15,0) 72%); animation: orangeSweep 4s cubic-bezier(.45,0,.55,1) 1.2s infinite; }
+.loadingLateSweep i { position: absolute; inset: 0; background: linear-gradient(100deg,rgba(255,111,15,0) 35%,rgba(255,159,96,.72) 49%,rgba(255,210,171,.92) 55%,rgba(255,111,15,0) 72%); animation: orangeSweep 4s cubic-bezier(.45,0,.55,1) 1.2s infinite both; }
 .loadingFooter { position: absolute; right: 0; bottom: 96px; left: 0; display: flex; flex-direction: column; align-items: center; gap: 20px; }
 .loadingFooter > span { color: rgba(255,255,255,.48); font-size: 14px; font-weight: 600; }
 .loadingFooter > b { width: 132px; height: 3px; border-radius: 2px; overflow: hidden; background: rgba(255,255,255,.12); }
