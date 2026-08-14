@@ -548,19 +548,32 @@ export default class App extends React.Component {
         { key: 's1', label: '평균 지속', val: '6.2 거래일' },
         { key: 's2', label: '변동성 (20일 후)', val: '±8.2%' }
       ],
-      kwRows: [
-        { word: '공공발주', n: 9, rate: 78, lift: '+2.6%p' },
-        { word: '예산', n: 12, rate: 67, lift: '+2.1%p' },
-        { word: '조명', n: 14, rate: 64, lift: '+1.8%p' },
-        { word: '수출', n: 11, rate: 64, lift: '+1.5%p' },
-        { word: '양산', n: 7, rate: 57, lift: '+1.1%p' }
-      ].map(k => ({
-        key: k.word,
-        word: k.word,
-        lift: k.lift,
-        meta: '표본 ' + k.n + '건 · 상승 ' + k.rate + '%',
-        bar: 'display:block;height:100%;width:' + k.rate + '%;border-radius:3px;background:' + P.redInk
-      })),
+      kwRows: (() => {
+        const rows = [
+          { word: '공공발주', n: 9, rate: 78, lift: 2.6 },
+          { word: '예산', n: 12, rate: 67, lift: 2.1 },
+          { word: '조명', n: 14, rate: 64, lift: 1.8 },
+          { word: '수출', n: 11, rate: 64, lift: 1.5 },
+          { word: '양산', n: 7, rate: 57, lift: 1.1 }
+        ];
+        // 막대는 헤드라인 숫자(lift)와 같은 값을 나타내야 한다. 예전에는
+        // 막대가 상승 비율(rate)을 그려서, 막대 길이와 오른쪽 숫자가 서로
+        // 다른 값을 가리켰다. 최댓값 기준으로 정규화해 순위가 길이로 읽히게
+        // 한다.
+        const maxLift = Math.max(...rows.map(r => r.lift));
+        return rows.map(k => ({
+          key: k.word,
+          word: k.word,
+          // 최상위 키워드만 오렌지 칩으로 감싼다. 홈 1~3위 배지·기간 탭과
+          // 같은 값(#FF7A33)이라 '가장 강한 것 = 오렌지'가 앱 전체에서
+          // 하나의 언어로 읽힌다.
+          top: k.lift === maxLift,
+          lift: '+' + k.lift.toFixed(1) + '%p',
+          meta: '표본 ' + k.n + '건 · 상승 ' + k.rate + '%',
+          bar: 'display:block;height:100%;border-radius:999px;width:'
+            + Math.round(k.lift / maxLift * 100) + '%;background:' + P.redInk
+        }));
+      })(),
       caseTags: picked.sub.split(' ').slice(0, 3),
       members: (() => {
         const rows = memberRows.map(r => ({ name: r.name, n: r.v[1], basket: false }));
@@ -952,16 +965,27 @@ export default class App extends React.Component {
           <div style={css('margin-top:28px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + pl.ink2)}>상승 동반 키워드</div>
           <div style={css('margin-top:5px;font-size:12.5px;font-weight:600;color:' + pl.meta)}>5일 후 영향 · 등장 vs 미등장</div>
           <div style={css('margin-top:14px;border:1px solid ' + pl.line + ';border-radius:26px;background:' + pl.panelBg + ';padding:20px 18px;display:flex;flex-direction:column;gap:16px')}>
+            {/* 키워드가 주인공이다. 예전엔 키워드와 수치가 둘 다 19px 이라
+                크기로는 동점인데 빨강이 색 대비로 이겨서 숫자가 먼저 읽혔다.
+                키워드 24px / 수치 16px 로 1.5 배 벌리면 크기 차이가 색 salience
+                를 눌러 키워드가 먼저 들어온다. 크기는 모듈러 스케일
+                (12 · 16 · 24)에 맞췄다 — 19px·11.5px 는 스케일 밖 값이었다. */}
             {v.kwRows.map(k => (
-              <div key={k.key} style={css('display:flex;align-items:center;gap:14px')}>
-                <span style={css('width:60px;flex:none;font-size:17px;font-weight:800;letter-spacing:-0.02em;color:' + pl.ink2)}>{k.word}</span>
-                <span style={css('flex:1;min-width:0;display:flex;flex-direction:column;gap:7px')}>
-                  <span style={css('font-size:12px;font-weight:600;color:' + pl.meta)}>{k.meta}</span>
-                  <span style={css('height:5px;border-radius:3px;background:' + pl.barTrack + ';overflow:hidden')}>
-                    <span style={css(k.bar)}></span>
-                  </span>
+              <div key={k.key} style={css('display:flex;flex-direction:column;gap:8px')}>
+                <div style={css('display:flex;align-items:baseline;gap:10px')}>
+                  {/* 칩에 좌우 패딩을 주면 1위 글자만 오른쪽으로 밀려 아래
+                      키워드들과 좌측 정렬이 깨진다. 패딩만큼 음수 마진으로
+                      당겨 글자 시작점을 나머지 행과 맞춘다. */}
+                  <span style={css('font-size:24px;font-weight:800;letter-spacing:-0.03em;'
+                    + (k.top
+                      ? 'margin-left:-10px;padding:3px 10px 5px;border-radius:14px;background:#FF7A33;color:#4A1608'
+                      : 'color:' + pl.ink2))}>{k.word}</span>
+                  <span style={{ ...css('margin-left:auto;flex:none;font-size:16px;font-weight:800;letter-spacing:-0.01em'), color: pl.redInk }}>{k.lift}</span>
+                </div>
+                <span style={css('height:6px;border-radius:999px;background:' + pl.barTrack + ';overflow:hidden')}>
+                  <span style={css(k.bar)}></span>
                 </span>
-                <span style={css('flex:none;font-size:15.5px;font-weight:800;letter-spacing:-0.01em;color:' + pl.redInk)}>{k.lift}</span>
+                <span style={css('font-size:12px;font-weight:600;color:' + pl.fg3)}>{k.meta}</span>
               </div>
             ))}
           </div>
