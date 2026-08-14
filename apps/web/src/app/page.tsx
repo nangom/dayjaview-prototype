@@ -18,7 +18,7 @@ const footerItems = [
   { id: "home", Icon: IconHouseLine, label: "홈" },
   { id: "realtime", Icon: IconGridLine, label: "실시간" },
   { id: "saved", Icon: IconStarLine, label: "즐겨찾기" },
-  { id: "natural", Icon: IconMagnifyingglassLine, label: "자연어" },
+  { id: "natural", Icon: IconMagnifyingglassLine, label: "리서치" },
 ];
 
 const leaderRows = [
@@ -218,24 +218,17 @@ export default function Home() {
                   <article><span>거래 관심</span><strong>2.4배</strong><small>20일 평균 대비</small></article>
                   <article><span>테마 거래대금</span><strong>1.8조</strong><small>장중 누적</small></article>
                 </div>
+                <div className={styles.interestGap}><strong>8개월 만에 다시 주목받고 있어요</strong><span>이전 관심 구간 이후 163거래일</span></div>
               </section>
 
               <section className={styles.reason}>
-                <div className={styles.sectionHeading}><h2>오늘 왜 올랐을까요?</h2><span>근거 3건</span></div>
+                <div className={styles.sectionHeading}><h2>오늘 왜 올랐을까요?</h2><span className={styles.liveBadge}>장중 분석 중</span></div>
                 <p>체코 신규 원전 사업 관련 기대가 다시 부각되며 설계·기자재 종목으로 상승이 확산됐어요.</p>
                 <ul>
                   <li><span>10:06</span><p>체코 원전 계약 관련 후속 일정 보도</p><small>특징주 뉴스</small></li>
                   <li><span>09:42</span><p>국내 원전 공급망 수출 지원 정책 발표</p><small>정책 뉴스</small></li>
                 </ul>
-              </section>
-
-              <section className={styles.catalystSection}>
-                <div className={styles.sectionHeading}><h2>오늘의 상승 소재 Top 3</h2><span>근거 기반</span></div>
-                <ol className={styles.catalysts}>
-                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>1</b><div><strong>체코 원전 수주</strong><p>오늘 뉴스 3건 · 관련 종목 12개</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
-                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>2</b><div><strong>원전 수출 정책</strong><p>오늘 뉴스 2건 · 관련 종목 8개</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
-                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>3</b><div><strong>원전 기자재 공급</strong><p>오늘 뉴스 2건 · 관련 종목 6개</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
-                </ol>
+                <p className={styles.confirmationNote}>장 마감 후 인포스탁 기록이 등록되면 확정 요약으로 바뀝니다.</p>
               </section>
 
               <section className={styles.leaderSection}>
@@ -245,6 +238,15 @@ export default function Home() {
                     <div key={leader.name}><span>{leader.name}<small>{leader.volume}</small></span><strong>{leader.change}</strong></div>
                   ))}
                 </div>
+              </section>
+
+              <section className={styles.catalystSection}>
+                <div className={styles.sectionHeading}><h2>과거 상승 소재 Top 3</h2><span>인포스탁 히스토리 기준</span></div>
+                <ol className={styles.catalysts}>
+                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>1</b><div><strong>체코 원전 수주</strong><p>과거 9건 · 상승 동반 78%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
+                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>2</b><div><strong>원전 수출 정책</strong><p>과거 12건 · 상승 동반 67%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
+                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>3</b><div><strong>원전 기자재 공급</strong><p>과거 14건 · 상승 동반 64%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
+                </ol>
               </section>
 
               <section className={styles.pastSummarySection}>
@@ -258,7 +260,7 @@ export default function Home() {
               </section>
 
               <section className={styles.similarSection}>
-                <div className={styles.sectionHeading}><h2>오늘과 비슷했던 과거</h2><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div>
+                <div className={styles.sectionHeading}><div className={styles.caseHeadingCopy}><h2>DAY-JA-VIEW 케이스</h2><small>오늘과 비슷했던 과거</small></div><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div>
                 <div className={styles.cases}>
                   <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2024.07.18</span><strong>체코 원전 우선협상대상자 선정</strong><div className={styles.matchTags}><i>수출 계약</i><i>정책 지원</i></div><small>T+5 +4.6%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
                   <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2023.04.25</span><strong>한미 원전 협력 확대 발표</strong><div className={styles.matchTags}><i>국가 협력</i><i>원전 수출</i></div><small className={styles.downValue}>T+5 -1.2%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
@@ -272,7 +274,7 @@ export default function Home() {
               <button type="button" onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button>
               <button type="button" onClick={() => goTo("screen-realtime")}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button>
               <button type="button" onClick={() => goTo("screen-saved")}><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button>
-              <button type="button" onClick={() => goTo("screen-natural")}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button>
+              <button type="button" onClick={() => goTo("screen-natural")}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>리서치</small></button>
             </nav>
           </div>
         </section>
@@ -360,7 +362,7 @@ function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void;
   return (
     <section id="screen-realtime" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="실시간 테마주 와이어프레임">
       <div className={`${styles.wireScreen} ${styles.realtimeScreen}`}>
-        <header className={styles.wireTitle}><div><small>장중 관찰 화면</small><h1>실시간 테마주</h1><p>현재 움직임이 강한 테마를 모아봐요.</p></div></header>
+        <header className={styles.wireTitle}><div><small>장중 관찰 화면</small><h1>실시간 테마 중계</h1><p>현재 움직임이 강한 테마를 모아봐요.</p></div></header>
         <div className={styles.stateNote}>면적은 테마의 실시간 강도에 따라 달라져요.</div>
         <div className={styles.treemap} aria-label="실시간 테마 강도 트리맵">
           <div className={styles.treeTop}>
@@ -379,21 +381,30 @@ function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void;
           </div>
         </div>
         <div className={styles.treeLegend}><span><i />면적: 테마 강도</span><span>수치는 장중 갱신</span></div>
-        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button className={styles.selected}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button onClick={() => goTo("screen-saved")}><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button onClick={() => goTo("screen-natural")}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button></nav>
+        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button className={styles.selected}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button onClick={() => goTo("screen-saved")}><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button onClick={() => goTo("screen-natural")}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>리서치</small></button></nav>
       </div>
     </section>
   );
 }
 
 function CaseListScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
+  const [horizon, setHorizon] = useState<1 | 5 | 20>(5);
+  const horizonResults = [
+    { 1: "+1.1%", 5: "+4.6%", 20: "+7.2%" },
+    { 1: "-0.4%", 5: "-1.2%", 20: "+0.8%" },
+    { 1: "+0.9%", 5: "+3.3%", 20: "+5.1%" },
+    { 1: "+0.5%", 5: "+1.8%", 20: "+2.6%" },
+  ];
+  const caseTags = [["수출 계약", "정책 지원"], ["국가 협력", "원전 수출"], ["해외 수주", "개발 계획"], ["정책", "공급망"]];
   return (
     <section id="screen-cases" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="과거 사례 전체보기 와이어프레임">
       <div className={styles.wireScreen}>
         <WireHeader title="과거 사례 전체보기" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
-          <div className={styles.pageIntro}><small>원전수출</small><h1>과거에는 이런 일이 있었어요</h1><p>DB에 저장된 과거 사건을 날짜순으로 보여줘요.</p></div>
+          <div className={styles.pageIntro}><small className={styles.themeContext}>원전수출 테마</small><h1>과거에는 이런 일이 있었어요</h1></div>
+          <div className={styles.horizonToggle} aria-label="사례 수익률 기간 선택">{([1, 5, 20] as const).map((day) => <button type="button" key={day} className={horizon === day ? styles.horizonActive : ""} onClick={() => setHorizon(day)}>{day}일 후</button>)}</div>
           <div className={styles.filterRow}><button className={styles.filterActive}>전체 34건</button><button>수주</button><button>정책</button><button>기자재</button></div>
-          <div className={styles.caseList}>{caseRows.map(([date, title, members, result]) => <button type="button" key={date} onClick={() => goTo("screen-case-detail")}><span><small>{date}</small><strong>{title}</strong><em>{members}</em></span><b>{result}</b><i>›</i></button>)}</div>
+          <div className={styles.caseList}>{caseRows.map(([date, title, members], index) => <button type="button" key={date} onClick={() => goTo("screen-case-detail")}><span><small>{date}</small><strong>{title}</strong><span className={styles.caseRowTags}>{caseTags[index].map((tag) => <em key={tag}>{tag}</em>)}</span><em>{members}</em></span><b><small>T+{horizon}</small>{horizonResults[index][horizon]}</b><i>›</i></button>)}</div>
         </div>
       </div>
     </section>
@@ -406,10 +417,10 @@ function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; ac
       <div className={styles.wireScreen}>
         <WireHeader title="과거 사례" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
-          <div className={`${styles.pageIntro} ${styles.caseHero}`}><small>2024.07.18 · 원전수출</small><h1>체코 원전 우선협상대상자 선정</h1><p>당시 기록된 사건과 종목의 실제 이후 흐름이에요.</p></div>
+          <div className={`${styles.pageIntro} ${styles.caseHero}`}><small>원전수출 테마 · 2024.07.18</small><h1>체코 원전 우선협상대상자 선정</h1></div>
           <section className={styles.dataBlock}><h2>사건 기록</h2><p>체코 정부가 신규 원전 사업의 우선협상대상자로 한국수력원자력을 선정하며 원전 관련주가 부각됐어요.</p><small>인포스탁 원본 · 수집 기록 보유</small></section>
-          <section className={styles.dataBlock}><h2>당시 주도 종목의 이후 흐름</h2><div className={styles.statGrid}><article><span>T+1</span><strong>+2.1%</strong></article><article><span>T+5</span><strong>+4.6%</strong></article><article><span>T+20</span><strong>+7.2%</strong></article></div></section>
-          <section className={styles.dataBlock}><h2>당시 기록된 종목</h2><div className={styles.simpleRows}><button>두산에너빌리티 <b>+14.2%</b></button><button>한전기술 <b>+7.1%</b></button><button>우리기술 <b>+5.8%</b></button></div></section>
+          <section className={styles.dataBlock}><h2>당시 테마 바스켓의 이후 흐름</h2><div className={styles.statGrid}><article><span>T+1</span><strong>+2.1%</strong></article><article><span>T+5</span><strong>+4.6%</strong></article><article><span>T+20</span><strong>+7.2%</strong></article></div><small>사건 당일 기록된 종목을 동일 비중으로 계산했어요.</small></section>
+          <section className={styles.dataBlock}><h2>당시 기록된 종목</h2><small>사건 당일 인포스탁 기록 기준</small><div className={styles.simpleRows}><button>두산에너빌리티 <b>+14.2%</b></button><button>한전기술 <b>+7.1%</b></button><button>우리기술 <b>+5.8%</b></button></div></section>
               <p className={styles.disclaimer}>과거에 관측된 결과를 보여주며 현재의 투자 판단을 제공하지 않아요.</p>
         </div>
       </div>
@@ -420,10 +431,10 @@ function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; ac
 function CatalystDetailScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
   return (
     <section id="screen-catalyst" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="상승 소재 상세 와이어프레임">
-      <div className={styles.wireScreen}>
+      <div className={`${styles.wireScreen} ${styles.catalystScreen}`}>
         <WireHeader title="상승 소재" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
-          <div className={styles.pageIntro}><small>원전수출 · 상승 동반 소재</small><h1>체코 원전 수주</h1><p>이 소재가 과거 같은 테마와 함께 등장했던 기록을 모았어요.</p></div>
+          <div className={styles.pageIntro}><small>원전수출 테마 · 과거 상승 소재</small><h1>체코 원전 수주</h1><p>이 소재가 과거 같은 테마와 함께 등장했던 기록을 모았어요.</p></div>
           <section className={styles.dataBlock}><div className={styles.blockHeading}><h2>과거 동반 기록</h2><span>키워드 통계</span></div><div className={styles.statGrid}><article><span>발생</span><strong>9회</strong></article><article><span>상승 동반</span><strong>78%</strong></article><article><span>D+5 차이</span><strong>+2.6%p</strong></article></div></section>
           <section className={styles.dataBlock}><h2>기간별 평균 반응</h2><div className={styles.statGrid}><article><span>D+1</span><strong>+0.8%</strong></article><article><span>D+5</span><strong>+2.6%</strong></article><article><span>D+20</span><strong>+3.1%</strong></article></div></section>
           <section className={styles.dataBlock}><div className={styles.blockHeading}><h2>연결된 과거 사건</h2><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div><div className={styles.simpleRows}><button type="button" onClick={() => goTo("screen-case-detail")}>2024.07.18 · 체코 원전 우선협상자 <b>›</b></button><button type="button" onClick={() => goTo("screen-case-detail")}>2022.10.31 · 폴란드 원전 협력 <b>›</b></button></div></section>
@@ -454,16 +465,16 @@ function NaturalSearchScreen({ goTo, active }: { goTo: (screen: string) => void;
   const [hasSearched, setHasSearched] = useState(false);
 
   return (
-    <section id="screen-natural" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="자연어 검색 와이어프레임">
+    <section id="screen-natural" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="리서치 와이어프레임">
       <div className={styles.wireScreen}>
-        <div className={styles.wireBody}><div className={styles.pageIntro}><small>테마·종목 데이터 검색</small><h1>무엇이 궁금하세요?</h1><p>질문하면 보유한 과거 데이터 안에서 답을 찾아요.</p></div>
+        <div className={styles.wireBody}><div className={styles.pageIntro}><small>데이터 리서치</small><h1>무엇이 궁금하세요?</h1><p>질문하면 보유한 과거 데이터 안에서 답을 찾아요.</p></div>
           <form className={styles.naturalForm} onSubmit={(event) => { event.preventDefault(); setHasSearched(true); }}><textarea defaultValue="원전수출 테마는 과거에 오른 뒤 5일 동안 어땠어?" aria-label="자연어 질문"/><button type="submit">검색</button></form>
           {hasSearched ? <>
-            <section className={styles.answerBlock}><div><small>검색 결과</small><span>과거 데이터 기준</span></div><h2>과거 34개 사례에서 5일 후 평균은 +1.3%였어요.</h2><p>34개 사례 중 20개가 상승했고, 당시 주도 종목을 기준으로 계산했어요. 가장 큰 상승 사례는 2024년 7월 18일 체코 원전 우선협상대상자 선정 사건이었어요.</p><ul><li><span>평균 수익률</span><b>+1.3%</b></li><li><span>상승 사례</span><b>20/34</b></li><li><span>대표 과거 사건</span><b>2024.07.18</b></li></ul><button type="button" onClick={() => goTo("screen-cases")}>관련 과거 사례 보기</button></section>
+            <section className={styles.answerBlock}><div><small>DAY-JA-VIEW 리서치</small><span>과거 데이터 기준</span></div><p className={styles.researchLead}>원전수출 테마는 과거 34개 사례에서 사건 발생 5거래일 후 평균 <strong>+1.3%</strong>를 기록했어요.</p><p>이 가운데 20개 사례가 상승했습니다. 결과는 사건 당시 인포스탁에 기록된 종목을 동일 비중으로 계산한 값이에요. 가장 크게 움직인 사례는 2024년 7월 18일 체코 원전 우선협상대상자 선정 사건이었습니다.</p><p>다만 과거 관측 결과이며 현재의 상승을 예측하거나 종목을 추천하는 정보는 아니에요.</p><button type="button" onClick={() => goTo("screen-cases")}>관련 DAY-JA-VIEW 케이스 보기</button></section>
             <p className={styles.disclaimer}>검색 결과는 DB에 저장된 사건과 가격 데이터만 사용해요.</p>
           </> : <p className={styles.searchHint}>질문을 확인한 뒤 검색을 눌러주세요.</p>}
         </div>
-        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button onClick={() => goTo("screen-realtime")}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button onClick={() => goTo("screen-saved")}><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button className={styles.selected}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button></nav>
+        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button onClick={() => goTo("screen-realtime")}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button onClick={() => goTo("screen-saved")}><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button className={styles.selected}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>리서치</small></button></nav>
       </div>
     </section>
   );
