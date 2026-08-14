@@ -494,7 +494,7 @@ export default class App extends React.Component {
           label: 'font-size:11.5px;font-weight:700;transition:color .14s ease,opacity .14s ease;'
             + (on ? 'color:#16160F;opacity:1' : 'color:#A9A89E;opacity:' + (hv === null ? '1' : '.35')),
           bar: 'width:100%;height:' + Math.round((b.n / maxN) * 84) + 'px;border-radius:8px 8px 4px 4px;transform-origin:bottom;animation:grow .5s cubic-bezier(.2,.8,.3,1) both;transition:background .14s ease,box-shadow .14s ease;'
-            + (on ? 'background:#12B5A2;box-shadow:0 8px 16px -8px rgba(18,181,162,.65)' : 'background:' + (hv === null ? '#7FE9DC' : '#CFF6F0'))
+            + (on ? 'background:#FF6F0F;box-shadow:0 8px 16px -8px rgba(255,111,15,.5)' : 'background:' + (hv === null ? '#FFB27F' : '#FFE0CC'))
         };
       }),
       tip: hv === null ? null : {
@@ -711,10 +711,10 @@ export default class App extends React.Component {
       { key: 'home', label: '홈', d: 'm4 10 8-6 8 6v9H4zM10 19v-5h4v5' },
       { key: 'search', label: '검색', d: 'M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm5-2 5 5' },
       { key: 'library', label: '즐겨찾기', d: 'm12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z' },
-      { key: 'settings', label: '설정', d: 'M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.12 2.12-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.56V20.5h-3v-.28a1.7 1.7 0 0 0-1.04-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-2.12-2.12.06-.06A1.7 1.7 0 0 0 7 15a1.7 1.7 0 0 0-1.56-1.04H5.2v-3h.24A1.7 1.7 0 0 0 7 9.92a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.12-2.12.06.06a1.7 1.7 0 0 0 1.88.34A1.7 1.7 0 0 0 11.7 4.7V4.5h3v.2a1.7 1.7 0 0 0 1.04 1.56 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.12 2.12-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.04h.24v3h-.24A1.7 1.7 0 0 0 19.4 15z' }
+      { key: 'settings', label: '설정', solid: true, d: 'M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.62l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.2 7.2 0 0 0-1.62-.94L14.4 2.8a.49.49 0 0 0-.48-.4h-3.84a.49.49 0 0 0-.48.4l-.36 2.54c-.58.24-1.12.56-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.72 8.86a.49.49 0 0 0 .12.62l2.03 1.58c-.05.31-.07.64-.07.94s.02.63.07.94l-2.03 1.58a.49.49 0 0 0-.12.62l1.92 3.32c.12.22.38.31.59.22l2.39-.96c.5.39 1.04.7 1.62.94l.36 2.54c.04.23.24.4.48.4h3.84c.24 0 .44-.17.48-.4l.36-2.54a7.2 7.2 0 0 0 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.62l-2.02-1.58ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z' }
     ];
     const active = v.isHome ? 'home' : v.isSearch ? 'search' : v.isLibrary ? 'library' : v.isSettings ? 'settings' : '';
-    return <nav className="seed-bottom-nav" aria-label="주요 메뉴">{items.map(item => <button key={item.key} className={active === item.key ? 'is-selected' : ''} onClick={() => this.go(item.key)}><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d={item.d}/></svg><span>{item.label}</span></button>)}</nav>;
+    return <nav className="seed-bottom-nav" aria-label="주요 메뉴">{items.map(item => <button key={item.key} className={active === item.key ? 'is-selected' : ''} onClick={() => this.go(item.key)}><svg width="22" height="22" viewBox="0 0 24 24" fill={item.solid ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={item.solid ? '0' : '1.8'} strokeLinecap="round" strokeLinejoin="round"><path d={item.d}/></svg><span>{item.label}</span></button>)}</nav>;
   }
 
   renderSplash(v) {
@@ -916,7 +916,7 @@ export default class App extends React.Component {
 
   renderCases(v) {
     return (
-      <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
+      <div className="seed-pilot seed-cases" style={css('position:absolute;inset:0;background:var(--seed-color-bg-layer-default);display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
           <button className="icon-btn press" onClick={v.toTheme} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
@@ -942,7 +942,7 @@ export default class App extends React.Component {
 
   renderCase(v) {
     return (
-      <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
+      <div className="seed-pilot seed-case" style={css('position:absolute;inset:0;background:var(--seed-color-bg-layer-default);display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
           <button className="icon-btn press" onClick={v.toCases} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
@@ -1033,7 +1033,7 @@ export default class App extends React.Component {
 
   renderStats(v) {
     return (
-      <div style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
+      <div className="seed-pilot seed-stats" style={css('position:absolute;inset:0;background:var(--seed-color-bg-layer-default);display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
           <button className="icon-btn press" onClick={v.toTheme} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
