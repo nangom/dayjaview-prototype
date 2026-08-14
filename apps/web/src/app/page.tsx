@@ -26,6 +26,29 @@ const footerItems = [
 const LOADING_DURATION_MS = 4000;
 const homeThemes = marketSnapshot.themes.slice(0, 10);
 
+type ThemeHistoryItem = {
+  name: string;
+  value: string;
+  metadata: string;
+  rank: number;
+};
+
+function normalizeThemeHistory(value: unknown): ThemeHistoryItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item): ThemeHistoryItem[] => {
+    if (typeof item === "string") return [{ name: item, value: "", metadata: "", rank: 0 }];
+    if (!item || typeof item !== "object") return [];
+    const record = item as Record<string, unknown>;
+    if (typeof record.name !== "string") return [];
+    return [{
+      name: record.name,
+      value: typeof record.value === "string" ? record.value : "",
+      metadata: typeof record.metadata === "string" ? record.metadata : "",
+      rank: typeof record.rank === "number" ? record.rank : 0,
+    }];
+  }).slice(0, 10);
+}
+
 const leaderRows = [
   { name: "두산에너빌리티", volume: "거래대금 6,240억", change: "+14.2%" },
   { name: "한전기술", volume: "거래대금 1,820억", change: "+7.1%" },
@@ -49,24 +72,40 @@ export default function Home() {
   const [loginIntent, setLoginIntent] = useState<"save" | "library" | null>(null);
   const [activeTab, setActiveTab] = useState("home");
   const [currentScreen, setCurrentScreen] = useState("screen-home");
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [query, setQuery] = useState("");
   const [isSaved, setIsSaved] = useState(false);
   const [showAllLeaders, setShowAllLeaders] = useState(false);
   const [reasonSource, setReasonSource] = useState<"live" | "infostock">("live");
   const [showAllReasons, setShowAllReasons] = useState(false);
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [themeHistory, setThemeHistory] = useState<ThemeHistoryItem[]>([]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), LOADING_DURATION_MS);
     setIsSaved(window.localStorage.getItem("dayjaview:saved:원전수출") === "true");
     try {
-      setSearchHistory(JSON.parse(window.localStorage.getItem("dayjaview:search-history") ?? "[]"));
+      setThemeHistory(normalizeThemeHistory(JSON.parse(window.localStorage.getItem("dayjaview:theme-history") ?? "[]")));
     } catch {
-      setSearchHistory([]);
+      setThemeHistory([]);
     }
     return () => window.clearTimeout(timer);
   }, []);
+
+  const resetPageScroll = (screen: string) => {
+    if (typeof window === "undefined") return;
+    window.requestAnimationFrame(() => {
+      const root = document.getElementById(screen);
+      if (screen === "screen-home") {
+        const wheel = root?.querySelector<HTMLElement>('[class*="wheel"]');
+        const cards = wheel?.querySelectorAll<HTMLElement>("[data-theme-card]");
+        const firstRankCard = cards?.[homeThemes.length + 1];
+        if (wheel && firstRankCard) {
+          wheel.scrollTop = Math.max(0, firstRankCard.offsetTop - (wheel.clientHeight - firstRankCard.offsetHeight) / 2);
+        }
+        return;
+      }
+      const scrollTarget = root?.querySelector<HTMLElement>('[class*="detailScroll"], [class*="wireBody"]');
+      scrollTarget?.scrollTo({ top: 0, behavior: "auto" });
+    });
+  };
 
   const goTo = (screen: string) => {
     if (screen === "screen-saved" && !isLoggedIn) {
@@ -77,13 +116,37 @@ export default function Home() {
     }
     if (screen === "screen-home") setActiveTab("home");
     if (screen === "screen-realtime") setActiveTab("realtime");
-    if (screen === "screen-natural") setActiveTab("analysis");
+    if (screen === "screen-natural") setActiveTab("natural");
     if (screen === "screen-saved") {
       setActiveTab("saved");
       setCurrentScreen("screen-home");
       return;
     }
     setCurrentScreen(screen);
+    resetPageScroll(screen);
+  };
+
+  const recordThemeVisit = (theme: ThemeHistoryItem) => {
+    setThemeHistory((current) => {
+      const next = [theme, ...current.filter((item) => item.name !== theme.name)].slice(0, 10);
+      window.localStorage.setItem("dayjaview:theme-history", JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const selectTheme = (theme: ThemeHistoryItem) => {
+    recordThemeVisit(theme);
+    goTo("screen-detail");
+  };
+
+  const selectThemeByName = (name: string) => {
+    const theme = homeThemes.find((item) => item.name === name);
+    if (theme) {
+      selectTheme(theme);
+      return;
+    }
+    recordThemeVisit({ name, value: "", metadata: "", rank: 0 });
+    goTo("screen-detail");
   };
 
   const toggleSaved = () => {
@@ -124,21 +187,11 @@ export default function Home() {
     setLoginIntent(null);
   };
 
-  const submitSearch = () => {
-    const value = query.trim();
-    if (!value) return;
-    setSearchHistory((current) => {
-      const next = [value, ...current.filter((item) => item !== value)].slice(0, 10);
-      window.localStorage.setItem("dayjaview:search-history", JSON.stringify(next));
-      return next;
-    });
-  };
-
   const savedStateVisible = isLoggedIn && isSaved;
 
-  const clearSearchHistory = () => {
-    setSearchHistory([]);
-    window.localStorage.removeItem("dayjaview:search-history");
+  const clearThemeHistory = () => {
+    setThemeHistory([]);
+    window.localStorage.removeItem("dayjaview:theme-history");
   };
 
   return (
@@ -179,16 +232,16 @@ export default function Home() {
                   </header>
                   <div className={styles.orangeHomeTitle}><strong>2026년 08월 12일</strong><h1>오늘 많이 오른 테마예요</h1></div>
 
-                  <ThemeRankingWheel themes={homeThemes} onSelect={() => goTo("screen-detail")} />
+                  <ThemeRankingWheel themes={homeThemes} onSelect={selectTheme} />
                 </div>
               ) : activeTab === "saved" ? (
                 <SavedLibrary
                   isSaved={isSaved}
-                  history={searchHistory}
+                  themeHistory={themeHistory}
                   onOpenSaved={() => goTo("screen-detail")}
                   onRemoveSaved={requestToggleSaved}
-                  onOpenHistory={(item) => { setQuery(item); setIsSearchOpen(true); }}
-                  onClearHistory={clearSearchHistory}
+                  onOpenTheme={(item) => selectThemeByName(item.name)}
+                  onClearThemeHistory={clearThemeHistory}
                 />
               ) : (
                 <div className={styles.placeholder}>
@@ -206,21 +259,6 @@ export default function Home() {
               ))}
             </nav>
 
-            {isSearchOpen && <button className={styles.scrim} type="button" aria-label="검색 닫기" onClick={() => setIsSearchOpen(false)} />}
-            <aside className={`${styles.searchDrawer} ${isSearchOpen ? styles.drawerOpen : ""}`} aria-hidden={!isSearchOpen}>
-              <div className={styles.drawerHeader}>
-                <h2>검색</h2>
-                <button type="button" onClick={() => setIsSearchOpen(false)} aria-label="검색 닫기">×</button>
-              </div>
-              <form onSubmit={(event) => { event.preventDefault(); submitSearch(); }}>
-                <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="테마나 종목을 검색하세요" aria-label="테마 또는 종목 검색" />
-                <button type="submit">검색</button>
-              </form>
-              <section className={styles.history}>
-                <div><h3>최근 검색</h3>{searchHistory.length > 0 && <button type="button" onClick={clearSearchHistory}>전체 삭제</button>}</div>
-                {searchHistory.length === 0 ? <p className={styles.emptyHistory}>검색 기록이 없어요.</p> : searchHistory.map((item) => <button key={item} type="button" onClick={() => setQuery(item)}><span>{item}</span><small>›</small></button>)}
-              </section>
-            </aside>
           </div>
         )}
       </section>
@@ -315,7 +353,7 @@ export default function Home() {
         </section>
       )}
 
-      {!isLoading && !loginIntent && <RealtimeThemeScreen goTo={goTo} active={currentScreen === "screen-realtime"} />}
+      {!isLoading && !loginIntent && <RealtimeThemeScreen goTo={goTo} onSelectTheme={selectThemeByName} active={currentScreen === "screen-realtime"} />}
       {!isLoading && !loginIntent && <CaseListScreen goTo={goTo} active={currentScreen === "screen-cases"} />}
       {!isLoading && !loginIntent && <CaseDetailScreen goTo={goTo} active={currentScreen === "screen-case-detail"} />}
       {!isLoading && !loginIntent && <CatalystDetailScreen goTo={goTo} active={currentScreen === "screen-catalyst"} />}
@@ -327,18 +365,18 @@ export default function Home() {
 
 function SavedLibrary({
   isSaved,
-  history,
+  themeHistory,
   onOpenSaved,
   onRemoveSaved,
-  onOpenHistory,
-  onClearHistory,
+  onOpenTheme,
+  onClearThemeHistory,
 }: {
   isSaved: boolean;
-  history: string[];
+  themeHistory: ThemeHistoryItem[];
   onOpenSaved: () => void;
   onRemoveSaved: () => void;
-  onOpenHistory: (item: string) => void;
-  onClearHistory: () => void;
+  onOpenTheme: (item: ThemeHistoryItem) => void;
+  onClearThemeHistory: () => void;
 }) {
   return (
     <div className={styles.library}>
@@ -356,18 +394,18 @@ function SavedLibrary({
             </button>
                 <button type="button" className={styles.removeSaved} onClick={onRemoveSaved} aria-label="원전수출 저장 목록에서 제거" title="저장 해제"><IconXmarkLine size={14} /></button>
           </article>
-        ) : <div className={styles.libraryEmpty}><IconStarLine size={28} /><strong>저장한 항목이 없어요.</strong><p>테마 상세의 별을 누르면 여기에 모아볼 수 있어요.</p></div>}
+        ) : <div className={styles.libraryEmpty}><IconStarLine size={28} /><strong>저장한 테마가 없어요.</strong><p>다시 보고 싶은 테마를 저장해 두고 한곳에서 다시 확인할 수 있어요.</p></div>}
       </section>
 
-      <div className={styles.libraryDivider}><span>검색 히스토리</span></div>
+      <div className={styles.libraryDivider}><span>최근 본 테마</span></div>
 
       <section>
-        <div className={styles.libraryHeading}><h2>최근 검색</h2>{history.length > 0 && <button type="button" onClick={onClearHistory}>전체 삭제</button>}</div>
-        {history.length > 0 ? (
+        <div className={styles.libraryHeading}><h2>내가 눌러본 테마</h2>{themeHistory.length > 0 && <button type="button" onClick={onClearThemeHistory}>전체 삭제</button>}</div>
+        {themeHistory.length > 0 ? (
           <div className={styles.libraryHistory}>
-            {history.map((item) => <button type="button" key={item} onClick={() => onOpenHistory(item)}><IconMagnifyingglassLine size={18} /><span>{item}</span><small>›</small></button>)}
+            {themeHistory.map((item) => <button type="button" key={`${item.name}-${item.rank}`} onClick={() => onOpenTheme(item)}><span><strong>{item.name}</strong><small>{item.metadata || "최근 확인한 테마"}</small></span><b>{item.value}</b><small>›</small></button>)}
           </div>
-        ) : <p className={styles.libraryHistoryEmpty}>검색 기록이 없어요.</p>}
+        ) : <p className={styles.libraryHistoryEmpty}>아직 눌러본 테마가 없어요.</p>}
       </section>
     </div>
   );
@@ -392,26 +430,26 @@ function WireHeader({ title, onBack }: { title: string; onBack: () => void }) {
   return <header className={styles.wireHeader}><button type="button" onClick={onBack} aria-label="뒤로 가기"><IconArrowLeftLine size={24} /></button><strong>{title}</strong><span className={styles.wireHeaderSpacer} aria-hidden="true" /></header>;
 }
 
-function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
+function RealtimeThemeScreen({ goTo, onSelectTheme, active }: { goTo: (screen: string) => void; onSelectTheme: (name: string) => void; active: boolean }) {
   return (
     <section id="screen-realtime" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="실시간 테마주 와이어프레임">
       <div className={`${styles.wireScreen} ${styles.realtimeScreen}`}>
-        <header className={styles.wireTitle}><h1>실시간 테마 중계</h1></header>
+        <header className={styles.wireTitle}><div><h1>실시간 테마 중계</h1><div className={styles.liveStatus}><span className={styles.liveDot} />LIVE</div></div></header>
         <div className={styles.stateNote}>면적은 테마의 실시간 강도에 따라 달라져요.</div>
         <div className={styles.treemap} aria-label="실시간 테마 강도 트리맵">
           <div className={styles.treeTop}>
-            <button className={styles.treePrimary} onClick={() => goTo("screen-detail")}><strong>원전수출</strong><b>+2.7%</b><small>17/21 상승</small></button>
-            <button className={styles.treeSecondary} onClick={() => goTo("screen-detail")}><strong>전력설비</strong><b>+2.3%</b><small>14/19 상승</small></button>
+            <button className={styles.treePrimary} onClick={() => onSelectTheme("원전수출")}><strong>원전수출</strong><b>+2.7%</b><small>17/21 상승</small></button>
+            <button className={styles.treeSecondary} onClick={() => onSelectTheme("전력설비")}><strong>전력설비</strong><b>+2.3%</b><small>14/19 상승</small></button>
           </div>
           <div className={styles.treeMiddle}>
-            <button><strong>조선기자재</strong><b>+1.9%</b></button>
-            <button><strong>방산</strong><b>+1.6%</b></button>
-            <button><strong>반도체 장비</strong><b>+1.4%</b></button>
+            <button onClick={() => onSelectTheme("조선기자재")}><strong>조선기자재</strong><b>+1.9%</b></button>
+            <button onClick={() => onSelectTheme("방산")}><strong>방산</strong><b>+1.6%</b></button>
+            <button onClick={() => onSelectTheme("반도체 장비")}><strong>반도체 장비</strong><b>+1.4%</b></button>
           </div>
           <div className={styles.treeBottom}>
-            <button><strong>로봇</strong><b>+1.2%</b></button>
-            <button><strong>바이오</strong><b>+0.9%</b></button>
-            <button><strong>2차전지</strong><b>+0.7%</b></button>
+            <button onClick={() => onSelectTheme("로봇")}><strong>로봇</strong><b>+1.2%</b></button>
+            <button onClick={() => onSelectTheme("바이오")}><strong>바이오</strong><b>+0.9%</b></button>
+            <button onClick={() => onSelectTheme("2차전지")}><strong>2차전지</strong><b>+0.7%</b></button>
           </div>
         </div>
         <div className={styles.treeLegend}><span><i />면적: 테마 강도</span><span>수치는 장중 갱신</span></div>
@@ -466,6 +504,10 @@ function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; ac
         <div className={`${styles.wireBody} ${styles.caseDetailBody}`}>
           <div className={styles.caseDetailCard}>
           <div className={`${styles.pageIntro} ${styles.caseHero}`}><small>원전수출 테마 · 2024.07.18</small><h1>체코 원전 우선협상대상자 선정</h1></div>
+          <section className={styles.caseMatchSummary} aria-label="데자뷰 케이스 연결 정보">
+            <div><span>비슷했던 점</span><strong>원전 수출 기대와 정책 지원이 함께 나타난 사건이에요.</strong></div>
+            <div><span>연결된 기록</span><strong>원전수출 테마 · 사건 당일 시장 기록</strong></div>
+          </section>
           <section className={styles.dataBlock}><h2>사건 기록</h2><p>체코 정부가 신규 원전 사업의 우선협상대상자로 한국수력원자력을 선정하며 원전 관련주가 부각됐어요.</p><small>시장 사건 원문 · 수집 기록 보유</small><div className={styles.caseKeywords} aria-label="사건 키워드"><span>체코 원전</span><span>우선협상대상자</span><span>원전 수출</span></div></section>
           <section className={styles.dataBlock}><h2>당시 테마 바스켓의 이후 흐름</h2><div className={styles.statGrid}><article><span>T+1</span><strong>+2.1%</strong></article><article><span>T+5</span><strong>+4.6%</strong></article><article><span>T+20</span><strong>+7.2%</strong></article></div><small>사건 당일 기록된 종목을 동일 비중으로 계산했어요.</small></section>
           <section className={styles.dataBlock}>

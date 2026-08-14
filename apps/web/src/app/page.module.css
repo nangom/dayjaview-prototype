@@ -771,3 +771,120 @@
     border-radius: 0;
   }
 }
+
+/* Interaction polish: visited themes are the useful history, while research
+   remains the only place for free-form questions. */
+.homeMark {
+  filter: brightness(0) saturate(100%) invert(48%) sepia(96%) saturate(2945%) hue-rotate(359deg) brightness(101%) contrast(104%);
+}
+.libraryHistory > button {
+  grid-template-columns: minmax(0, 1fr) auto 18px;
+  gap: 10px;
+  min-height: 62px;
+}
+.libraryHistory > button > span {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.libraryHistory > button > span strong {
+  overflow: hidden;
+  color: #212124;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.libraryHistory > button > span small {
+  overflow: hidden;
+  color: #868b94;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.libraryHistory > button > b {
+  color: #f04452;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.libraryEmpty p { max-width: 220px; }
+
+.footer button,
+.miniFooter button { position: relative; }
+.footer button:nth-child(2)::after,
+.miniFooter button:nth-child(2)::after {
+  content: "LIVE";
+  position: absolute;
+  top: 3px;
+  right: 9px;
+  min-width: 24px;
+  padding: 2px 4px;
+  border-radius: 5px;
+  background: #e5484d;
+  color: #ffffff;
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: .02em;
+}
+
+.sourceStatus,
+.liveStatus {
+  animation: livePulse 1.35s ease-in-out infinite;
+}
+.liveDot {
+  animation: liveDotPulse 1.35s ease-in-out infinite;
+}
+.liveStatus {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #e5484d;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.liveStatus .liveDot { width: 6px; height: 6px; box-shadow: 0 0 0 3px #fff0e5; }
+
+.catalystSection .sectionHeading h2,
+.catalystSection .sectionHeading > span,
+.caseHeadingCopy small {
+  color: #d95700;
+  font-weight: 800;
+}
+.caseMatchSummary {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-bottom: 1px solid #eaebee;
+  background: #fff7f1;
+}
+.caseMatchSummary > div {
+  display: grid;
+  gap: 3px;
+}
+.caseMatchSummary span {
+  color: #b85a2c;
+  font-size: 10px;
+  font-weight: 800;
+}
+.caseMatchSummary strong {
+  color: #4d5159;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.researchScreen,
+.researchScreen .wireBody { background: #f2eee9; }
+.researchScreen .naturalForm button { background: #d8784a; }
+.researchScreen .researchChatBox .answerBlock { border-color: #eaebee; }
+
+@keyframes livePulse {
+  0%, 100% { opacity: .62; }
+  50% { opacity: 1; }
+}
+@keyframes liveDotPulse {
+  0%, 100% { opacity: .45; transform: scale(.82); }
+  50% { opacity: 1; transform: scale(1); }
+}
