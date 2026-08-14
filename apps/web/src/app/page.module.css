@@ -248,3 +248,32 @@
   .phone { width: 100%; height: 100dvh; min-height: 640px; border: 0; border-radius: 0; }
   .phone { scroll-snap-align: start; }
 }
+
+/* Day-ja-View design-system layer: SEED structure with orange brand identity. */
+.phone { border-color: var(--djv-color-border); border-radius: var(--djv-radius-xl); background: var(--djv-color-bg); box-shadow: var(--djv-shadow-card); }
+.app, .detail, .wireScreen { background: var(--djv-color-bg); }
+.home, .detailScroll, .wireBody { color: var(--djv-color-text); }
+.home h1, .wireTitle h1, .pageIntro h1 { font-weight: 800; letter-spacing: -.04em; }
+.home p, .wireTitle p, .pageIntro p, .helper { color: var(--djv-color-text-muted); }
+.searchButton, .wireTitle > button { border-color: var(--djv-color-border); color: var(--djv-color-text); box-shadow: var(--djv-shadow-card); }
+.ranking { border-top: 0; }
+.ranking button { min-height: 72px; padding: 8px 4px; border-bottom-color: var(--djv-color-border); }
+.ranking li:nth-child(-n+3) .rank { border-radius: var(--djv-radius-sm); background: var(--djv-color-brand-soft); color: #a33b00; font-weight: 800; }
+.ranking strong, .liveList em, .caseList b, .leaders strong { color: var(--djv-color-market-up); }
+.footer, .miniFooter { right: 12px; bottom: 8px; left: 12px; height: 58px; border: 1px solid rgba(0,0,0,.08); border-radius: 19px; background: rgba(255,255,255,.94); box-shadow: var(--djv-shadow-nav); backdrop-filter: blur(18px); }
+.content { padding-bottom: 76px; }
+.footer button, .miniFooter button { border-radius: 14px; }
+.footer .active, .miniFooter .selected { background: var(--djv-color-brand-soft); color: var(--djv-color-brand); }
+.detailHeader, .wireHeader { border-bottom-color: var(--djv-color-border); background: var(--djv-color-surface); }
+.themeSummary { margin: 0 -20px; padding: 28px 20px 24px !important; background: var(--djv-color-brand); color: var(--djv-color-on-brand); }
+.themeSummary span, .themeSummary > p { color: rgba(255,253,241,.78); }
+.themeSummary > strong { color: var(--djv-color-on-brand); font-weight: 800; }
+.detailScroll > section, .dataBlock, .pageIntro, .settingGroup { border-bottom-color: var(--djv-color-border); }
+.metrics article, .horizons article, .statGrid article { border-color: var(--djv-color-border); border-radius: var(--djv-radius-md); background: var(--djv-color-surface); box-shadow: var(--djv-shadow-card); }
+.metrics strong, .horizons strong, .statGrid strong { font-weight: 800; }
+.reason li, .catalysts li, .leaders > div, .cases article, .simpleRows button, .settingGroup > button, .liveList > button, .caseList > button { border-color: var(--djv-color-border); }
+.catalysts li > b { height: 28px; border-radius: var(--djv-radius-sm); display: grid; place-items: center; background: var(--djv-color-brand-soft); color: #a33b00; }
+.stateNote, .lockedBlock { border: 0; border-radius: var(--djv-radius-md); background: var(--djv-color-brand-soft); color: #6b4a38; }
+.filterRow button { border-color: var(--djv-color-border); border-radius: var(--djv-radius-pill); background: var(--djv-color-surface); }
+.filterRow .filterActive { border-color: var(--djv-color-brand); background: var(--djv-color-brand-soft); color: #a33b00; }
+.liveList, .wireBody { scrollbar-width: thin; }
