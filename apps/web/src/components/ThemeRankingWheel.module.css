@@ -1,17 +1,16 @@
 .wheel {
   min-height: 0;
   flex: 1;
-  padding: 0;
+  padding: 4px 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
+  overflow-anchor: none;
   scrollbar-width: none;
   touch-action: pan-y;
   cursor: grab;
   user-select: none;
   -webkit-overflow-scrolling: touch;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.28) 5%, #000 13%, #000 87%, rgba(0,0,0,.28) 95%, transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.28) 5%, #000 13%, #000 87%, rgba(0,0,0,.28) 95%, transparent 100%);
 }
 
 .wheel::-webkit-scrollbar { display: none; }
@@ -19,7 +18,7 @@
 .wheel[data-dragging="true"] * { pointer-events: none; }
 
 .card {
-  --wheel-scale: .92;
+  --wheel-scale: .97;
   --wheel-opacity: .4;
   width: 100%;
   min-height: 76px;
@@ -40,7 +39,6 @@
   transform: scale(var(--wheel-scale));
   transform-origin: center;
   transition: opacity 120ms ease, transform 120ms ease, border-color 120ms ease, background 120ms ease;
-  scroll-snap-align: center;
 }
 
 .card[data-focused="true"] { border-color: rgba(255,255,255,.98); background: rgba(255,255,255,.82); }

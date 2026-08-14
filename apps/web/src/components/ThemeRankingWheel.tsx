@@ -18,7 +18,6 @@ type ThemeRankingWheelProps = {
 export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) {
   const wheelRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef({ pointerId: -1, startY: 0, startTop: 0, moved: false });
-  const snapTimerRef = useRef<number | undefined>(undefined);
   const frameRef = useRef<number | undefined>(undefined);
   const orderedThemes = themes.length > 0 ? [themes[themes.length - 1], ...themes.slice(0, -1)] : [];
   const repeatedThemes = [...orderedThemes, ...orderedThemes, ...orderedThemes];
@@ -31,7 +30,6 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     const step = (cards[0]?.offsetHeight ?? 64) + 8;
     const cycleHeight = step * themes.length;
     let baseTop = 0;
-    let hasInteracted = false;
 
     const paint = () => {
       frameRef.current = undefined;
@@ -42,7 +40,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
         const cardBounds = card.getBoundingClientRect();
         const distance = Math.abs(cardBounds.top + cardBounds.height / 2 - focusY) / step;
         const emphasis = Math.max(0, 1 - distance);
-        card.style.setProperty("--wheel-scale", String(0.92 + emphasis * 0.08));
+        card.style.setProperty("--wheel-scale", String(0.97 + emphasis * 0.03));
         card.style.setProperty("--wheel-opacity", String(Math.max(0.24, 1 - Math.max(0, distance - 1) * 0.2)));
         card.dataset.focused = distance < 0.72 ? "true" : "false";
       });
@@ -58,20 +56,10 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
       if (wheel.scrollTop > cycleHeight * 1.5) wheel.scrollTop -= cycleHeight;
     };
 
-    const snap = () => {
-      const target = baseTop + Math.round((wheel.scrollTop - baseTop) / step) * step;
-      wheel.scrollTo({ top: target, behavior: "smooth" });
-    };
-
     const handleScroll = () => {
       keepMiddleCopy();
       schedulePaint();
-      if (!hasInteracted) return;
-      window.clearTimeout(snapTimerRef.current);
-      snapTimerRef.current = window.setTimeout(snap, 150);
     };
-
-    const markInteraction = () => { hasInteracted = true; };
 
     const firstVisibleCard = cards[themes.length];
     if (firstVisibleCard) {
@@ -80,16 +68,9 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     }
     paint();
     wheel.addEventListener("scroll", handleScroll, { passive: true });
-    wheel.addEventListener("wheel", markInteraction, { passive: true });
-    wheel.addEventListener("touchstart", markInteraction, { passive: true });
-    wheel.addEventListener("pointerdown", markInteraction, { passive: true });
 
     return () => {
       wheel.removeEventListener("scroll", handleScroll);
-      wheel.removeEventListener("wheel", markInteraction);
-      wheel.removeEventListener("touchstart", markInteraction);
-      wheel.removeEventListener("pointerdown", markInteraction);
-      window.clearTimeout(snapTimerRef.current);
       if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
     };
   }, [themes]);
