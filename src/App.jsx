@@ -656,18 +656,19 @@ export default class App extends React.Component {
           </section>
 
           <section className="seed-card" style={css('margin-top:14px')}>
-            <h2 className="seed-section-title">과거 상승 이후 흐름</h2>
+            <h2 className="seed-section-title">과거엔 어땠을까요?</h2>
             <p className="seed-section-description">과거 34개 사례의 평균 움직임이에요.</p>
             <div style={css('display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px')}>
               {v.horizons.map(h => <div key={h.key} className="seed-horizon"><span>{h.label}</span><strong>{h.val}</strong><small>{h.hit}</small></div>)}
             </div>
+            <ActionButton size="large" variant="brandSolid" onClick={v.links[1].go} style={css('width:100%;margin-top:18px')}>상세 통계 보기</ActionButton>
           </section>
 
           <section style={css('margin-top:26px')}>
-            <div style={css('display:flex;align-items:end;justify-content:space-between;gap:10px')}><div><h2 className="seed-section-title">오늘과 비슷했던 과거</h2><p className="seed-section-description">유사도가 높은 사례부터 보여드려요.</p></div><ActionButton size="xsmall" variant="ghost" onClick={v.links[0].go}>전체보기</ActionButton></div>
+            <div><h2 className="seed-section-title">오늘과 비슷했던 과거</h2><p className="seed-section-description">유사도가 높은 사례부터 보여드려요.</p></div>
             <div style={css('display:flex;flex-direction:column;gap:10px;margin-top:14px')}>{v.topCases.slice(0, 3).map(c => this.renderCaseCard(c, false))}</div>
+            <ActionButton size="large" variant="ghost" onClick={v.links[0].go} style={css('width:100%;margin-top:12px')}>과거 사례 전체보기</ActionButton>
           </section>
-          <ActionButton size="large" variant="brandSolid" onClick={v.links[1].go} style={css('width:100%;margin-top:20px')}>상세 통계 보기</ActionButton>
         </main>
       </div>
     );
@@ -951,7 +952,7 @@ export default class App extends React.Component {
     return (
       <div className="seed-pilot seed-case" style={css('position:absolute;inset:0;background:var(--seed-color-bg-layer-default);display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
-          <button className="seed-detail-back press" onClick={v.toCases} aria-label="과거 사례 목록으로 돌아가기">
+          <button className="seed-detail-back press" onClick={v.toTheme} aria-label="장 마감 기준 테마 상세로 돌아가기">
             <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
           <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>사례 상세</span>
