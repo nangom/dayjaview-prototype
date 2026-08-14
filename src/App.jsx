@@ -904,12 +904,12 @@ export default class App extends React.Component {
         key={c.key}
         className="case-card press-sm"
         onClick={c.open}
-        style={css((snap ? 'scroll-snap-align:start;scroll-snap-stop:always;' : '') + 'width:100%;flex:none;display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:22px;border:1px solid #EEEDE8;border-radius:28px;background:#fff;cursor:pointer;text-align:left;box-shadow:0 6px 18px -14px rgba(22,22,15,.35);transition:box-shadow .16s ease,transform .16s ease')}
+        style={css((snap ? 'scroll-snap-align:start;scroll-snap-stop:always;' : '') + 'width:100%;flex:none;display:flex;flex-direction:column;align-items:stretch;gap:11px;padding:20px 23px;border:1px solid #EEEDE8;border-radius:28px;background:#fff;cursor:pointer;text-align:left;box-shadow:0 6px 18px -14px rgba(22,22,15,.35);transition:box-shadow .16s ease,transform .16s ease')}
       >
         <span style={css('display:flex;align-items:center;gap:10px')}>
           <span style={css('flex:1;min-width:0;display:flex;flex-direction:column;gap:7px')}>
-            <span style={css('font-size:19.5px;font-weight:500;letter-spacing:-0.015em;color:#16160F')}>{c.date}</span>
-            <span style={css('font-size:19.5px;font-weight:800;letter-spacing:-0.015em;color:#16160F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{c.title}</span>
+            <span style={css('font-size:17px;font-weight:500;letter-spacing:-0.02em;color:#16160F')}>{c.date}</span>
+            <span style={css('font-size:18px;font-weight:700;letter-spacing:-0.035em;font-synthesis:none;color:#16160F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{c.title}</span>
           </span>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#C3C2B9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={css('flex:none')}><path d="M9 6l6 6-6 6"></path></svg>
         </span>
@@ -917,7 +917,7 @@ export default class App extends React.Component {
           {c.tags.map((t, i) => (
             <span key={i} style={css('padding:6px 12px;border-radius:10px;background:var(--seed-color-bg-brand-weak);font-size:13.5px;font-weight:600;letter-spacing:-0.01em;color:var(--seed-color-fg-brand-contrast)')}>{t}</span>
           ))}
-          <span style={{ ...css('margin-left:auto;font-size:19.5px;font-weight:800;letter-spacing:-0.02em'), color: c.color }}>{c.retLabel}</span>
+          <span style={{ ...css('margin-left:auto;font-size:18px;font-weight:800;letter-spacing:-0.025em'), color: c.color }}>{c.retLabel}</span>
         </span>
       </button>
     );
