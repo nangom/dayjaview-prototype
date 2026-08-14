@@ -207,12 +207,19 @@ export default class App extends React.Component {
 
       if (!this._centered) {
         this._centered = true;
+        // 초점에 놓을 항목을 직접 가운데로 보낸다. 예전처럼 1위를 맞춘 뒤
+        // itemH 로 칸수를 더하는 방식은 스케일이 걸린 상태에서 한 칸씩
+        // 어긋났다.
+        //
+        // 첫 진입 기본값은 2위다. 2위를 초점에 두면 1·2·3위가 초점 양옆으로
+        // 나란히 놓여 셋 다 커 보인다. 테마를 봤다가 돌아온 경우에는 그때
+        // 고른 항목(wheelPick)을 초점에 둔다.
+        const offset = this.wheelPick === undefined ? 1 : this.wheelPick;
+        const target = this.wheelItems[n + offset] || mid;
         const box = el.getBoundingClientRect();
-        const r = mid.getBoundingClientRect();
+        const r = target.getBoundingClientRect();
         el.scrollTop += (r.top + r.height / 2) - (box.top + box.height / 2 - this.focusShift);
         this.baseTop = el.scrollTop;
-        const pick = this.wheelPick || 0;
-        if (pick) el.scrollTop = this.baseTop + pick * (itemH + 8);
       }
 
       if (!this._wheelBound) {
@@ -268,7 +275,10 @@ export default class App extends React.Component {
       if (!item) return;
       const r = item.getBoundingClientRect();
       const k = Math.min(Math.abs(r.top + r.height / 2 - focus) / step, 7);
-      const near = Math.max(0, 1 - k);
+      // 감쇠를 두 칸에 걸쳐 준다. 한 칸(1-k)이면 초점 하나만 1.06 이고 바로
+      // 옆이 0.928 로 뚝 떨어져서 '큰 항목 1개'로 보인다. 두 칸으로 벌리면
+      // 초점과 양옆 셋이 1.06 / 0.988 / 0.916 이 되어 묶음으로 읽힌다.
+      const near = Math.max(0, 1 - k / 2);
       item.style.transform = 'scale(' + (0.94 + near * 0.12 - Math.min(k * 0.012, 0.05)).toFixed(3) + ')';
       // 비초점 항목을 blur 로 뭉개면 목록 10줄 중 9줄이 읽히지 않아 화면이
       // '정보 1개 + 노이즈'로 보인다. 흐림은 빼고 opacity 하한도 0.55 로 올려
