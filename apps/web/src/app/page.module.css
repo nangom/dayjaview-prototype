@@ -491,7 +491,8 @@
   background: #f4f4f5;
   box-shadow: none;
 }
-.metrics span, .metrics small, .horizons span, .horizons small { color: #868b94; }
+.metrics span, .metrics small, .horizons small { color: #868b94; }
+.horizons span { color: #4d5159; font-weight: 700; }
 .metrics strong { color: #d95700; }
 .reason { background: #ffffff; }
 .reason > p { color: #4d5159; }
@@ -521,8 +522,8 @@
   box-shadow: none;
 }
 .pastSummarySection .horizons strong { color: #d95700; }
-.peakObservation { margin-top: 12px; padding: 14px; border: 1px solid #ffd5bd; border-radius: 14px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; background: #fff8f3; }
-.peakObservation > span { color: #6b4a38; font-size: 11px; font-weight: 700; }
+.peakObservation { margin-top: 14px; padding: 10px 0 2px 13px; border: 0; border-left: 3px solid #ffb07a; border-radius: 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; background: transparent; }
+.peakObservation > span { color: #4d5159; font-size: 11px; font-weight: 700; }
 .peakObservation > strong { color: #d95700; font-size: 22px; }
 .peakObservation > small { grid-column: 1 / -1; color: #868b94; font-size: 9px; line-height: 1.45; }
 .similarSection .sectionHeading > button { color: #868b94; }
@@ -569,6 +570,7 @@
 }
 .wireBody .dataBlock > p { color: #4d5159; }
 .wireBody .dataBlock > small, .wireBody .dataBlock span { color: #868b94; }
+.wireBody .statGrid span { color: #4d5159; font-weight: 700; }
 .wireBody .statGrid article {
   border: 0;
   background: #fff1f2;
@@ -577,10 +579,12 @@
 .catalystScreen .statGrid article { background: #fff0e5; }
 .catalystScreen .wireBody .statGrid strong { color: #d95700; }
 .horizonToggle { margin: 4px 0 16px; padding: 4px; border-radius: 18px; display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; background: #f4f4f2; }
-.horizonToggle button { height: 44px; border: 0; border-radius: 15px; background: transparent; color: #8b8378; font-size: 13px; font-weight: 700; }
+.horizonToggle button { height: 44px; border: 0; border-radius: 15px; background: transparent; color: #4d5159; font-size: 13px; font-weight: 700; }
 .horizonToggle .horizonActive { background: #ff6f0f; color: #ffffff; }
 .caseRowTags { margin-top: 2px; display: flex !important; flex-flow: row wrap !important; gap: 4px !important; }
 .caseRowTags em { padding: 4px 7px; border-radius: 8px; background: #fff0e5; color: #b74600 !important; font-size: 9px !important; font-weight: 700; }
+.caseKeywords { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+.caseKeywords span { padding: 5px 9px; border-radius: 999px; background: #fff0e5; color: #b74600 !important; font-size: 10px; font-weight: 700; }
 .caseList > button { cursor: pointer; }
 .caseList > button:active { background: #fafafa; }
 .caseList > button > b { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; color: #f04452; font-size: 16px; }

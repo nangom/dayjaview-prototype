@@ -242,7 +242,7 @@ export default function Home() {
                 <div className={styles.sectionHeading}><h2>오늘 왜 올랐을까요?</h2></div>
                 <div className={styles.reasonTabs} role="tablist" aria-label="상승 이유 분석 시점"><button type="button" role="tab" aria-selected={reasonSource === "live"} className={reasonSource === "live" ? styles.reasonTabActive : ""} onClick={() => setReasonSource("live")}>실시간 분석</button><button type="button" role="tab" aria-selected={reasonSource === "infostock"} className={reasonSource === "infostock" ? styles.reasonTabActive : ""} onClick={() => setReasonSource("infostock")}>장 마감 후 분석</button></div>
                 {reasonSource === "live" ? <>
-                  <div className={styles.sourceStatus}><span className={styles.liveDot} />장중 뉴스 분석 중</div>
+                  <div className={styles.sourceStatus}><span className={styles.liveDot} />실시간 분석 중</div>
                   <p>체코 신규 원전 사업 관련 기대가 다시 부각되며 설계·기자재 종목으로 상승이 확산됐어요.</p>
                   <ul>{intradayReasonNews.slice(0, showAllReasons ? intradayReasonNews.length : 3).map((news) => <li key={`${news.time}-${news.title}`}><span>{news.time}</span><p>{news.title}</p><small>{news.source}</small></li>)}</ul>
                   {intradayReasonNews.length > 3 ? <button type="button" className={styles.reasonMore} aria-expanded={showAllReasons} onClick={() => setShowAllReasons((current) => !current)}><span>{showAllReasons ? "근거 접기" : `근거 ${intradayReasonNews.length - 3}건 더 보기`}</span><i aria-hidden="true" data-open={showAllReasons ? "true" : "false"} /></button> : null}
@@ -439,7 +439,7 @@ function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; ac
         <WireHeader title="과거 사례" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
           <div className={`${styles.pageIntro} ${styles.caseHero}`}><small>원전수출 테마 · 2024.07.18</small><h1>체코 원전 우선협상대상자 선정</h1></div>
-          <section className={styles.dataBlock}><h2>사건 기록</h2><p>체코 정부가 신규 원전 사업의 우선협상대상자로 한국수력원자력을 선정하며 원전 관련주가 부각됐어요.</p><small>시장 사건 원문 · 수집 기록 보유</small></section>
+          <section className={styles.dataBlock}><h2>사건 기록</h2><p>체코 정부가 신규 원전 사업의 우선협상대상자로 한국수력원자력을 선정하며 원전 관련주가 부각됐어요.</p><small>시장 사건 원문 · 수집 기록 보유</small><div className={styles.caseKeywords} aria-label="사건 키워드"><span>체코 원전</span><span>우선협상대상자</span><span>원전 수출</span></div></section>
           <section className={styles.dataBlock}><h2>당시 테마 바스켓의 이후 흐름</h2><div className={styles.statGrid}><article><span>T+1</span><strong>+2.1%</strong></article><article><span>T+5</span><strong>+4.6%</strong></article><article><span>T+20</span><strong>+7.2%</strong></article></div><small>사건 당일 기록된 종목을 동일 비중으로 계산했어요.</small></section>
           <section className={styles.dataBlock}><h2>당시 기록된 종목</h2><small>사건 당일 시장 기록 기준</small><div className={styles.simpleRows}><button>두산에너빌리티 <b>+14.2%</b></button><button>한전기술 <b>+7.1%</b></button><button>우리기술 <b>+5.8%</b></button></div></section>
               <p className={styles.disclaimer}>과거에 관측된 결과를 보여주며 현재의 투자 판단을 제공하지 않아요.</p>
