@@ -1,4 +1,5 @@
 import React from 'react';
+import { ActionButton, Badge } from '@seed-design/react';
 import { IOSDevice } from './IOSDevice.jsx';
 import { css } from './css.js';
 
@@ -15,7 +16,7 @@ export default class App extends React.Component {
   state = {
     screen: 'splash', theme: 'LED', hz: 1, pickIdx: 0, hover: null, plus: false,
     notif: true, saved: false, savedMap: {}, tab: 'home', byReturn: false,
-    toast: null, menu: false, savedQ: '', scale: 1, bare: false
+    toast: null, menu: false, savedPanel: false, savedQ: '', scale: 1, bare: false
   };
 
   themes = [
@@ -138,24 +139,23 @@ export default class App extends React.Component {
     const box = el.getBoundingClientRect();
     const focus = box.top + box.height / 2 - (this.focusShift || 0);
     const step = (this.wheelItems[0] ? this.wheelItems[0].offsetHeight : 62) + 8;
-    this.wheelItems.forEach(item => {
+    let closest = { distance: Infinity, index: 0 };
+    this.wheelItems.forEach((item, index) => {
       if (!item) return;
       const r = item.getBoundingClientRect();
-      const k = Math.min(Math.abs(r.top + r.height / 2 - focus) / step, 7);
+      const distance = Math.abs(r.top + r.height / 2 - focus);
+      const k = Math.min(distance / step, 7);
+      if (distance < closest.distance) closest = { distance, index };
       const near = Math.max(0, 1 - k);
-      item.style.transform = 'scale(' + (0.94 + near * 0.12 - Math.min(k * 0.012, 0.05)).toFixed(3) + ')';
+      item.style.transform = 'scale(' + (0.92 + near * 0.08 - Math.min(k * 0.01, 0.04)).toFixed(3) + ')';
       item.style.opacity = String(k <= 1 ? 1 : Math.max(0.2, 1 - (k - 1) * 0.2).toFixed(3));
       item.style.filter = k > 0.6 ? 'blur(' + Math.min((k - 0.6) * 0.45, 1.6).toFixed(2) + 'px)' : 'none';
       item.style.zIndex = String(100 - Math.round(k * 5));
-      item.style.boxShadow = near > 0.02
-        ? '0 0 0 1px rgba(22,22,15,' + (0.045 + near * 0.02).toFixed(3) + '),'
-          + '0 ' + (12 + near * 16).toFixed(0) + 'px ' + (26 + near * 24).toFixed(0) + 'px -12px rgba(22,22,15,' + (0.2 + near * 0.22).toFixed(3) + '),'
-          + 'inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 4px rgba(22,22,15,.045)'
-        : '0 0 0 1px rgba(22,22,15,.045),0 12px 26px -12px rgba(22,22,15,.2),inset 0 1.5px 1px rgba(255,255,255,.95),inset 0 -2px 4px rgba(22,22,15,.045)';
-      item.style.background = near > 0.3
-        ? 'linear-gradient(150deg,rgba(255,255,255,' + (0.62 + near * 0.28).toFixed(2) + ') 0%,rgba(255,255,255,' + (0.34 + near * 0.4).toFixed(2) + ') 55%,rgba(240,240,236,' + (0.34 + near * 0.4).toFixed(2) + ') 100%)'
-        : 'linear-gradient(150deg,rgba(255,255,255,.62) 0%,rgba(255,255,255,.34) 55%,rgba(232,232,228,.34) 100%)';
+      item.style.boxShadow = 'none';
+      item.style.borderColor = near > 0.3 ? 'rgba(255,111,15,' + (0.35 + near * 0.55).toFixed(2) + ')' : '#E8E9EC';
+      item.style.background = near > 0.3 ? '#FFF8F3' : '#FFFFFF';
     });
+    this.focusedWheelTheme = this.themes[closest.index % this.themes.length];
   };
 
   flash(msg) {
@@ -213,7 +213,7 @@ export default class App extends React.Component {
   // 전체화면으로 뜨면 진짜 iOS 상태바가 콘텐츠 위에 겹치므로 안전영역을 더해
   // 그 아래에서 시작하게 한다. 일반 브라우저에서는 inset 이 0이라 영향이 없다.
   padTop(base) {
-    if (!this.state.bare) return base + 'px';
+    if (!this.state.bare) return Math.max(base - 34, 14) + 'px';
     return 'calc(env(safe-area-inset-top, 0px) + ' + Math.max(base - 34, 14) + 'px)';
   }
 
@@ -309,6 +309,11 @@ export default class App extends React.Component {
         { key: 'q3', title: '알림 설정', d: 'M6.2 16.2h11.6l-1.6-2.2v-3.6a4.2 4.2 0 0 0-8.4 0V14zM10.4 18.6a1.8 1.8 0 0 0 3.2 0', go: () => this.flash('알림 설정 준비 중') }
       ],
       closeAll: () => this.setState({ plus: false }),
+      saveFocusedTheme: () => {
+        const target = this.focusedWheelTheme || this.themes[0];
+        this.setState(s => ({ savedMap: { ...s.savedMap, [target.title]: true } }));
+        this.flash(target.title + ' 테마를 저장했습니다');
+      },
 
       reason: '정부 공공 조명 교체 예산 확대와 마이크로 LED 신규 수주 소식이 겹치며 관련 종목 전반이 강세를 보였습니다.',
       stocks: ['서울반도체', '루멘스', '엘이디코리아'],
@@ -322,12 +327,42 @@ export default class App extends React.Component {
         { key: 'l1', label: '과거 사례 전체보기', go: () => this.go('cases') },
         { key: 'l2', label: '상세 통계', go: () => this.go('stats') }
       ],
-      saveFill: st.saved ? '#50FFEB' : 'none',
-      toggleSave: () => { const v = !st.saved; this.setState({ saved: v }); this.flash(v ? '저장한 테마에 담았습니다' : '저장한 테마에서 제거했습니다'); },
+      isCurrentSaved: !!st.savedMap[st.theme],
+      saveFill: st.savedMap[st.theme] ? '#FF6F0F' : 'none',
+      toggleSave: () => {
+        const next = !st.savedMap[st.theme];
+        this.setState(s => ({ saved: next, savedMap: { ...s.savedMap, [st.theme]: next } }));
+        this.flash(next ? '저장한 테마에 담았습니다' : '저장한 테마에서 제거했습니다');
+      },
 
       menu: st.menu,
       openMenu: () => this.setState({ menu: true }),
       closeMenu: () => this.setState({ menu: false }),
+      savedPanel: st.savedPanel,
+      hasSavedItems: Object.keys(st.savedMap).some(key => st.savedMap[key]),
+      openSavedPanel: () => this.setState({ savedPanel: true }),
+      closeSavedPanel: () => this.setState({ savedPanel: false }),
+      savedItems: Object.keys(st.savedMap).filter(key => st.savedMap[key]).map(title => {
+        const hit = this.themes.find(t => t.title === title);
+        return {
+          key: title,
+          title,
+          chg: hit?.chg || '',
+          remove: e => {
+            e.stopPropagation();
+            this.setState(s => ({
+              saved: s.theme === title ? false : s.saved,
+              savedMap: { ...s.savedMap, [title]: false }
+            }));
+            this.flash(title + ' 테마를 저장 목록에서 제거했습니다');
+          },
+          open: () => this.setState({ savedPanel: false }, () => this.go('theme', {
+            theme: title,
+            themeChg: hit?.chg || '+3.63%',
+            themeRank: hit ? String(hit.rank) : ''
+          }))
+        };
+      }),
       savedQ: st.savedQ || '',
       onSavedQ: e => this.setState({ savedQ: e.target.value }),
       savedGroups: [
@@ -371,7 +406,7 @@ export default class App extends React.Component {
         label,
         pick: () => this.setState({ hz: i }),
         style: 'flex:1;padding:12px 0;border:none;border-radius:17px;cursor:pointer;font-family:inherit;font-size:15px;letter-spacing:-0.01em;transition:background .16s ease,color .16s ease;'
-          + (i === hz ? 'background:#50FFEB;color:#0B3A35;font-weight:700;box-shadow:0 6px 14px -8px rgba(11,58,53,.45);' : 'background:transparent;color:#9A998F;font-weight:600;')
+          + (i === hz ? 'background:var(--seed-color-bg-brand-solid);color:#fff;font-weight:700;box-shadow:0 6px 14px -8px rgba(255,111,15,.45);' : 'background:transparent;color:#9A998F;font-weight:600;')
       })),
       allCases: this.cases.map(caseRow),
 
@@ -419,8 +454,11 @@ export default class App extends React.Component {
           valStyle: 'width:88px;text-align:right;font-size:16px;font-weight:800;letter-spacing:-0.01em;color:' + (r.n < 0 ? '#3267D6' : '#D83A43')
         }));
       })(),
-      sortLabel: st.byReturn ? '수익률순' : '종목명순',
+      sortLabel: st.byReturn ? '수익률 높은 순' : '종목명 순',
       toggleSort: () => this.setState(s => ({ byReturn: !s.byReturn })),
+      sortByName: () => this.setState({ byReturn: false }),
+      sortByReturn: () => this.setState({ byReturn: true }),
+      isReturnSort: st.byReturn,
 
       statCols: ['1일', '5일', '20일'],
       statRows: stats.map((s, i) => ({
@@ -463,6 +501,163 @@ export default class App extends React.Component {
       toTheme: () => this.go('theme'),
       toCases: () => this.go('cases')
     };
+  }
+
+  renderSeedHome(v) {
+    const rankedThemes = v.wheel.slice(0, 10);
+    return (
+      <div className="seed-pilot seed-home" style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
+        <header style={css('flex:none;padding:' + this.padTop(50) + ' 20px 14px')}>
+          <div style={css('display:flex;align-items:center;justify-content:space-between')}>
+            <span style={css('width:44px;height:44px')} aria-hidden="true" />
+            <img src={LOGO_MARK} alt="DAY-JA-VIEW" style={css('height:28px;width:auto;display:block')} />
+            <button className="seed-icon-button" aria-label="저장한 항목" onClick={v.openSavedPanel}>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill={v.hasSavedItems ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.hasSavedItems ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg>
+            </button>
+          </div>
+          <div style={css('margin-top:26px')}>
+            <Badge tone="brand" variant="weak" size="large">8월 12일 장 마감</Badge>
+            <h1 style={css('margin:13px 0 6px;font-size:30px;line-height:1.22;font-weight:800;letter-spacing:-.04em;color:var(--seed-color-fg-neutral)')}>오늘 많이 오른 테마예요</h1>
+            <p style={css('margin:0;font-size:15px;line-height:1.5;color:var(--seed-color-fg-neutral-muted)')}>상승률과 과거 움직임을 한눈에 확인해 보세요.</p>
+          </div>
+        </header>
+
+        <main style={css('flex:1;min-height:0;display:flex;flex-direction:column;padding:0 20px 24px')}>
+          <div ref={this.wheelRef} className="seed-wheel seed-flat-wheel" style={css('flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:8px')}>
+            {v.wheel.map((a, index) => (
+              <button key={a.key} ref={a.ref} onClick={a.open} className="seed-rank-row seed-flat-wheel-row">
+                <span className={'seed-rank-number ' + ((index % rankedThemes.length) < 3 ? 'is-top' : '')}>{a.rank}</span>
+                <span style={css('flex:1;min-width:0;text-align:left')}>
+                  <span style={css('display:block;font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--seed-color-fg-neutral);white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{a.title}</span>
+                  <span style={css('display:block;margin-top:4px;font-size:13px;color:var(--seed-color-fg-neutral-muted)')}>{(index % rankedThemes.length) < 3 ? '거래량도 함께 증가했어요' : '오늘의 상승 테마'}</span>
+                </span>
+                <span style={css('font-size:17px;font-weight:800;color:var(--seed-color-fg-brand);white-space:nowrap')}>{a.chg}</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--seed-color-fg-neutral-subtle)" strokeWidth="2"><path d="m9 6 6 6-6 6"/></svg>
+              </button>
+            ))}
+          </div>
+          <div style={css('padding-top:10px;text-align:center;font-size:12px;color:var(--seed-color-fg-neutral-muted)')}>위아래로 돌려 테마를 탐색하세요</div>
+          <p style={css('margin:8px 4px 0;text-align:center;font-size:11px;line-height:1.45;color:var(--seed-color-fg-neutral-subtle)')}>과거 데이터 기반 통계 정보이며 투자 자문이 아닙니다.</p>
+        </main>
+
+        {v.menu && <div onClick={v.closeMenu} style={css('position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.28)')} />}
+        {v.menu && (
+          <aside className="seed-history-drawer">
+            <div className="seed-history-header">
+              <div>
+                <Badge tone="brand" variant="weak">MY HISTORY</Badge>
+                <h2>검색 히스토리</h2>
+              </div>
+              <button className="seed-history-close" onClick={v.closeMenu} aria-label="히스토리 닫기">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg>
+              </button>
+            </div>
+            <p className="seed-history-description">최근 확인한 테마와 종목을 다시 볼 수 있어요.</p>
+            <label className="seed-history-search">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+              <input value={v.savedQ} onChange={v.onSavedQ} placeholder="검색 기록 찾기" />
+            </label>
+            <div className="seed-history-list">
+              {v.savedGroups.map(g => (
+                <section key={g.key} className="seed-history-group">
+                  <h3>{g.label}</h3>
+                  {g.items.map(s => (
+                    <button key={s.key} onClick={s.open} className="seed-history-row">
+                      <span className="seed-history-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="8"/></svg>
+                      </span>
+                      <span className="seed-history-copy"><strong>{s.title}</strong><small>{s.meta}</small></span>
+                      <span className="seed-history-return" style={{ color: s.color }}>{s.chg}</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#AEB2B9" strokeWidth="2"><path d="m9 6 6 6-6 6"/></svg>
+                    </button>
+                  ))}
+                </section>
+              ))}
+              {v.savedNone && <div className="seed-history-empty">일치하는 검색 기록이 없습니다.</div>}
+            </div>
+            <div className="seed-history-footer">검색 기록은 이 기기에 저장됩니다.</div>
+          </aside>
+        )}
+
+        {v.savedPanel && <div onClick={v.closeSavedPanel} style={css('position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.28)')} />}
+        {v.savedPanel && (
+          <aside className="seed-saved-drawer">
+            <div className="seed-history-header">
+              <div><Badge tone="brand" variant="weak">SAVED</Badge><h2>저장한 항목</h2></div>
+              <button className="seed-history-close" onClick={v.closeSavedPanel} aria-label="저장 목록 닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+            </div>
+            <p className="seed-history-description">저장한 항목과 최근 검색 기록을 한곳에서 확인하세요.</p>
+            <div className="seed-history-list">
+              {v.savedItems.length ? v.savedItems.map(item => (
+                <button key={item.key} onClick={item.open} className="seed-history-row">
+                  <span role="button" tabIndex="0" aria-label={item.title + ' 저장 해제'} onClick={item.remove} className="seed-history-icon seed-remove-star"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></span>
+                  <span className="seed-history-copy"><strong>{item.title}</strong><small>저장한 테마</small></span>
+                  <span className="seed-history-return">{item.chg}</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#AEB2B9" strokeWidth="2"><path d="m9 6 6 6-6 6"/></svg>
+                </button>
+              )) : <div className="seed-saved-empty seed-saved-empty-compact"><span>☆</span><strong>아직 저장한 항목이 없어요</strong><p>테마 화면의 + 버튼을 눌러 저장해 보세요.</p></div>}
+              <div className="seed-history-divider"><span>검색 히스토리</span></div>
+              <label className="seed-history-search seed-history-search-in-drawer">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+                <input value={v.savedQ} onChange={v.onSavedQ} placeholder="검색 기록 찾기" />
+              </label>
+              {v.savedGroups.map(g => (
+                <section key={g.key} className="seed-history-group">
+                  <h3>{g.label}</h3>
+                  {g.items.map(s => (
+                    <button key={s.key} onClick={s.open} className="seed-history-row">
+                      <span className="seed-history-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="8"/></svg></span>
+                      <span className="seed-history-copy"><strong>{s.title}</strong><small>{s.meta}</small></span>
+                      <span className="seed-history-return" style={{ color: s.color }}>{s.chg}</span>
+                    </button>
+                  ))}
+                </section>
+              ))}
+              {v.savedNone && <div className="seed-history-empty">일치하는 검색 기록이 없습니다.</div>}
+            </div>
+          </aside>
+        )}
+      </div>
+    );
+  }
+
+  renderSeedTheme(v) {
+    return (
+      <div className="seed-pilot seed-theme" style={css('position:absolute;inset:0;background:var(--seed-color-bg-layer-default);display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
+        <header style={css('flex:none;background:#fff;padding:' + this.padTop(48) + ' 20px 22px;border-bottom:1px solid var(--seed-color-stroke-neutral-muted)')}>
+          <div style={css('display:flex;align-items:center;justify-content:space-between')}>
+            <button className="seed-icon-button" onClick={v.toHome} aria-label="뒤로가기"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+            <span style={css('font-size:15px;font-weight:600;color:var(--seed-color-fg-neutral-muted)')}>8월 12일 장 마감 기준</span>
+            <button className="seed-icon-button" onClick={v.openSavedPanel} aria-label="저장한 목록"><svg width="22" height="22" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.isCurrentSaved ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
+          </div>
+          <div style={css('margin-top:20px;display:flex;align-items:center;gap:8px')}><Badge tone="brand" variant="weak">상승 {v.themeRank}위</Badge><span style={css('font-size:14px;color:var(--seed-color-fg-neutral-muted)')}>오늘의 테마</span></div>
+          <h1 style={css('margin:12px 0 0;font-size:30px;line-height:1.18;font-weight:800;letter-spacing:-.04em;color:var(--seed-color-fg-neutral)')}>{v.theme}</h1>
+          <div style={css('display:flex;align-items:flex-end;gap:10px;margin-top:8px')}><strong style={css('font-size:46px;line-height:1;font-weight:800;letter-spacing:-.05em;color:var(--seed-color-fg-brand)')}>{v.themeChg}</strong><span style={css('padding-bottom:4px;font-size:14px;color:var(--seed-color-fg-neutral-muted)')}>테마 평균</span></div>
+        </header>
+
+        <main style={css('flex:1;min-height:0;overflow-y:auto;padding:16px 20px 112px')}>
+          <section className="seed-card">
+            <div style={css('display:flex;align-items:center;justify-content:space-between')}><h2 className="seed-section-title">오늘 왜 올랐을까요?</h2><Badge tone="informative" variant="weak">요약</Badge></div>
+            <p style={css('margin:14px 0 0;font-size:16px;line-height:1.58;font-weight:600;letter-spacing:-.015em;color:var(--seed-color-fg-neutral)')}>{v.reason}</p>
+            <div style={css('display:flex;flex-wrap:wrap;gap:8px;margin-top:16px')}>{v.stocks.map(s => <span key={s} className="seed-stock-chip">{s}</span>)}</div>
+          </section>
+
+          <section className="seed-card" style={css('margin-top:14px')}>
+            <h2 className="seed-section-title">과거 상승 이후 흐름</h2>
+            <p className="seed-section-description">과거 34개 사례의 평균 움직임이에요.</p>
+            <div style={css('display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px')}>
+              {v.horizons.map(h => <div key={h.key} className="seed-horizon"><span>{h.label}</span><strong>{h.val}</strong><small>{h.hit}</small></div>)}
+            </div>
+          </section>
+
+          <section style={css('margin-top:26px')}>
+            <div style={css('display:flex;align-items:end;justify-content:space-between;gap:10px')}><div><h2 className="seed-section-title">오늘과 비슷했던 과거</h2><p className="seed-section-description">유사도가 높은 사례부터 보여드려요.</p></div><ActionButton size="xsmall" variant="ghost" onClick={v.links[0].go}>전체보기</ActionButton></div>
+            <div style={css('display:flex;flex-direction:column;gap:10px;margin-top:14px')}>{v.topCases.slice(0, 3).map(c => this.renderCaseCard(c, false))}</div>
+          </section>
+          <ActionButton size="large" variant="brandSolid" onClick={v.links[1].go} style={css('width:100%;margin-top:20px')}>상세 통계 보기</ActionButton>
+        </main>
+      </div>
+    );
   }
 
   renderSplash(v) {
@@ -654,7 +849,7 @@ export default class App extends React.Component {
         </span>
         <span style={css('display:flex;align-items:center;gap:8px')}>
           {c.tags.map((t, i) => (
-            <span key={i} style={css('padding:6px 12px;border-radius:10px;background:#F1F3FB;font-size:13.5px;font-weight:600;letter-spacing:-0.01em;color:#4A5680')}>{t}</span>
+            <span key={i} style={css('padding:6px 12px;border-radius:10px;background:var(--seed-color-bg-brand-weak);font-size:13.5px;font-weight:600;letter-spacing:-0.01em;color:var(--seed-color-fg-brand-contrast)')}>{t}</span>
           ))}
           <span style={{ ...css('margin-left:auto;font-size:19.5px;font-weight:800;letter-spacing:-0.02em'), color: c.color }}>{c.retLabel}</span>
         </span>
@@ -672,7 +867,7 @@ export default class App extends React.Component {
           <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>과거 사례</span>
           <span style={css('width:44px')}></span>
         </div>
-        <div style={css('flex:none;padding:14px 22px 0')}>
+        <div style={css('flex:none;padding:14px 22px 28px')}>
           <div style={css('font-size:28px;font-weight:800;letter-spacing:-0.035em;color:#16160F')}>{v.theme} 테마</div>
           <div style={css('margin-top:6px;font-size:13.5px;font-weight:500;color:#9A998F')}>분석 표본 34건 · 최신 날짜순</div>
           <div style={css('display:flex;gap:6px;margin-top:16px;padding:6px;border-radius:22px;background:#F4F3EF')}>
@@ -681,7 +876,7 @@ export default class App extends React.Component {
             ))}
           </div>
         </div>
-        <div style={css('flex:1;min-height:0;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;padding:34px 22px 40px;display:flex;flex-direction:column;gap:14px')}>
+        <div style={css('flex:1;min-height:0;overflow-y:auto;scroll-snap-type:y mandatory;scroll-behavior:smooth;padding:20px 22px 112px;display:flex;flex-direction:column;gap:14px')}>
           {v.allCases.map(c => this.renderCaseCard(c, true))}
         </div>
       </div>
@@ -698,12 +893,12 @@ export default class App extends React.Component {
           <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>사례 상세</span>
           <span style={css('width:44px')}></span>
         </div>
-        <div style={css('flex:1;min-height:0;overflow-y:auto;padding:14px 22px 40px')}>
-          <div style={css('border-radius:26px;padding:22px;background:#E4FFFB')}>
-            <div style={css('font-size:13.5px;font-weight:700;color:#0B7F72')}>{v.picked.date}</div>
+        <div style={css('flex:1;min-height:0;overflow-y:auto;padding:14px 22px 112px')}>
+          <div style={css('border-radius:26px;padding:22px;background:var(--seed-color-bg-brand-weak)')}>
+            <div style={css('font-size:13.5px;font-weight:700;color:var(--seed-color-fg-brand-contrast)')}>{v.picked.date}</div>
             <div style={css('margin-top:8px;font-size:24px;font-weight:800;line-height:1.28;letter-spacing:-0.035em;color:#16160F;text-wrap:pretty')}>{v.picked.title}</div>
-            <div style={css('margin-top:10px;font-size:15px;font-weight:500;line-height:1.55;color:#4E6B67;text-wrap:pretty')}>{v.picked.sub} 소식이 전해지며 관련주가 함께 움직였습니다.</div>
-            <div style={css('margin-top:16px;display:inline-flex;padding:7px 13px;border-radius:14px;background:rgba(255,255,255,.72);font-size:12.5px;font-weight:700;color:#0B7F72')}>출처 · 인포스탁</div>
+            <div style={css('margin-top:10px;font-size:15px;font-weight:500;line-height:1.55;color:var(--seed-color-fg-neutral-muted);text-wrap:pretty')}>{v.picked.sub} 소식이 전해지며 관련주가 함께 움직였습니다.</div>
+            <div style={css('margin-top:16px;display:inline-flex;padding:7px 13px;border-radius:14px;background:rgba(255,255,255,.76);font-size:12.5px;font-weight:700;color:var(--seed-color-fg-brand-contrast)')}>출처 · 인포스탁</div>
           </div>
 
           <div style={css('margin-top:26px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>과거 사례 이후 성과</div>
@@ -744,9 +939,13 @@ export default class App extends React.Component {
           </div>
           <div style={css('margin-top:14px;font-size:12.5px;font-weight:500;line-height:1.55;color:#8B8E96;text-wrap:pretty')}>키워드가 등장한 과거 사건이 미등장 사건보다 5일 후 얼마나 더 올랐는지를 뜻합니다 (상승 동반 강도, 인과 아님). 표본 5~9건은 참고용이며 일반어는 제외했습니다.</div>
 
-          <div style={css('margin-top:28px;display:flex;align-items:baseline;justify-content:space-between')}>
+          <div style={css('margin-top:28px')}>
             <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>종목별 5일 후 등락률</span>
-            <button onClick={v.toggleSort} style={css('border:none;background:none;padding:0;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;color:#3267D6')}>{v.sortLabel}</button>
+            <div role="group" aria-label="종목 정렬 방식" className="seed-sort-control">
+              <button onClick={v.sortByName} className={!v.isReturnSort ? 'is-selected' : ''}>종목명 순</button>
+              <button onClick={v.sortByReturn} className={v.isReturnSort ? 'is-selected' : ''}>수익률 높은 순</button>
+            </div>
+            <div style={css('margin-top:8px;font-size:12px;font-weight:600;color:var(--seed-color-fg-neutral-muted)')}>현재 정렬: <strong style={css('color:var(--seed-color-fg-brand)')}>{v.sortLabel}</strong></div>
           </div>
           <div style={css('margin-top:12px;border:1px solid #ECEEF3;border-radius:26px;background:#FFFFFF;overflow:hidden')}>
             <div style={css('display:flex;align-items:center;padding:14px 18px;background:#F6F7FB')}>
@@ -764,7 +963,7 @@ export default class App extends React.Component {
           <div style={css('margin-top:26px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:#321E37')}>이 사례의 키워드</div>
           <div style={css('display:flex;flex-wrap:wrap;gap:8px;margin-top:12px')}>
             {v.caseTags.map((t, i) => (
-              <span key={i} style={css('padding:9px 14px;border-radius:12px;background:#F1F3FB;font-size:14.5px;font-weight:600;letter-spacing:-0.01em;color:#4A5680')}>{t}</span>
+              <span key={i} style={css('padding:9px 14px;border-radius:12px;background:var(--seed-color-bg-brand-weak);font-size:14.5px;font-weight:600;letter-spacing:-0.01em;color:var(--seed-color-fg-brand-contrast)')}>{t}</span>
             ))}
           </div>
 
@@ -785,13 +984,13 @@ export default class App extends React.Component {
           <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>상세 통계</span>
           <span style={css('width:44px')}></span>
         </div>
-        <div style={css('flex:1;min-height:0;overflow-y:auto;padding:14px 22px 40px')}>
+        <div style={css('flex:1;min-height:0;overflow-y:auto;padding:14px 22px 112px')}>
           <div style={css('display:flex;align-items:flex-end;justify-content:space-between;gap:12px')}>
             <span style={css('display:flex;flex-direction:column;gap:6px')}>
               <span style={css('font-size:28px;font-weight:800;letter-spacing:-0.035em;color:#16160F')}>{v.theme} 테마</span>
               <span style={css('font-size:13.5px;font-weight:500;color:#9A998F')}>과거 부각 사례 34건</span>
             </span>
-            <span style={css('flex:none;padding:8px 13px;border-radius:15px;background:#E4FFFB;font-size:12.5px;font-weight:700;color:#0B7F72')}>2010.03–2026.07</span>
+            <span style={css('flex:none;padding:8px 13px;border-radius:15px;background:var(--seed-color-bg-brand-weak);font-size:12.5px;font-weight:700;color:var(--seed-color-fg-brand-contrast)')}>2010.03–2026.07</span>
           </div>
 
           <div style={css('margin-top:26px;display:flex;align-items:baseline;justify-content:space-between')}>
@@ -827,15 +1026,15 @@ export default class App extends React.Component {
               <line x1="26" y1="8" x2="300" y2="8" stroke="#F2F1EC" strokeWidth="1"></line>
               <line x1="26" y1="54" x2="300" y2="54" stroke="#F2F1EC" strokeWidth="1"></line>
               <line x1="26" y1="100" x2="300" y2="100" stroke="#EDECE7" strokeWidth="1"></line>
-              <path d="M30 100 L46 92 L64 96 L82 80 L100 84 L120 66 L140 70 L160 54 L182 58 L204 44 L226 48 L250 32 L276 26 L296 18" fill="none" stroke="#12B5A2" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="640" style={css('animation:draw 1.2s ease both')}></path>
+              <path d="M30 100 L46 92 L64 96 L82 80 L100 84 L120 66 L140 70 L160 54 L182 58 L204 44 L226 48 L250 32 L276 26 L296 18" fill="none" stroke="var(--seed-color-fg-brand)" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="640" style={css('animation:draw 1.2s ease both')}></path>
               <path d="M30 100 L60 99 L92 96 L126 95 L160 92 L196 90 L232 88 L268 86 L296 84" fill="none" stroke="#C3C2B9" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"></path>
-              <circle cx="296" cy="18" r="4.6" fill="#12B5A2"></circle>
+              <circle cx="296" cy="18" r="4.6" fill="var(--seed-color-fg-brand)"></circle>
               <text x="26" y="118" fontSize="9.5" fontWeight="600" fill="#B4B3A9">D+1</text>
               <text x="150" y="118" fontSize="9.5" fontWeight="600" fill="#B4B3A9">D+5</text>
               <text x="272" y="118" fontSize="9.5" fontWeight="600" fill="#B4B3A9">D+20</text>
             </svg>
             <div style={css('display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid #F2F1EC')}>
-              <span style={css('display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#16160F')}><span style={css('width:16px;height:3px;border-radius:2px;background:#12B5A2')}></span>{v.theme} 테마</span>
+              <span style={css('display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#16160F')}><span style={css('width:16px;height:3px;border-radius:2px;background:var(--seed-color-fg-brand)')}></span>{v.theme} 테마</span>
               <span style={css('display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:#9A998F')}><span style={css('width:16px;height:3px;border-radius:2px;background:#C3C2B9')}></span>KOSPI</span>
             </div>
           </div>
@@ -845,15 +1044,9 @@ export default class App extends React.Component {
             <span style={css('font-size:12.5px;font-weight:600;color:#A9A89E')}>사례 34건</span>
           </div>
           <div style={css('margin-top:12px;border:1px solid #EDECE7;border-radius:26px;padding:20px 18px 16px')}>
-            <div onPointerLeave={v.clearHover} style={css('position:relative;display:flex;align-items:flex-end;gap:8px;height:118px')}>
-              {v.tip && (
-                <span style={css(v.tip.style)}>
-                  <span style={css('font-size:11.5px;font-weight:700;color:rgba(255,255,255,.62)')}>{v.tip.range}</span>
-                  <span style={css('font-size:14px;font-weight:800;letter-spacing:-0.01em;color:#fff')}>{v.tip.count}</span>
-                </span>
-              )}
+            <div style={css('position:relative;display:flex;align-items:flex-end;gap:8px;height:118px')}>
               {v.bins.map(b => (
-                <div key={b.key} onPointerEnter={b.hover} onPointerDown={b.hover} style={css('flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;cursor:pointer;touch-action:none')}>
+                <div key={b.key} style={css('flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px')}>
                   <span style={css(b.label)}>{b.n}</span>
                   <span style={css(b.bar)}></span>
                 </div>
@@ -892,14 +1085,57 @@ export default class App extends React.Component {
         height={bare ? '100%' : v.h}
         dark={v.isDark}
         bare={bare}
+        showSystemBars={false}
       >
         <div style={{ ...css("height:100%;position:relative;overflow:hidden;font-family:'Pretendard',system-ui,sans-serif;-webkit-font-smoothing:antialiased"), background: v.pageBg }}>
           {v.isSplash && this.renderSplash(v)}
-          {v.isHome && this.renderHome(v)}
-          {v.isTheme && this.renderTheme(v)}
+          {v.isHome && this.renderSeedHome(v)}
+          {v.isTheme && this.renderSeedTheme(v)}
           {v.isCases && this.renderCases(v)}
           {v.isCase && this.renderCase(v)}
           {v.isStats && this.renderStats(v)}
+          {!v.isSplash && !v.isHome && (
+            <button className="seed-save-fab" onClick={v.toggleSave} aria-label="현재 화면 저장">
+              <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          )}
+          {!v.isHome && v.savedPanel && <div onClick={v.closeSavedPanel} style={css('position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.28)')} />}
+          {!v.isHome && v.savedPanel && (
+            <aside className="seed-saved-drawer">
+              <div className="seed-history-header">
+                <div><Badge tone="brand" variant="weak">SAVED</Badge><h2>저장한 항목</h2></div>
+                <button className="seed-history-close" onClick={v.closeSavedPanel} aria-label="저장 목록 닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+              </div>
+              <p className="seed-history-description">저장한 항목과 최근 검색 기록을 한곳에서 확인하세요.</p>
+              <div className="seed-history-list">
+                {v.savedItems.length ? v.savedItems.map(item => (
+                  <button key={item.key} onClick={item.open} className="seed-history-row">
+                    <span role="button" tabIndex="0" aria-label={item.title + ' 저장 해제'} onClick={item.remove} className="seed-history-icon seed-remove-star">★</span>
+                    <span className="seed-history-copy"><strong>{item.title}</strong><small>저장한 테마</small></span>
+                    <span className="seed-history-return">{item.chg}</span>
+                  </button>
+                )) : <div className="seed-saved-empty seed-saved-empty-compact"><span>☆</span><strong>아직 저장한 항목이 없어요</strong><p>오른쪽 아래 + 버튼을 눌러 저장해 보세요.</p></div>}
+                <div className="seed-history-divider"><span>검색 히스토리</span></div>
+                <label className="seed-history-search seed-history-search-in-drawer">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg>
+                  <input value={v.savedQ} onChange={v.onSavedQ} placeholder="검색 기록 찾기" />
+                </label>
+                {v.savedGroups.map(g => (
+                  <section key={g.key} className="seed-history-group">
+                    <h3>{g.label}</h3>
+                    {g.items.map(s => (
+                      <button key={s.key} onClick={s.open} className="seed-history-row">
+                        <span className="seed-history-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="8"/></svg></span>
+                        <span className="seed-history-copy"><strong>{s.title}</strong><small>{s.meta}</small></span>
+                        <span className="seed-history-return" style={{ color: s.color }}>{s.chg}</span>
+                      </button>
+                    ))}
+                  </section>
+                ))}
+                {v.savedNone && <div className="seed-history-empty">일치하는 검색 기록이 없습니다.</div>}
+              </div>
+            </aside>
+          )}
           {v.toast && (
             <div style={css('position:absolute;left:22px;right:22px;bottom:44px;z-index:20;padding:14px 16px;border-radius:20px;background:#16160F;color:#fff;font-size:14px;font-weight:600;box-shadow:0 12px 30px rgba(20,20,10,.24);animation:fadeIn .18s ease both')}>{v.toast}</div>
           )}

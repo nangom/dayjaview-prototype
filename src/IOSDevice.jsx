@@ -188,7 +188,7 @@ function IOSList({ header, children, dark = false }) {
 // 없애고 화면을 꽉 채운다. 진짜 폰 안에 폰 목업을 또 그리면 앱처럼 보이지 않는다.
 function IOSDevice({
   children, width = 402, height = 874, dark = false,
-  title, keyboard = false, bare = false,
+  title, keyboard = false, bare = false, showSystemBars = true,
 }) {
   return (
     // data-om-starter: inert presence marker — Claude Design's starter-usage
@@ -201,7 +201,7 @@ function IOSDevice({
       WebkitFontSmoothing: 'antialiased',
     }}>
       {/* dynamic island — 실제 기기엔 진짜 노치가 있으므로 bare 에서는 그리지 않는다 */}
-      {!bare && (
+      {!bare && showSystemBars && (
       <div style={{
         position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)',
         width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50,
@@ -209,7 +209,7 @@ function IOSDevice({
       )}
       {/* status bar — bare 에서는 그리지 않는다. 브라우저에서는 주소창이,
           홈 화면에 추가한 상태에서는 진짜 iOS 상태바가 이미 그 자리에 있다. */}
-      {!bare && (
+      {!bare && showSystemBars && (
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
         <IOSStatusBar dark={dark} />
       </div>
@@ -221,7 +221,7 @@ function IOSDevice({
         {keyboard && <IOSKeyboard dark={dark} />}
       </div>
       {/* home indicator — 실제 기기엔 진짜 인디케이터가 있으므로 bare 에서는 생략 */}
-      {!bare && (
+      {!bare && showSystemBars && (
       <div style={{
         position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60,
         height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end',
