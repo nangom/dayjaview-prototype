@@ -381,3 +381,93 @@
 .filterRow button { border-color: var(--djv-color-border); border-radius: var(--djv-radius-pill); background: var(--djv-color-surface); }
 .filterRow .filterActive { border-color: var(--djv-color-brand); background: var(--djv-color-brand-soft); color: #a33b00; }
 .liveList, .wireBody { scrollbar-width: thin; }
+
+/* Reference palette: preserve the wireframe, clarify hierarchy with quiet filled surfaces. */
+.detailScroll {
+  padding-right: 12px;
+  padding-left: 12px;
+  background: #f7f7f8;
+}
+.detailScroll > section {
+  margin: 10px 0;
+  padding: 20px 14px;
+  border: 0;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 3px 14px rgba(33,33,36,.055);
+}
+.detailScroll > .themeSummary {
+  margin: 0 -12px 10px;
+  padding: 28px 20px 24px !important;
+  border-radius: 0 0 24px 24px;
+  background: #f47b3d;
+  box-shadow: none;
+}
+.detailScroll h2, .detailScroll strong, .wireBody h1, .wireBody h2 { color: #212124; }
+.detailScroll > .themeSummary h1, .detailScroll > .themeSummary strong { color: #ffffff; }
+.detailScroll > .themeSummary span, .detailScroll > .themeSummary p { color: rgba(255,255,255,.82); }
+.metrics article {
+  border: 0;
+  background: #f4f4f5;
+  box-shadow: none;
+}
+.metrics span, .metrics small, .horizons span, .horizons small { color: #868b94; }
+.metrics strong { color: #212124; }
+.reason { background: #ffffff; }
+.reason > p { color: #4d5159; }
+.reason li span, .reason li small, .catalysts p, .leaders small { color: #868b94; }
+.catalystSection .catalysts li > b { background: #fff0e5; color: #d95700; }
+.catalysts strong, .leaders span { color: #212124; }
+.leaders strong { color: #f04452; }
+.pastSummarySection .horizons article {
+  border: 0;
+  background: #fff1f2;
+  box-shadow: none;
+}
+.pastSummarySection .horizons strong { color: #f04452; }
+.similarSection .sectionHeading > button { color: #868b94; }
+.similarSection .cases article {
+  margin-top: 8px;
+  padding: 15px 34px 15px 14px;
+  border: 1px solid #eaebee;
+  border-radius: 16px;
+  background: #ffffff;
+}
+.similarSection .cases article:first-child { margin-top: 0; }
+.similarSection .cases article > .rowChevron { right: 12px; }
+.cases span { color: #868b94; }
+.cases small { color: #f04452; font-weight: 700; }
+.cases .downValue { color: #356ae6; }
+.notice { color: #868b94; }
+
+.wireScreen { background: #f7f7f8; }
+.wireHeader { background: #ffffff; }
+.wireBody { padding-right: 12px; padding-left: 12px; }
+.wireBody .pageIntro {
+  margin: 10px 0;
+  padding: 22px 16px;
+  border: 0;
+  border-radius: 20px;
+  background: #ffffff;
+}
+.wireBody .pageIntro > small { color: #f46b2c; font-weight: 700; }
+.wireBody .pageIntro > p { color: #868b94; }
+.wireBody .caseHero { background: #fff0e9; }
+.wireBody .dataBlock {
+  margin: 10px 0;
+  padding: 20px 16px;
+  border: 0;
+  border-radius: 20px;
+  background: #ffffff;
+}
+.wireBody .dataBlock > p { color: #4d5159; }
+.wireBody .dataBlock > small, .wireBody .dataBlock span { color: #868b94; }
+.wireBody .statGrid article {
+  border: 0;
+  background: #fff1f2;
+  box-shadow: none;
+}
+.wireBody .statGrid strong { color: #f04452; }
+.wireBody .simpleRows button { color: #212124; }
+.wireBody .simpleRows b { color: #f04452; }
+.wireBody .disclaimer { color: #868b94; }

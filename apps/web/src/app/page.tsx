@@ -176,7 +176,7 @@ export default function Home() {
                 </ul>
               </section>
 
-              <section>
+              <section className={styles.catalystSection}>
                 <div className={styles.sectionHeading}><h2>오늘의 상승 소재 Top 3</h2><span>근거 기반</span></div>
                 <ol className={styles.catalysts}>
                   <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>1</b><div><strong>체코 원전 수주</strong><p>오늘 뉴스 3건 · 관련 종목 12개</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
@@ -185,7 +185,7 @@ export default function Home() {
                 </ol>
               </section>
 
-              <section>
+              <section className={styles.leaderSection}>
                 <div className={styles.sectionHeading}><h2>오늘의 주도 종목</h2><span>등락률 순</span></div>
                 <div className={styles.leaders}>
                   <div role="button" tabIndex={0} onClick={() => goTo("screen-leader")}><span>두산에너빌리티<small>거래대금 6,240억</small></span><strong>+14.2%</strong><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></div>
@@ -194,7 +194,7 @@ export default function Home() {
                 </div>
               </section>
 
-              <section>
+              <section className={styles.pastSummarySection}>
                 <div className={styles.sectionHeading}><h2>과거엔 어땠을까요?</h2><span>이벤트 스터디</span></div>
                 <p className={styles.helper}>유사 사건 34건에서 주도 종목의 평균 움직임을 계산했어요.</p>
                 <div className={styles.horizons}>
@@ -204,11 +204,11 @@ export default function Home() {
                 </div>
               </section>
 
-              <section>
+              <section className={styles.similarSection}>
                 <div className={styles.sectionHeading}><h2>오늘과 비슷했던 과거</h2><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div>
                 <div className={styles.cases}>
                   <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2024.07.18 · 유사도 87%</span><strong>체코 원전 우선협상대상자 선정</strong><small>T+5 +4.6%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
-                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2023.04.25 · 유사도 74%</span><strong>한미 원전 협력 확대 발표</strong><small>T+5 -1.2%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
+                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2023.04.25 · 유사도 74%</span><strong>한미 원전 협력 확대 발표</strong><small className={styles.downValue}>T+5 -1.2%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
                   <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2022.10.31 · 유사도 69%</span><strong>폴란드 원전 개발계획 협력</strong><small>T+5 +3.3%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
                 </div>
               </section>
@@ -353,7 +353,7 @@ function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; ac
       <div className={styles.wireScreen}>
         <WireHeader title="과거 사례" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
-          <div className={styles.pageIntro}><small>2024.07.18 · 원전수출</small><h1>체코 원전 우선협상대상자 선정</h1><p>당시 기록된 사건과 종목의 실제 이후 흐름이에요.</p></div>
+          <div className={`${styles.pageIntro} ${styles.caseHero}`}><small>2024.07.18 · 원전수출</small><h1>체코 원전 우선협상대상자 선정</h1><p>당시 기록된 사건과 종목의 실제 이후 흐름이에요.</p></div>
           <section className={styles.dataBlock}><h2>사건 기록</h2><p>체코 정부가 신규 원전 사업의 우선협상대상자로 한국수력원자력을 선정하며 원전 관련주가 부각됐어요.</p><small>인포스탁 원본 · 수집 기록 보유</small></section>
           <section className={styles.dataBlock}><h2>당시 주도 종목의 이후 흐름</h2><div className={styles.statGrid}><article><span>T+1</span><strong>+2.1%</strong></article><article><span>T+5</span><strong>+4.6%</strong></article><article><span>T+20</span><strong>+7.2%</strong></article></div></section>
           <section className={styles.dataBlock}><h2>당시 기록된 종목</h2><div className={styles.simpleRows}><button>두산에너빌리티 <b>+14.2%</b></button><button>한전기술 <b>+7.1%</b></button><button>우리기술 <b>+5.8%</b></button></div></section>
