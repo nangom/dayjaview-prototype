@@ -438,12 +438,6 @@ export default class App extends React.Component {
 
       theme: st.theme,
       themeChg: st.themeChg ?? '+3.63%',
-      // 큰 등락률은 부호·숫자·단위를 나눠 그린다. 부호와 단위는 작게, 숫자만
-      // 크게. 부호나 % 가 없는 값이 들어와도 깨지지 않게 각각 있을 때만 뗀다.
-      // 마이너스는 ASCII '-' 와 유니코드 '−' 둘 다 온다.
-      themeSign: (/^[+\-−]/.exec(st.themeChg ?? '+3.63%') || [''])[0],
-      themeNum: (st.themeChg ?? '+3.63%').replace(/^[+\-−]/, '').replace(/%$/, ''),
-      themeUnit: /%$/.test(st.themeChg ?? '+3.63%') ? '%' : '',
       themeRank: st.themeRank ?? '10',
       hasRank: !!(st.themeRank ?? '10'),
 
@@ -807,13 +801,13 @@ export default class App extends React.Component {
               <span style={css('font-size:22px;font-weight:800;letter-spacing:-0.03em;color:#FFFDF1')}>{v.theme}</span>
               {v.hasRank && <span style={css('padding:5px 12px;border-radius:14px;background:rgba(255,253,241,.2);font-size:13px;font-weight:700;color:#FFFDF1')}>상승 {v.themeRank}위</span>}
             </div>
-            {/* 86px 에서는 부호와 % 가 숫자만큼 커서 눈에 먼저 걸린다. 읽어야
-                할 건 수치이므로 부호와 단위를 0.55 배로 줄이고 숫자만 크게 둔다. */}
-            <div style={css('font-size:86px;line-height:.96;font-weight:800;letter-spacing:-0.055em;color:#FFFDF1;margin:6px 0 4px')}>
-              {v.themeSign && <span style={css('font-size:.55em;letter-spacing:-0.02em;margin-right:.04em')}>{v.themeSign}</span>}
-              {v.themeNum}
-              {v.themeUnit && <span style={css('font-size:.55em;letter-spacing:-0.02em;margin-left:.02em')}>{v.themeUnit}</span>}
-            </div>
+            {/* 부호·단위를 0.55em 으로 줄여 쓰다가, 숫자까지 같은 크기로
+                맞추기로 했다. 셋이 한 크기이므로 나눠 그릴 이유가 없어져
+                다시 한 덩어리로 되돌린다. 크기는 기존 % 가 그려지던 값
+                (86 x 0.55 = 47.3) 에 맞춰 48px.
+                자간은 86px 에 맞춰 조였던 -0.055em 이 이 크기에서는 너무
+                붙어서, 앱의 다른 큰 수치와 같은 -0.03em 으로 되돌린다. */}
+            <div style={css('font-size:48px;line-height:1;font-weight:800;letter-spacing:-0.03em;color:#FFFDF1;margin:6px 0 6px')}>{v.themeChg}</div>
             <div style={css('font-size:15px;font-weight:600;color:#4A1608')}>오늘 테마 평균 등락</div>
           </div>
 
