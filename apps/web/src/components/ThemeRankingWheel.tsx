@@ -74,7 +74,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
       hasPlayedIntroRef.current = true;
       wheel.dataset.intro = "true";
       const introStepDelay = 680;
-      [baseTop + step, baseTop + step * 2, baseTop].forEach((targetTop, index) => {
+      [baseTop + step, baseTop + step * 2].forEach((targetTop, index) => {
         introTimers.push(window.setTimeout(() => {
           wheel.scrollTo({ top: targetTop, behavior: "smooth" });
           wheel.dataset.introStep = String(index + 1);
@@ -83,7 +83,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
       introTimers.push(window.setTimeout(() => {
         delete wheel.dataset.intro;
         delete wheel.dataset.introStep;
-      }, introStepDelay * 4));
+      }, introStepDelay * 3));
     }
     paint();
     wheel.addEventListener("scroll", handleScroll, { passive: true });

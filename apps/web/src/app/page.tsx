@@ -350,7 +350,7 @@ function SavedLibrary({
               <span><small>테마 · 8월 14일 장중 기준</small><strong>원전수출</strong></span>
               <b>+2.7%</b>
             </button>
-            <button type="button" className={styles.removeSaved} onClick={onRemoveSaved} aria-label="원전수출 저장 목록에서 제거"><IconStarFill size={20} /></button>
+            <button type="button" className={styles.removeSaved} onClick={onRemoveSaved} aria-label="원전수출 저장 목록에서 제거" title="저장 해제"><IconXmarkLine size={16} /><span>삭제</span></button>
           </article>
         ) : <div className={styles.libraryEmpty}><IconStarLine size={28} /><strong>저장한 항목이 없어요.</strong><p>테마 상세의 별을 누르면 여기에 모아볼 수 있어요.</p></div>}
       </section>
