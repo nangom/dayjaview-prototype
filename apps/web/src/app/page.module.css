@@ -163,6 +163,33 @@
 .history > div button { border: 0; background: transparent; color: #777777; font-size: 12px; cursor: pointer; }
 .history > button { width: 100%; min-height: 52px; padding: 0; border: 0; border-bottom: 1px solid #eeeeee; display: flex; align-items: center; justify-content: space-between; background: transparent; color: #111111; font: inherit; text-align: left; cursor: pointer; }
 .history small { color: #999999; font-size: 20px; }
+.emptyHistory { margin: 22px 0 0; color: #999; font-size: 13px; text-align: center; }
+.savedStar { color: var(--djv-color-brand, #ff6f0f) !important; }
+.library { min-height: 100%; padding: 34px 20px 96px; background: #fff; }
+.library > header p { margin: 0 0 5px; color: #868b94; font-size: 13px; }
+.library > header h1 { margin: 0 0 30px; font-size: 28px; letter-spacing: -.04em; }
+.library > section { margin-top: 0; }
+.libraryHeading { min-height: 34px; display: flex; align-items: center; justify-content: space-between; }
+.libraryHeading h2 { margin: 0; font-size: 17px; }
+.libraryHeading span { color: #868b94; font-size: 12px; }
+.libraryHeading button { border: 0; background: transparent; color: #868b94; font-size: 12px; }
+.savedRow { position: relative; margin-top: 10px; border: 1px solid #eaebee; border-radius: 18px; background: #fff; }
+.savedRow > button:first-child { width: 100%; min-height: 82px; padding: 15px 50px 15px 16px; border: 0; display: flex; align-items: center; justify-content: space-between; background: transparent; text-align: left; }
+.savedRow span { display: flex; flex-direction: column; gap: 5px; }
+.savedRow small { color: #868b94; font-size: 11px; }
+.savedRow strong { color: #212124; font-size: 16px; }
+.savedRow b { color: #f04452; font-size: 16px; }
+.removeSaved { position: absolute; top: 50%; right: 14px; width: 30px; height: 30px; margin-top: -15px; padding: 0; border: 0; display: grid; place-items: center; background: transparent; color: #ff6f0f; }
+.libraryEmpty { min-height: 132px; margin-top: 10px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f7f7f8; color: #868b94; text-align: center; }
+.libraryEmpty strong { margin-top: 9px; color: #4d5159; font-size: 14px; }
+.libraryEmpty p { margin: 5px 0 0; font-size: 11px; }
+.libraryDivider { margin: 26px 0 22px; display: flex; align-items: center; gap: 10px; color: #aeb2b9; font-size: 11px; }
+.libraryDivider::before, .libraryDivider::after { content: ""; height: 1px; flex: 1; background: #eaebee; }
+.libraryHistory { margin-top: 5px; }
+.libraryHistory > button { width: 100%; min-height: 50px; padding: 0 2px; border: 0; border-bottom: 1px solid #f2f3f5; display: grid; grid-template-columns: 26px 1fr auto; align-items: center; background: transparent; color: #212124; text-align: left; }
+.libraryHistory > button svg { color: #868b94; }
+.libraryHistory > button small { color: #aeb2b9; font-size: 18px; }
+.libraryHistoryEmpty { margin: 22px 0 0; color: #aeb2b9; font-size: 13px; text-align: center; }
 
 .detail { position: relative; height: 100%; display: flex; flex-direction: column; }
 .detailHeader { height: 60px; flex: none; padding: 0 16px; border-bottom: 1px solid #dddddd; display: grid; grid-template-columns: 44px 1fr 44px; align-items: center; }

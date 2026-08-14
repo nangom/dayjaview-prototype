@@ -23,9 +23,17 @@ export default function Home() {
   const [currentScreen, setCurrentScreen] = useState("screen-home");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIsLoading(false), 2600);
+    setIsSaved(window.localStorage.getItem("dayjaview:saved:원전수출") === "true");
+    try {
+      setSearchHistory(JSON.parse(window.localStorage.getItem("dayjaview:search-history") ?? "[]"));
+    } catch {
+      setSearchHistory([]);
+    }
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -33,7 +41,35 @@ export default function Home() {
     if (screen === "screen-home") setActiveTab("home");
     if (screen === "screen-realtime") setActiveTab("realtime");
     if (screen === "screen-natural") setActiveTab("natural");
+    if (screen === "screen-saved") {
+      setActiveTab("saved");
+      setCurrentScreen("screen-home");
+      return;
+    }
     setCurrentScreen(screen);
+  };
+
+  const toggleSaved = () => {
+    setIsSaved((current) => {
+      const next = !current;
+      window.localStorage.setItem("dayjaview:saved:원전수출", String(next));
+      return next;
+    });
+  };
+
+  const submitSearch = () => {
+    const value = query.trim();
+    if (!value) return;
+    setSearchHistory((current) => {
+      const next = [value, ...current.filter((item) => item !== value)].slice(0, 10);
+      window.localStorage.setItem("dayjaview:search-history", JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const clearSearchHistory = () => {
+    setSearchHistory([]);
+    window.localStorage.removeItem("dayjaview:search-history");
   };
 
   return (
@@ -69,6 +105,15 @@ export default function Home() {
                     ))}
                   </ol>
                 </div>
+              ) : activeTab === "saved" ? (
+                <SavedLibrary
+                  isSaved={isSaved}
+                  history={searchHistory}
+                  onOpenSaved={() => goTo("screen-detail")}
+                  onRemoveSaved={toggleSaved}
+                  onOpenHistory={(item) => { setQuery(item); setIsSearchOpen(true); }}
+                  onClearHistory={clearSearchHistory}
+                />
               ) : (
                 <div className={styles.placeholder}>
                   <h1>{activeTab === "realtime" ? "실시간 테마주" : activeTab === "saved" ? "즐겨찾기" : "자연어 검색"}</h1>
@@ -79,7 +124,7 @@ export default function Home() {
 
             <nav className={styles.footer} aria-label="주요 메뉴">
               {footerItems.map(({ id, Icon, label }) => (
-                <button key={id} type="button" className={activeTab === id ? styles.active : ""} onClick={() => { setActiveTab(id); if (id === "realtime") goTo("screen-realtime"); if (id === "natural") goTo("screen-natural"); }}>
+                <button key={id} type="button" className={activeTab === id ? styles.active : ""} onClick={() => { setActiveTab(id); if (id === "realtime") goTo("screen-realtime"); if (id === "saved") goTo("screen-saved"); if (id === "natural") goTo("screen-natural"); }}>
                   <Icon className={styles.navIcon} size={20} aria-hidden="true" /><small>{label}</small>
                 </button>
               ))}
@@ -91,13 +136,13 @@ export default function Home() {
                 <h2>검색</h2>
                 <button type="button" onClick={() => setIsSearchOpen(false)} aria-label="검색 닫기">×</button>
               </div>
-              <form onSubmit={(event) => event.preventDefault()}>
+              <form onSubmit={(event) => { event.preventDefault(); submitSearch(); }}>
                 <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="테마나 종목을 검색하세요" aria-label="테마 또는 종목 검색" />
                 <button type="submit">검색</button>
               </form>
               <section className={styles.history}>
-                <div><h3>최근 검색</h3><button type="button">전체 삭제</button></div>
-                {["반도체 장비", "원전수출", "두산에너빌리티", "로봇"].map((item) => <button key={item} type="button" onClick={() => setQuery(item)}><span>{item}</span><small>›</small></button>)}
+                <div><h3>최근 검색</h3>{searchHistory.length > 0 && <button type="button" onClick={clearSearchHistory}>전체 삭제</button>}</div>
+                {searchHistory.length === 0 ? <p className={styles.emptyHistory}>검색 기록이 없어요.</p> : searchHistory.map((item) => <button key={item} type="button" onClick={() => setQuery(item)}><span>{item}</span><small>›</small></button>)}
               </section>
             </aside>
           </div>
@@ -110,7 +155,7 @@ export default function Home() {
             <header className={styles.detailHeader}>
               <button type="button" aria-label="뒤로 가기" onClick={() => goTo("screen-home")}>←</button>
               <span>8월 14일 장중 기준</span>
-              <button type="button" aria-label="즐겨찾기">☆</button>
+              <button type="button" aria-label={isSaved ? "즐겨찾기에서 제거" : "즐겨찾기에 추가"} className={isSaved ? styles.savedStar : ""} onClick={toggleSaved}>{isSaved ? "★" : "☆"}</button>
             </header>
 
             <div className={styles.detailScroll}>
@@ -180,7 +225,7 @@ export default function Home() {
             <nav className={styles.miniFooter} aria-label="테마 상세 주요 메뉴">
               <button type="button" onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button>
               <button type="button" onClick={() => goTo("screen-realtime")}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button>
-              <button type="button"><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button>
+              <button type="button" onClick={() => goTo("screen-saved")}><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button>
               <button type="button" onClick={() => goTo("screen-natural")}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button>
             </nav>
           </div>
@@ -194,6 +239,55 @@ export default function Home() {
       {!isLoading && <LeaderDetailScreen goTo={goTo} active={currentScreen === "screen-leader"} />}
       {!isLoading && <NaturalSearchScreen goTo={goTo} active={currentScreen === "screen-natural"} />}
     </main>
+  );
+}
+
+function SavedLibrary({
+  isSaved,
+  history,
+  onOpenSaved,
+  onRemoveSaved,
+  onOpenHistory,
+  onClearHistory,
+}: {
+  isSaved: boolean;
+  history: string[];
+  onOpenSaved: () => void;
+  onRemoveSaved: () => void;
+  onOpenHistory: (item: string) => void;
+  onClearHistory: () => void;
+}) {
+  return (
+    <div className={styles.library}>
+      <header>
+        <p>나중에 다시 볼 항목과 검색 기록이에요.</p>
+        <h1>즐겨찾기</h1>
+      </header>
+
+      <section>
+        <div className={styles.libraryHeading}><h2>저장한 항목</h2><span>{isSaved ? "1개" : "0개"}</span></div>
+        {isSaved ? (
+          <article className={styles.savedRow}>
+            <button type="button" onClick={onOpenSaved}>
+              <span><small>테마 · 8월 14일 장중 기준</small><strong>원전수출</strong></span>
+              <b>+2.7%</b>
+            </button>
+            <button type="button" className={styles.removeSaved} onClick={onRemoveSaved} aria-label="원전수출 즐겨찾기에서 제거"><IconStarLine size={20} /></button>
+          </article>
+        ) : <div className={styles.libraryEmpty}><IconStarLine size={28} /><strong>저장한 항목이 없어요.</strong><p>테마 상세의 별을 누르면 여기에 모아볼 수 있어요.</p></div>}
+      </section>
+
+      <div className={styles.libraryDivider}><span>검색 히스토리</span></div>
+
+      <section>
+        <div className={styles.libraryHeading}><h2>최근 검색</h2>{history.length > 0 && <button type="button" onClick={onClearHistory}>전체 삭제</button>}</div>
+        {history.length > 0 ? (
+          <div className={styles.libraryHistory}>
+            {history.map((item) => <button type="button" key={item} onClick={() => onOpenHistory(item)}><IconMagnifyingglassLine size={18} /><span>{item}</span><small>›</small></button>)}
+          </div>
+        ) : <p className={styles.libraryHistoryEmpty}>검색 기록이 없어요.</p>}
+      </section>
+    </div>
   );
 }
 
@@ -239,7 +333,7 @@ function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void;
           </div>
         </div>
         <div className={styles.treeLegend}><span><i />면적: 테마 강도</span><span>수치는 장중 갱신</span></div>
-        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button className={styles.selected}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button onClick={() => goTo("screen-natural")}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button></nav>
+        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button className={styles.selected}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button onClick={() => goTo("screen-saved")}><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button onClick={() => goTo("screen-natural")}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button></nav>
       </div>
     </section>
   );
@@ -319,7 +413,7 @@ function NaturalSearchScreen({ goTo, active }: { goTo: (screen: string) => void;
           <section className={styles.answerBlock}><div><small>검색 결과</small><span>과거 데이터 기준</span></div><h2>과거 34개 사례에서 5일 후 평균은 +1.3%였어요.</h2><p>34개 사례 중 20개가 상승했고, 당시 주도 종목을 기준으로 계산했어요. 가장 큰 상승 사례는 2024년 7월 18일 체코 원전 우선협상대상자 선정 사건이었어요.</p><ul><li><span>평균 수익률</span><b>+1.3%</b></li><li><span>상승 사례</span><b>20/34</b></li><li><span>대표 과거 사건</span><b>2024.07.18</b></li></ul><button type="button" onClick={() => goTo("screen-cases")}>관련 과거 사례 보기</button></section>
           <p className={styles.disclaimer}>검색 결과는 DB에 저장된 사건과 가격 데이터만 사용하며 투자 자문이 아니에요.</p>
         </div>
-        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button onClick={() => goTo("screen-realtime")}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button className={styles.selected}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button></nav>
+        <nav className={styles.miniFooter}><button onClick={() => goTo("screen-home")}><IconHouseLine className={styles.navIcon} size={20} /><small>홈</small></button><button onClick={() => goTo("screen-realtime")}><IconGridLine className={styles.navIcon} size={20} /><small>실시간</small></button><button onClick={() => goTo("screen-saved")}><IconStarLine className={styles.navIcon} size={20} /><small>즐겨찾기</small></button><button className={styles.selected}><IconMagnifyingglassLine className={styles.navIcon} size={20} /><small>자연어</small></button></nav>
       </div>
     </section>
   );
