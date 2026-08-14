@@ -107,6 +107,7 @@ export default class App extends React.Component {
 
   onWheelPointerDown = event => {
     if (event.pointerType !== 'mouse' || event.button !== 0 || !this.wheelEl) return;
+    event.preventDefault();
     this._dragPointer = event.pointerId;
     this._dragStartY = event.clientY;
     this._dragStartTop = this.wheelEl.scrollTop;
@@ -118,7 +119,7 @@ export default class App extends React.Component {
   onWheelPointerMove = event => {
     if (event.pointerId !== this._dragPointer || !this.wheelEl) return;
     const delta = event.clientY - this._dragStartY;
-    if (Math.abs(delta) > 3) this._dragMoved = true;
+    if (Math.abs(delta) > 7) this._dragMoved = true;
     if (!this._dragMoved) return;
     event.preventDefault();
     this.wheelEl.scrollTop = this._dragStartTop - delta;
@@ -573,8 +574,7 @@ export default class App extends React.Component {
   renderSeedHome(v) {
     const rankedThemes = v.wheel.slice(0, 10);
     return (
-      <div className="seed-pilot seed-home" style={css('position:absolute;inset:0;background:#EAE8E3;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
-        <div className="seed-home-warm-glow" aria-hidden="true" />
+      <div className="seed-pilot seed-home" style={css('position:absolute;inset:0;background:#FFFFFF;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
         <header style={css('flex:none;padding:' + this.padTop(50) + ' 20px 14px')}>
           <div style={css('display:flex;align-items:center;justify-content:space-between')}>
             <span role="img" aria-label="DAY-JA-VIEW" className="seed-home-corner-logo" />
@@ -604,7 +604,7 @@ export default class App extends React.Component {
             style={css('flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:8px')}
           >
             {v.wheel.map((a, index) => (
-              <button key={a.key} ref={a.ref} onClick={a.open} className="seed-rank-row seed-flat-wheel-row">
+              <button key={a.key} ref={a.ref} draggable="false" onDragStart={event => event.preventDefault()} onClick={a.open} className="seed-rank-row seed-flat-wheel-row">
                 <span className={'seed-rank-number ' + ((index % rankedThemes.length) < 3 ? 'is-top' : '')}>{a.rank}</span>
                 <span style={css('flex:1;min-width:0;text-align:left')}>
                   <span style={css('display:block;font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--seed-color-fg-neutral);white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{a.title}</span>

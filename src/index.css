@@ -253,6 +253,9 @@ a { color: #16160F; }
   cursor: grabbing;
   scroll-behavior: auto;
 }
+.seed-wheel.is-dragging * {
+  pointer-events: none;
+}
 .seed-wheel-card {
   min-height: 62px;
   scroll-snap-align: center;
@@ -286,19 +289,18 @@ a { color: #16160F; }
 }
 
 .seed-keyword-bubbles {
+  position: relative;
+  height: 300px;
   margin-top: 14px;
-  padding: 20px 8px;
+  padding: 12px;
   border: 1px solid #eceef3;
   border-radius: 26px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
   background: #fff;
 }
 .seed-keyword-bubble {
-  flex: none;
+  position: absolute;
   padding: 0;
   border: 1px solid rgba(255, 111, 15, .18);
   border-radius: 50%;
@@ -311,6 +313,11 @@ a { color: #16160F; }
   font-family: inherit;
   cursor: pointer;
 }
+.seed-keyword-bubble:nth-child(1) { left: 12px; top: 18px; }
+.seed-keyword-bubble:nth-child(2) { right: 18px; top: 10px; }
+.seed-keyword-bubble:nth-child(3) { left: 50%; top: 112px; transform: translateX(-50%); }
+.seed-keyword-bubble:nth-child(4) { left: 22px; bottom: 14px; }
+.seed-keyword-bubble:nth-child(5) { right: 30px; bottom: 16px; }
 .seed-keyword-bubble strong {
   line-height: 1.15;
   font-weight: 750;
@@ -511,15 +518,6 @@ a { color: #16160F; }
   background: var(--seed-color-bg-brand-solid, #ff6f0f);
   -webkit-mask: url('/dejavu-mark.png') center / contain no-repeat;
   mask: url('/dejavu-mark.png') center / contain no-repeat;
-}
-.seed-home-warm-glow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(420px 300px at 12% 46%, rgba(214, 214, 206, .5), transparent 70%),
-    radial-gradient(380px 320px at 92% 66%, rgba(222, 220, 212, .55), transparent 72%),
-    radial-gradient(300px 240px at 70% 34%, rgba(238, 236, 230, .7), transparent 70%);
 }
 .seed-home > header,
 .seed-home > main { position: relative; z-index: 1; }
