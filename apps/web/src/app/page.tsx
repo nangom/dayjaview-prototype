@@ -19,6 +19,15 @@ const footerItems = [
   { id: "saved", Icon: IconStarLine, label: "저장" },
 ];
 
+const leaderRows = [
+  { name: "두산에너빌리티", volume: "거래대금 6,240억", change: "+14.2%" },
+  { name: "한전기술", volume: "거래대금 1,820억", change: "+7.1%" },
+  { name: "우리기술", volume: "거래대금 940억", change: "+5.8%" },
+  { name: "우진", volume: "거래대금 720억", change: "+4.9%" },
+  { name: "보성파워텍", volume: "거래대금 610억", change: "+4.2%" },
+  { name: "한전산업", volume: "거래대금 480억", change: "+3.6%" },
+];
+
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -27,6 +36,7 @@ export default function Home() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [isSaved, setIsSaved] = useState(false);
+  const [showAllLeaders, setShowAllLeaders] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   useEffect(() => {
@@ -198,11 +208,11 @@ export default function Home() {
               </section>
 
               <section className={styles.leaderSection}>
-                <div className={styles.sectionHeading}><h2>오늘의 주도 종목</h2><span>등락률 순</span></div>
+                <div className={styles.sectionHeading}><h2>오늘의 주도 종목</h2><button type="button" className={styles.expandButton} aria-expanded={showAllLeaders} onClick={() => setShowAllLeaders((current) => !current)}>{showAllLeaders ? "접기" : "전체보기"}</button></div>
                 <div className={styles.leaders}>
-                  <div role="button" tabIndex={0} onClick={() => goTo("screen-leader")}><span>두산에너빌리티<small>거래대금 6,240억</small></span><strong>+14.2%</strong><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></div>
-                  <div role="button" tabIndex={0} onClick={() => goTo("screen-leader")}><span>한전기술<small>거래대금 1,820억</small></span><strong>+7.1%</strong><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></div>
-                  <div role="button" tabIndex={0} onClick={() => goTo("screen-leader")}><span>우리기술<small>거래대금 940억</small></span><strong>+5.8%</strong><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></div>
+                  {leaderRows.slice(0, showAllLeaders ? leaderRows.length : 3).map((leader) => (
+                    <div key={leader.name}><span>{leader.name}<small>{leader.volume}</small></span><strong>{leader.change}</strong></div>
+                  ))}
                 </div>
               </section>
 
