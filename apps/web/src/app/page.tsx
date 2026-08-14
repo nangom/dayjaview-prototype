@@ -208,7 +208,7 @@ export default function Home() {
               <section className={styles.themeSummary}>
                 <div><span>오늘 상승 1위</span><h1>원전수출</h1></div>
                 <strong>+2.7%</strong>
-                <p>오전 10:18 기준 · 1분 전 갱신</p>
+                <p>오늘 테마 평균 등락</p>
               </section>
 
               <section className={styles.metrics}>

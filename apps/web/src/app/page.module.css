@@ -415,6 +415,23 @@
   padding-left: 12px;
   background: #f7f7f8;
 }
+.detailHeader {
+  height: 56px;
+  padding: 0 14px;
+  border-bottom: 0;
+  background: #f47b3d;
+}
+.detailHeader > span { color: rgba(69,34,16,.78); font-size: 11px; font-weight: 700; }
+.detailHeader button {
+  width: 36px;
+  height: 36px;
+  justify-self: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  color: #ffffff;
+  font-size: 18px;
+}
+.detailHeader .savedStar { color: #ffffff !important; }
 .detailScroll > section {
   margin: 10px 0;
   padding: 20px 14px;
@@ -425,11 +442,18 @@
 }
 .detailScroll > .themeSummary {
   margin: 0 -12px 10px;
-  padding: 28px 20px 24px !important;
+  min-height: 132px;
+  padding: 14px 18px 30px !important;
   border-radius: 0 0 24px 24px;
   background: #f47b3d;
   box-shadow: none;
 }
+.themeSummary > div { gap: 9px; }
+.themeSummary span { font-size: 12px; font-weight: 700; }
+.themeSummary h1 { font-size: 24px; }
+.themeSummary > strong { display: inline-block; margin-top: 12px; font-size: 36px; }
+.themeSummary > p { display: inline-block; margin: 0 0 0 10px; font-size: 10px; font-weight: 700; vertical-align: 4px; }
+.detailScroll > .themeSummary + .metrics { position: relative; z-index: 2; margin-top: -18px; }
 .detailScroll h2, .detailScroll strong, .wireBody h1, .wireBody h2 { color: #212124; }
 .detailScroll > .themeSummary h1, .detailScroll > .themeSummary strong { color: #ffffff; }
 .detailScroll > .themeSummary span, .detailScroll > .themeSummary p { color: rgba(255,255,255,.82); }
