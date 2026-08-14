@@ -91,6 +91,7 @@ export default function Home() {
 
   const requestToggleSaved = () => {
     if (!isLoggedIn) {
+      setIsLoading(false);
       setLoginIntent("save");
       return;
     }
@@ -99,6 +100,7 @@ export default function Home() {
 
   const requestSavedLibrary = () => {
     if (!isLoggedIn) {
+      setIsLoading(false);
       setLoginIntent("library");
       return;
     }
@@ -383,7 +385,7 @@ function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void;
   return (
     <section id="screen-realtime" className={`${styles.phone} ${active ? styles.activePhone : ""}`} aria-label="실시간 테마주 와이어프레임">
       <div className={`${styles.wireScreen} ${styles.realtimeScreen}`}>
-        <header className={styles.wireTitle}><div><small>장중 관찰 화면</small><h1>실시간 테마 중계</h1><p>현재 움직임이 강한 테마를 모아봐요.</p></div></header>
+        <header className={styles.wireTitle}><h1>실시간 테마 중계</h1></header>
         <div className={styles.stateNote}>면적은 테마의 실시간 강도에 따라 달라져요.</div>
         <div className={styles.treemap} aria-label="실시간 테마 강도 트리맵">
           <div className={styles.treeTop}>

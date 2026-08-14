@@ -61,7 +61,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
       schedulePaint();
     };
 
-    const firstVisibleCard = cards[themes.length];
+    const firstVisibleCard = cards[themes.length + 1];
     if (firstVisibleCard) {
       baseTop = firstVisibleCard.offsetTop;
       wheel.scrollTop = baseTop;

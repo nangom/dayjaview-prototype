@@ -1,5 +1,5 @@
 :root {
-  --djv-color-bg: var(--seed-color-bg-neutral-weak, #f7f7f8);
+  --djv-color-bg: #eae8e3;
   --djv-color-surface: var(--seed-color-bg-layer-floating, #ffffff);
   --djv-color-surface-muted: var(--seed-color-bg-neutral-weak, #f7f7f8);
   --djv-color-border: var(--seed-color-stroke-neutral-muted, #eaebee);
