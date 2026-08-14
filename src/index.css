@@ -86,7 +86,7 @@ a { color: #16160F; }
 
 .seed-card {
   padding: 20px;
-  border-radius: 22px;
+  border-radius: 33px;
   background: var(--seed-color-bg-layer-floating, #fff);
   border: 1px solid var(--seed-color-stroke-neutral-muted, #eaebee);
   box-shadow: 0 8px 24px -20px rgba(0, 0, 0, .24);
@@ -116,7 +116,7 @@ a { color: #16160F; }
 .seed-horizon {
   min-width: 0;
   padding: 14px 6px;
-  border-radius: 16px;
+  border-radius: 26px;
   display: flex;
   flex-direction: column;
   align-items: center;
