@@ -35,8 +35,18 @@
   color: #ffffff;
 }
 
-.loadingLogo { width: 64px; height: 74px; animation: logoPulse 2.2s ease-in-out infinite; }
-.loadingLogo img { display: block; width: 100%; height: 100%; object-fit: contain; filter: invert(44%) sepia(99%) saturate(4213%) hue-rotate(359deg) brightness(102%) contrast(105%); }
+.loadingLogo { position: relative; width: 64px; height: 74px; overflow: hidden; }
+.loadingLogo img { display: block; width: 100%; height: 100%; object-fit: contain; opacity: .92; filter: invert(18%) brightness(.95) contrast(1.15); }
+.loadingLogo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 23%, rgba(255,255,255,.04) 37%, rgba(255,255,255,.92) 49%, rgba(255,190,145,.38) 57%, transparent 72%);
+  -webkit-mask: url("/dejavu-mark.png") center / contain no-repeat;
+  mask: url("/dejavu-mark.png") center / contain no-repeat;
+  transform: translateX(-145%);
+  animation: logoSheen 2.9s ease-in-out infinite;
+}
 .loadingFooter { position: absolute; right: 0; bottom: 96px; left: 0; display: flex; flex-direction: column; align-items: center; gap: 20px; }
 .loadingFooter > span { color: rgba(255,255,255,.48); font-size: 14px; font-weight: 600; }
 .loadingFooter > b { width: 132px; height: 3px; border-radius: 2px; overflow: hidden; background: rgba(255,255,255,.12); }
@@ -59,7 +69,12 @@
 @keyframes orangeBreathe { 50% { opacity: .95; filter: sepia(1) saturate(9) hue-rotate(338deg) drop-shadow(0 0 15px rgba(255,92,0,.65)); } }
 @keyframes orangeSweep { from { transform: translateX(-115%); } to { transform: translateX(115%); } }
 @keyframes orangeBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes logoPulse { 50% { opacity: .68; transform: scale(.96); } }
+@keyframes logoSheen {
+  0%, 18% { opacity: 0; transform: translateX(-145%); }
+  30% { opacity: 1; }
+  62% { opacity: 1; transform: translateX(145%); }
+  72%, 100% { opacity: 0; transform: translateX(145%); }
+}
 
 .app { position: relative; height: 100%; overflow: hidden; }
 .content { height: 100%; padding-bottom: 0; }
