@@ -636,18 +636,17 @@ export default class App extends React.Component {
   renderSeedTheme(v) {
     return (
       <div className="seed-pilot seed-theme" style={css('position:absolute;inset:0;background:var(--seed-color-bg-layer-default);display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
-        <header style={css('flex:none;background:#fff;padding:' + this.padTop(48) + ' 20px 22px;border-bottom:1px solid var(--seed-color-stroke-neutral-muted)')}>
-          <div style={css('display:flex;align-items:center;justify-content:space-between')}>
-            <button className="seed-icon-button" onClick={v.toHome} aria-label="뒤로가기"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-            <span style={css('font-size:15px;font-weight:600;color:var(--seed-color-fg-neutral-muted)')}>8월 12일 장 마감 기준</span>
-            <button className="seed-icon-button" onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '즐겨찾기 해제' : '즐겨찾기 추가'}><svg width="22" height="22" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.isCurrentSaved ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
+        <header className="seed-theme-hero" style={{ paddingTop: this.padTop(48) }}>
+          <div className="seed-theme-hero-nav">
+            <button className="seed-icon-button seed-hero-icon" onClick={v.toHome} aria-label="뒤로가기"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+            <span className="seed-theme-date">8월 12일 장 마감 기준</span>
+            <button className={'seed-icon-button seed-hero-icon ' + (v.isCurrentSaved ? 'is-saved' : '')} onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '즐겨찾기 해제' : '즐겨찾기 추가'}><svg width="22" height="22" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
           </div>
-          <div style={css('margin-top:20px;display:flex;align-items:center;gap:8px')}><Badge tone="brand" variant="weak">상승 {v.themeRank}위</Badge><span style={css('font-size:14px;color:var(--seed-color-fg-neutral-muted)')}>오늘의 테마</span></div>
-          <h1 style={css('margin:12px 0 0;font-size:30px;line-height:1.18;font-weight:800;letter-spacing:-.04em;color:var(--seed-color-fg-neutral)')}>{v.theme}</h1>
-          <div style={css('display:flex;align-items:flex-end;gap:10px;margin-top:8px')}><strong style={css('font-size:46px;line-height:1;font-weight:800;letter-spacing:-.05em;color:var(--seed-color-fg-brand)')}>{v.themeChg}</strong><span style={css('padding-bottom:4px;font-size:14px;color:var(--seed-color-fg-neutral-muted)')}>테마 평균</span></div>
+          <div className="seed-theme-title-row"><h1>{v.theme}</h1><span className="seed-hero-rank">상승 {v.themeRank}위</span></div>
+          <div className="seed-theme-change"><strong>{v.themeChg}</strong><span>오늘 테마 평균 등락</span></div>
         </header>
 
-        <main style={css('flex:1;min-height:0;overflow-y:auto;padding:16px 20px 112px')}>
+        <main className="seed-theme-main">
           <section className="seed-card">
             <div style={css('display:flex;align-items:center;justify-content:space-between')}><h2 className="seed-section-title">오늘 왜 올랐을까요?</h2><Badge tone="informative" variant="weak">요약</Badge></div>
             <p style={css('margin:14px 0 0;font-size:16px;line-height:1.58;font-weight:600;letter-spacing:-.015em;color:var(--seed-color-fg-neutral)')}>{v.reason}</p>
