@@ -132,6 +132,7 @@ a { color: #16160F; }
   color: #fff;
   background: var(--seed-color-bg-brand-solid, #ff6f0f);
 }
+.seed-theme { overflow-y: auto !important; }
 .seed-theme-hero-nav { display: flex; align-items: center; justify-content: space-between; }
 .seed-theme-date { color: #25130a; font-size: 15px; font-weight: 750; letter-spacing: -.02em; }
 .seed-hero-icon { color: #fff; background: rgba(255, 255, 255, .18); }
@@ -144,12 +145,12 @@ a { color: #16160F; }
 .seed-theme-change span { padding-bottom: 5px; color: #351709; font-size: 13px; font-weight: 650; }
 .seed-theme-main {
   position: relative;
-  flex: 1;
-  min-height: 0;
+  flex: none;
+  min-height: calc(100% - 190px);
   margin-top: -18px;
   padding: 30px 20px 112px;
   border-radius: 28px 28px 0 0;
-  overflow-y: auto;
+  overflow: visible;
   background: var(--seed-color-bg-layer-default, #f7f7f8);
 }
 .app-dark .seed-theme-main { background: #202124; }
