@@ -387,20 +387,14 @@ a { color: #16160F; }
   color: var(--seed-color-fg-neutral, #212124);
   background: var(--seed-color-bg-neutral-weak, #f2f3f5);
 }
-.seed-home-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 13px 0 6px;
-}
-.seed-home-title img {
-  width: 30px;
-  height: 30px;
-  flex: none;
+.seed-home-corner-logo {
+  width: 32px;
+  height: 32px;
+  display: block;
   object-fit: contain;
 }
-.seed-home-title h1 {
-  margin: 0;
+.seed-home-title {
+  margin: 13px 0 6px;
   color: var(--seed-color-fg-neutral);
   font-size: 30px;
   font-weight: 800;

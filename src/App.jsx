@@ -520,7 +520,8 @@ export default class App extends React.Component {
     return (
       <div className="seed-pilot seed-home" style={css('position:absolute;inset:0;background:#fff;display:flex;flex-direction:column;animation:popBack .28s ease both')}>
         <header style={css('flex:none;padding:' + this.padTop(50) + ' 20px 14px')}>
-          <div style={css('display:flex;align-items:center;justify-content:flex-end')}>
+          <div style={css('display:flex;align-items:center;justify-content:space-between')}>
+            <img src={LOGO_MARK} alt="DAY-JA-VIEW" className="seed-home-corner-logo" />
             <button className="seed-icon-button seed-home-search" onClick={() => this.go('search')} aria-label="테마·종목 검색">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
                 <circle cx="11" cy="11" r="7" />
@@ -530,10 +531,7 @@ export default class App extends React.Component {
           </div>
           <div style={css('margin-top:26px')}>
             <Badge tone="brand" variant="weak" size="large">8월 12일 장 마감</Badge>
-            <div className="seed-home-title">
-              <img src={LOGO_MARK} alt="" aria-hidden="true" />
-              <h1>오늘 많이 오른 테마예요</h1>
-            </div>
+            <h1 className="seed-home-title">오늘 많이 오른 테마예요</h1>
             <p style={css('margin:0;font-size:15px;line-height:1.5;color:var(--seed-color-fg-neutral-muted)')}>상승률과 과거 움직임을 한눈에 확인해 보세요.</p>
           </div>
         </header>
