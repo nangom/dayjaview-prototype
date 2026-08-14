@@ -107,10 +107,13 @@ export default class App extends React.Component {
         : 'linear-gradient(150deg,rgba(246,247,251,.72) 0%,rgba(246,247,251,.42) 55%,rgba(232,234,244,.4) 100%)',
       statBorder: d ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.8)',
       statShadow: d ? 'none' : '0 0 0 1px rgba(22,22,15,.035),inset 0 1.5px 1px rgba(255,255,255,.9)',
-      hzBg: d ? 'rgba(255,255,255,.06)' : 'rgba(255,255,255,.72)',
-      hzBorder: d ? 'rgba(255,255,255,.09)' : 'rgba(255,255,255,.9)',
-      chipBg: d ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.6)',
-      chipBorder: d ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.85)',
+      // 칩·기간 셀은 흰 반투명이라 유리 시트 위에서만 형태가 보였다. 시트를
+      // 불투명 흰색으로 바꾸면서 흰 위의 흰색이 되어 경계가 사라졌다.
+      // 둘 다 실제 면 + 테두리를 줘서 낱개 상자로 읽히게 한다.
+      hzBg: d ? 'rgba(255,255,255,.06)' : '#FFFFFF',
+      hzBorder: d ? 'rgba(255,255,255,.14)' : '#E1E4EC',
+      chipBg: d ? 'rgba(255,255,255,.09)' : '#F0EEE8',
+      chipBorder: d ? 'rgba(255,255,255,.18)' : '#D9D6CD',
       linkBg: d ? 'rgba(255,255,255,.06)' : '#FFFFFF',
       linkBorder: d ? 'rgba(255,255,255,.10)' : '#E7E6E1',
       caseBg: d ? '#262321' : '#FFFFFF',
