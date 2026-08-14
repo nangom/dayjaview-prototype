@@ -235,14 +235,15 @@ export default function Home() {
               </section>
 
               <section className={styles.reason}>
-                <div className={styles.sectionHeading}><h2>오늘 왜 올랐을까요?</h2>{reasonSource === "live" && intradayReasonNews.length > 3 ? <button type="button" className={styles.reasonExpand} aria-label={showAllReasons ? "뉴스 근거 접기" : "뉴스 근거 전체 보기"} aria-expanded={showAllReasons} onClick={() => setShowAllReasons((current) => !current)}><span /><span /><span /></button> : <span className={styles.liveBadge}>장후 확정</span>}</div>
-                <div className={styles.reasonTabs} role="tablist" aria-label="상승 이유 데이터 출처"><button type="button" role="tab" aria-selected={reasonSource === "live"} className={reasonSource === "live" ? styles.reasonTabActive : ""} onClick={() => setReasonSource("live")}>실시간</button><button type="button" role="tab" aria-selected={reasonSource === "infostock"} className={reasonSource === "infostock" ? styles.reasonTabActive : ""} onClick={() => setReasonSource("infostock")}>인포스탁</button></div>
+                <div className={styles.sectionHeading}><h2>오늘 왜 올랐을까요?</h2></div>
+                <div className={styles.reasonTabs} role="tablist" aria-label="상승 이유 분석 시점"><button type="button" role="tab" aria-selected={reasonSource === "live"} className={reasonSource === "live" ? styles.reasonTabActive : ""} onClick={() => setReasonSource("live")}>실시간 분석</button><button type="button" role="tab" aria-selected={reasonSource === "infostock"} className={reasonSource === "infostock" ? styles.reasonTabActive : ""} onClick={() => setReasonSource("infostock")}>장 마감 후 분석</button></div>
                 {reasonSource === "live" ? <>
                   <div className={styles.sourceStatus}><span className={styles.liveDot} />장중 뉴스 분석 중</div>
                   <p>체코 신규 원전 사업 관련 기대가 다시 부각되며 설계·기자재 종목으로 상승이 확산됐어요.</p>
                   <ul>{intradayReasonNews.slice(0, showAllReasons ? intradayReasonNews.length : 3).map((news) => <li key={`${news.time}-${news.title}`}><span>{news.time}</span><p>{news.title}</p><small>{news.source}</small></li>)}</ul>
+                  {intradayReasonNews.length > 3 ? <button type="button" className={styles.reasonMore} aria-expanded={showAllReasons} onClick={() => setShowAllReasons((current) => !current)}><span>{showAllReasons ? "근거 접기" : `근거 ${intradayReasonNews.length - 3}건 더 보기`}</span><i aria-hidden="true" data-open={showAllReasons ? "true" : "false"} /></button> : null}
                   <p className={styles.confirmationNote}>뉴스 근거는 장중 계속 갱신되며 이후 정정될 수 있습니다.</p>
-                </> : <div className={styles.infostockPending}><strong>장후 확정 대기</strong><p>장 마감 후 인포스탁 부각 사유가 등록되면 LLM이 근거 안에서 요약해 보여줍니다.</p><small>장중 뉴스 요약과 달라진 내용은 확정 결과를 우선 표시합니다.</small></div>}
+                </> : <div className={styles.infostockPending}><strong>장 마감 후 오늘 하루를 다시 분석해요</strong><p>장중 가격 움직임과 마감 후 확인된 시장 기록을 함께 살펴 상승 배경을 정리해 보여드려요.</p><small>장중 분석과 달라진 내용이 있다면 마감 후 분석을 기준으로 안내합니다.</small></div>}
               </section>
 
               <section className={styles.leaderSection}>

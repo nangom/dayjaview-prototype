@@ -503,9 +503,6 @@
 .interestGap { margin-top: 14px !important; padding: 13px 14px; border-radius: 12px; display: flex !important; flex-direction: column; gap: 4px !important; background: #fff0e5; }
 .interestGap strong { color: #a33b00; font-size: 13px; }
 .interestGap span { color: #7d5a46; font-size: 10px; }
-.liveBadge { padding: 5px 8px; border-radius: 999px; background: #fff0e5; color: #d95700 !important; font-size: 9px !important; font-weight: 700; }
-.reasonExpand { width: 36px; height: 36px; padding: 0 9px; border: 0; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; gap: 4px; background: #fff0e5; }
-.reasonExpand span { width: 100%; height: 2px; border-radius: 2px; background: #d95700; }
 .reasonTabs { margin-top: 15px; padding: 3px; border-radius: 13px; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; background: #f4f4f5; }
 .reasonTabs button { height: 36px; border: 0; border-radius: 10px; background: transparent; color: #868b94; font-size: 12px; font-weight: 700; }
 .reasonTabs .reasonTabActive { background: #ffffff; color: #d95700; box-shadow: 0 1px 4px rgba(33,33,36,.08); }
@@ -515,6 +512,9 @@
 .infostockPending strong { font-size: 14px; }
 .infostockPending p { margin: 7px 0 0; color: #4d5159; font-size: 12px; line-height: 1.55; }
 .infostockPending small { display: block; margin-top: 9px; color: #868b94; font-size: 9px; line-height: 1.45; }
+.reasonMore { width: 100%; min-height: 42px; margin-top: 6px; padding: 0 12px; border: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; background: #f7f7f8; color: #4d5159; font: inherit; font-size: 11px; font-weight: 700; }
+.reasonMore i { width: 7px; height: 7px; border-right: 1.8px solid currentColor; border-bottom: 1.8px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform 160ms ease; }
+.reasonMore i[data-open="true"] { transform: translateY(2px) rotate(225deg); }
 .confirmationNote { margin-top: 12px !important; padding-top: 11px; border-top: 1px solid #eaebee; color: #868b94 !important; font-size: 10px !important; }
 .catalystSection .catalysts li > b { background: #fff0e5; color: #d95700; }
 .catalysts strong, .leaders span { color: #212124; }
