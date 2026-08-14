@@ -10,6 +10,8 @@
   cursor: grab;
   user-select: none;
   -webkit-overflow-scrolling: touch;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.28) 5%, #000 13%, #000 87%, rgba(0,0,0,.28) 95%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.28) 5%, #000 13%, #000 87%, rgba(0,0,0,.28) 95%, transparent 100%);
 }
 
 .wheel::-webkit-scrollbar { display: none; }

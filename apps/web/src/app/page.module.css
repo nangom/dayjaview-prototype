@@ -167,7 +167,7 @@
 .placeholder p { margin: 8px 0 0; color: #777777; font-size: 14px; }
 .footer { position: absolute; left: 0; right: 0; bottom: 0; height: 68px; border-top: 1px solid #dddddd; display: grid; grid-template-columns: repeat(4, 1fr); background: #ffffff; }
 .footer button { border: 0; display: grid; grid-template-rows: 22px 14px; align-content: center; justify-items: center; gap: 3px; padding: 0; background: transparent; color: #888888; cursor: pointer; }
-.navIcon { display: block; width: 22px !important; height: 22px !important; flex: 0 0 22px; align-self: center; }
+.navIcon { display: block; width: 20px !important; height: 20px !important; min-width: 20px; min-height: 20px; flex: 0 0 20px; align-self: center; transform: none !important; }
 .footer button > small { height: 14px; font-size: 10px; line-height: 14px; white-space: nowrap; }
 .footer .active { color: #111111; font-weight: 700; }
 .scrim { position: absolute; inset: 0; z-index: 20; border: 0; background: rgba(0, 0, 0, .28); }
@@ -392,8 +392,21 @@
 .ranking strong, .liveList em, .caseList b, .leaders strong { color: var(--djv-color-market-up); }
 .footer, .miniFooter { right: 12px; bottom: 8px; left: 12px; height: 58px; border: 1px solid rgba(0,0,0,.08); border-radius: 19px; background: rgba(255,255,255,.94); box-shadow: var(--djv-shadow-nav); backdrop-filter: blur(18px); }
 .content { padding-bottom: 76px; }
-.footer button, .miniFooter button { border-radius: 14px; }
+.footer button, .miniFooter button {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  border-radius: 14px;
+  grid-template-rows: 20px 14px;
+  align-content: center;
+  justify-items: center;
+  gap: 3px;
+  transform: none !important;
+}
 .footer .active, .miniFooter .selected { background: var(--djv-color-brand-soft); color: var(--djv-color-brand); }
+.content { padding-bottom: 0; }
+.home { padding-bottom: 76px; }
+.app { background: #eae8e3; }
 .detailHeader, .wireHeader { border-bottom-color: var(--djv-color-border); background: var(--djv-color-surface); }
 .themeSummary { margin: 0 -20px; padding: 28px 20px 24px !important; background: var(--djv-color-brand); color: var(--djv-color-on-brand); }
 .themeSummary span, .themeSummary > p { color: rgba(255,253,241,.78); }
