@@ -131,12 +131,14 @@ export default class App extends React.Component {
       segOnBg: d ? 'rgba(255,255,255,.14)' : '#FFFFFF',
       tabTrack: d ? 'rgba(255,255,255,.06)' : '#F4F3EF',
       barTrack: d ? 'rgba(255,255,255,.12)' : '#ECEEF3',
-      // 민트 카드: 라이트는 옅은 민트 배경 + 진한 청록 글자인데, 다크에서
-      // 그대로 두면 형광 판이 된다. 배경을 투명 청록으로 낮추고 글자를 뒤집는다.
-      mintBg: d ? 'rgba(11,127,114,.20)' : '#E4FFFB',
-      mintFg: d ? '#5FD9C8' : '#0B7F72',
-      mintBody: d ? '#A9C9C4' : '#4E6B67',
-      mintChip: d ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.72)',
+      // 사례 상세 헤더 카드 · stats 기간 배지. 원래 민트(#E4FFFB/#0B7F72)였는데
+      // 브랜드 오렌지 계열로 통일했다. 다만 카드가 본문 전체를 덮는 넓은 면이라
+      // 원색 #FF5C00 을 깔면 판이 너무 세다. 낮은 알파의 오렌지 틴트로 깔고
+      // 글자만 진한 오렌지로 받는다.
+      tintBg: d ? 'rgba(255,92,0,.16)' : 'rgba(255,92,0,.10)',
+      tintFg: d ? '#FFA366' : '#B23C00',
+      tintBody: d ? '#D6B9A8' : '#6B4A38',
+      tintChip: d ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.72)',
       redInk: d ? '#FF6B6E' : '#D83A43',
       blueInk: d ? '#6EA0FF' : '#3267D6',
       perfCellBg: d ? 'rgba(216,58,67,.20)' : '#FFE9EA',
@@ -888,11 +890,11 @@ export default class App extends React.Component {
           <span style={css('width:44px')}></span>
         </div>
         <div style={css('flex:1;min-height:0;overflow-y:auto;padding:14px 22px 40px')}>
-          <div style={css('border-radius:26px;padding:22px;background:' + pl.mintBg)}>
-            <div style={css('font-size:13.5px;font-weight:700;color:' + pl.mintFg)}>{v.picked.date}</div>
+          <div style={css('border-radius:26px;padding:22px;background:' + pl.tintBg)}>
+            <div style={css('font-size:13.5px;font-weight:700;color:' + pl.tintFg)}>{v.picked.date}</div>
             <div style={css('margin-top:8px;font-size:24px;font-weight:800;line-height:1.28;letter-spacing:-0.035em;color:' + pl.fg + ';text-wrap:pretty')}>{v.picked.title}</div>
-            <div style={css('margin-top:10px;font-size:15px;font-weight:500;line-height:1.55;color:' + pl.mintBody + ';text-wrap:pretty')}>{v.picked.sub} 소식이 전해지며 관련주가 함께 움직였습니다.</div>
-            <div style={css('margin-top:16px;display:inline-flex;padding:7px 13px;border-radius:14px;background:' + pl.mintChip + ';font-size:12.5px;font-weight:700;color:' + pl.mintFg)}>출처 · 인포스탁</div>
+            <div style={css('margin-top:10px;font-size:15px;font-weight:500;line-height:1.55;color:' + pl.tintBody + ';text-wrap:pretty')}>{v.picked.sub} 소식이 전해지며 관련주가 함께 움직였습니다.</div>
+            <div style={css('margin-top:16px;display:inline-flex;padding:7px 13px;border-radius:14px;background:' + pl.tintChip + ';font-size:12.5px;font-weight:700;color:' + pl.tintFg)}>출처 · 인포스탁</div>
           </div>
 
           <div style={css('margin-top:26px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + pl.ink2)}>과거 사례 이후 성과</div>
@@ -985,7 +987,7 @@ export default class App extends React.Component {
               <span style={css('font-size:28px;font-weight:800;letter-spacing:-0.035em;color:' + p.fg)}>{v.theme} 테마</span>
               <span style={css('font-size:13.5px;font-weight:500;color:' + p.fg2)}>과거 부각 사례 34건</span>
             </span>
-            <span style={css('flex:none;padding:8px 13px;border-radius:15px;background:' + p.mintBg + ';font-size:12.5px;font-weight:700;color:' + p.mintFg)}>2010.03–2026.07</span>
+            <span style={css('flex:none;padding:8px 13px;border-radius:15px;background:' + p.tintBg + ';font-size:12.5px;font-weight:700;color:' + p.tintFg)}>2010.03–2026.07</span>
           </div>
 
           <div style={css('margin-top:26px;display:flex;align-items:baseline;justify-content:space-between')}>
