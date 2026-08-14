@@ -43,17 +43,17 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
         const cardBounds = card.getBoundingClientRect();
         const signedDistance = (cardBounds.top + cardBounds.height / 2 - focusY) / step;
         const distance = Math.abs(signedDistance);
-        const boundedDistance = Math.max(-2.6, Math.min(2.6, signedDistance));
+        const boundedDistance = Math.max(-2.2, Math.min(2.2, signedDistance));
         const emphasis = Math.max(0, 1 - distance);
         // Treat the list like the front arc of a vertical cylinder: cards
         // above/below the focus rotate away and recede in Z, rather than only
         // sliding sideways with a flat curve.
-        const visualDistance = Math.min(distance, 2.35);
-        const rotate = Math.max(-24, Math.min(24, -boundedDistance * 12));
-        const depth = Math.max(-40, 18 - visualDistance * 24);
-        const curve = Math.sign(boundedDistance) * Math.min(3, visualDistance * 1.2);
-        card.style.setProperty("--wheel-scale", String(0.97 + emphasis * 0.03));
-        card.style.setProperty("--wheel-opacity", String(Math.max(0.24, 1 - Math.max(0, distance - 1) * 0.2)));
+        const visualDistance = Math.min(distance, 2.2);
+        const rotate = Math.max(-17, Math.min(17, -boundedDistance * 8));
+        const depth = Math.max(-26, 12 - visualDistance * 17);
+        const curve = Math.sign(boundedDistance) * Math.min(2, visualDistance * 0.8);
+        card.style.setProperty("--wheel-scale", String(0.985 + emphasis * 0.015));
+        card.style.setProperty("--wheel-opacity", String(Math.max(0.34, 1 - Math.max(0, distance - 1) * 0.16)));
         card.style.setProperty("--wheel-rotate", `${rotate}deg`);
         card.style.setProperty("--wheel-depth", `${depth}px`);
         card.style.setProperty("--wheel-curve", `${curve}px`);
@@ -88,26 +88,28 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     const shouldPlayIntro = !hasPlayedIntroRef.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (shouldPlayIntro && firstVisibleCard) {
       hasPlayedIntroRef.current = true;
-      wheel.dataset.intro = "true";
       const introStepDelay = 800;
-      [baseTop + step, baseTop + step * 2].forEach((targetTop, index) => {
+      const introRanks = [
+        { rank: 2, delay: introStepDelay },
+        { rank: 3, delay: introStepDelay * 2 },
+        { rank: 4, delay: introStepDelay * 5 },
+        ...Array.from({ length: Math.max(0, themes.length - 4) }, (_, index) => ({
+          rank: index + 5,
+          delay: introStepDelay * (index + 6),
+        })),
+      ];
+      introRanks.forEach(({ rank, delay }) => {
         introTimers.push(window.setTimeout(() => {
           if (introCancelledRef.current) return;
-          wheel.scrollTo({ top: targetTop, behavior: "smooth" });
-          wheel.dataset.introStep = String(index + 1);
-        }, introStepDelay * (index + 1)));
+          wheel.scrollTo({ top: baseTop + step * (rank - 1), behavior: "smooth" });
+          wheel.dataset.introStep = String(rank);
+        }, delay));
       });
-      // After the three quick beats, pause for three beats before revealing
-      // rank 4, and only do so if the user has not touched the wheel.
+      // Keep the reveal moving past rank 4, then leave the wheel at the last
+      // item instead of jumping back to rank 1.
       introTimers.push(window.setTimeout(() => {
-        if (introCancelledRef.current) return;
-        wheel.scrollTo({ top: baseTop + step * 3, behavior: "smooth" });
-        wheel.dataset.introStep = "3";
-      }, introStepDelay * 5));
-      introTimers.push(window.setTimeout(() => {
-        delete wheel.dataset.intro;
         delete wheel.dataset.introStep;
-      }, introStepDelay * 6));
+      }, (introRanks.at(-1)?.delay ?? introStepDelay * 2) + 650));
     }
     paint();
     wheel.addEventListener("scroll", handleScroll, { passive: true });
@@ -117,7 +119,6 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
       if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
       introTimers.forEach((timer) => window.clearTimeout(timer));
       introTimers.splice(0, introTimers.length);
-      delete wheel.dataset.intro;
       delete wheel.dataset.introStep;
     };
   }, [themes]);
@@ -127,7 +128,6 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     introTimersRef.current.forEach((timer) => window.clearTimeout(timer));
     introTimersRef.current.splice(0, introTimersRef.current.length);
     if (wheelRef.current) {
-      delete wheelRef.current.dataset.intro;
       delete wheelRef.current.dataset.introStep;
     }
   };

@@ -742,3 +742,17 @@
 @media (min-width: 441px) {
   .phone { border: 0; border-radius: 0; box-shadow: none; }
 }
+
+/* Keep the warm beige reserved for the home ranking surface. Other screens
+   read better as clean white workspaces, especially when moving between tabs. */
+.login,
+.detail,
+.detailScroll,
+.wireScreen,
+.wireScreen .wireHeader,
+.wireScreen .wireBody,
+.library,
+.caseDetailBody,
+.caseListBody {
+  background: #ffffff;
+}
