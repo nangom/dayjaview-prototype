@@ -40,9 +40,10 @@
 .loadingLogoBase {
   position: absolute;
   inset: 0;
-  background: #302b28;
+  background: #825039;
   -webkit-mask: url("/dejavu-logo-white.png") center / contain no-repeat;
   mask: url("/dejavu-logo-white.png") center / contain no-repeat;
+  filter: drop-shadow(0 0 8px rgba(255,111,15,.2));
   animation: orangeBreathe 3.4s cubic-bezier(.45,0,.55,1) infinite;
 }
 .loadingGlowSweep { position: absolute; inset: -40px; overflow: hidden; opacity: .85; filter: blur(9px); -webkit-mask: url("/dejavu-logo-white.png") center / 144px 96px no-repeat; mask: url("/dejavu-logo-white.png") center / 144px 96px no-repeat; }
