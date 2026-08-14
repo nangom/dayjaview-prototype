@@ -8,6 +8,7 @@ import {
   IconStarLine,
 } from "@karrotmarket/react-monochrome-icon";
 import { marketSnapshot } from "../data/prototype";
+import { ThemeRankingWheel } from "../components/ThemeRankingWheel";
 import styles from "./page.module.css";
 
 const footerItems = [
@@ -93,17 +94,7 @@ export default function Home() {
                   </header>
                   <div className={styles.orangeHomeTitle}><strong>2026년 08월 14일</strong><h1>오늘의 요약</h1><p>지금 많이 오른 테마를 확인해 보세요.</p></div>
 
-                  <ol className={styles.ranking}>
-                    {marketSnapshot.themes.slice(0, 10).map((theme) => (
-                      <li key={theme.rank}>
-                        <button type="button" onClick={() => goTo("screen-detail")}>
-                          <span className={styles.rank}>{theme.rank}</span>
-                          <span className={styles.name}>{theme.name}</span>
-                          <strong>{theme.value}</strong>
-                        </button>
-                      </li>
-                    ))}
-                  </ol>
+                  <ThemeRankingWheel themes={marketSnapshot.themes.slice(0, 10)} onSelect={() => goTo("screen-detail")} />
                 </div>
               ) : activeTab === "saved" ? (
                 <SavedLibrary

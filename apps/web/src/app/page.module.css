@@ -54,8 +54,10 @@
 .content { height: 100%; padding-bottom: 68px; }
 .home {
   height: 100%;
-  overflow-y: auto;
+  overflow: hidden;
   padding: 40px 20px 32px;
+  display: flex;
+  flex-direction: column;
 }
 
 .home::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(circle at 50% 34%,rgba(255,111,15,.18),transparent 45%),linear-gradient(180deg,#f1eee8 0%,#faf9f7 75%); }
@@ -71,7 +73,7 @@
 .home .orangeHomeHeader { margin-bottom: 0; align-items: center; padding: 0 0 8px; }
 .orangeHomeHeader > img { width: 32px; height: 32px; object-fit: contain; }
 .homeHeaderSpacer { width: 44px; height: 44px; }
-.orangeHomeTitle { padding: 12px 0 30px; }
+.orangeHomeTitle { flex: none; padding: 12px 0 10px; }
 .orangeHomeTitle > strong { display: block; color: var(--djv-color-brand); font-size: 25px; line-height: 1.2; letter-spacing: -.035em; }
 .orangeHomeTitle h1 { margin-top: 1px; font-size: 30px; }
 .orangeHomeTitle p { margin-top: 7px; }
