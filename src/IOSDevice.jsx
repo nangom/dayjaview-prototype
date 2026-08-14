@@ -189,7 +189,10 @@ function IOSList({ header, children, dark = false }) {
 function IOSDevice({
   children, width = 402, height = 874, dark = false,
   title, keyboard = false, bare = false, showSystemBars = true,
+  browserChrome = false, browserUrl = 'dayjaview-prototype.vercel.app',
 }) {
+  const browserInk = dark ? '#f5f5f7' : '#1c1c1e';
+  const browserBg = dark ? 'rgba(28,28,30,.96)' : 'rgba(248,248,250,.96)';
   return (
     // data-om-starter: inert presence marker — Claude Design's starter-usage
     // probe reads it; it renders nothing. Keep it on this root element.
@@ -214,14 +217,58 @@ function IOSDevice({
         <IOSStatusBar dark={dark} />
       </div>
       )}
+      {!bare && browserChrome && (
+        <div style={{
+          position: 'absolute', top: 54, left: 0, right: 0, zIndex: 45,
+          height: 54, padding: '7px 12px', boxSizing: 'border-box',
+          display: 'flex', alignItems: 'center', gap: 9,
+          color: browserInk, background: browserBg,
+          borderBottom: dark ? '1px solid rgba(255,255,255,.08)' : '1px solid rgba(0,0,0,.08)',
+          backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
+        }}>
+          <span style={{ width: 34, textAlign: 'center', fontSize: 13, fontWeight: 700 }}>가가</span>
+          <div style={{
+            flex: 1, height: 38, borderRadius: 12,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            background: dark ? '#3a3a3c' : '#e9e9ec', fontSize: 12.5, fontWeight: 600,
+          }}>
+            <svg width="11" height="13" viewBox="0 0 12 14" fill="none"><rect x="2" y="6" width="8" height="7" rx="2" stroke="currentColor" strokeWidth="1.4"/><path d="M4 6V4a2 2 0 0 1 4 0v2" stroke="currentColor" strokeWidth="1.4"/></svg>
+            <span>{browserUrl}</span>
+          </div>
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="M20 6v5h-5"/><path d="M19 11a7 7 0 1 0-2 6"/></svg>
+        </div>
+      )}
       {/* nav + content */}
-      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div style={{
+        position: browserChrome && !bare ? 'absolute' : 'relative',
+        top: browserChrome && !bare ? 108 : 0,
+        bottom: browserChrome && !bare ? 58 : 'auto',
+        left: 0, right: 0,
+        height: browserChrome && !bare ? 'auto' : '100%',
+        display: 'flex', flexDirection: 'column',
+      }}>
         {title !== undefined && <IOSNavBar title={title} dark={dark} />}
         <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
         {keyboard && <IOSKeyboard dark={dark} />}
       </div>
+      {!bare && browserChrome && (
+        <div style={{
+          position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 55,
+          height: 58, padding: '0 27px 8px', boxSizing: 'border-box',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          color: browserInk, background: browserBg,
+          borderTop: dark ? '1px solid rgba(255,255,255,.08)' : '1px solid rgba(0,0,0,.08)',
+          backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
+        }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeOpacity=".28" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M12 16V3m0 0L8 7m4-4 4 4"/><path d="M5 11v8h14v-8"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M5 4h14v16l-7-4-7 4z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="4" y="4" width="15" height="16" rx="2"/><path d="M8 8h7M8 12h7"/></svg>
+        </div>
+      )}
       {/* home indicator — 실제 기기엔 진짜 인디케이터가 있으므로 bare 에서는 생략 */}
-      {!bare && showSystemBars && (
+      {!bare && showSystemBars && !browserChrome && (
       <div style={{
         position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60,
         height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end',

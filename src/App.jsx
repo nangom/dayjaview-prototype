@@ -678,7 +678,7 @@ export default class App extends React.Component {
 
   renderSearchScreen(v) {
     return (
-      <div className="seed-tab-screen">
+      <div className="seed-tab-screen" style={{ paddingTop: this.padTop(58) }}>
         <div className="seed-search-top-action">
           <button className="seed-icon-button seed-home-search" onClick={v.toHome} aria-label="검색 닫기">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
@@ -699,7 +699,7 @@ export default class App extends React.Component {
   renderLibraryScreen(v) {
     const showSaved = v.libraryTab === 'saved';
     return (
-      <div className="seed-tab-screen">
+      <div className="seed-tab-screen" style={{ paddingTop: this.padTop(58) }}>
         <div className="seed-tab-header"><Badge tone="brand" variant="weak">MY</Badge><h1>즐겨찾기</h1><p>저장한 항목과 최근 검색 기록을 확인하세요.</p></div>
         <div className="seed-library-tabs"><button className={showSaved ? 'is-selected' : ''} onClick={() => v.setLibraryTab('saved')}>저장됨</button><button className={!showSaved ? 'is-selected' : ''} onClick={() => v.setLibraryTab('history')}>히스토리</button></div>
         <div className="seed-tab-scroll">
@@ -714,7 +714,7 @@ export default class App extends React.Component {
   }
 
   renderSettingsScreen(v) {
-    return <div className="seed-tab-screen"><div className="seed-tab-header"><Badge tone="brand" variant="weak">SETTINGS</Badge><h1>설정</h1><p>서비스 이용 환경을 관리하세요.</p></div><div className="seed-settings-card"><div><strong>다크 모드</strong><small>어두운 화면 테마로 전환합니다.</small></div><button role="switch" aria-checked={v.darkMode} onClick={v.toggleDarkMode} className={'seed-theme-switch ' + (v.darkMode ? 'is-on' : '')}><span /></button></div><div className="seed-settings-card"><div><strong>잠금화면 알림</strong><small>푸시 알림은 추후 연결 예정</small></div><span className="seed-coming-badge">준비 중</span></div><div className="seed-settings-card"><div><strong>데이터 기준</strong><small>장 마감 데이터 · KRX/인포스탁</small></div><span>›</span></div><div className="seed-settings-card"><div><strong>앱 정보</strong><small>DAY-JA-VIEW Prototype</small></div><span>›</span></div></div>;
+    return <div className="seed-tab-screen" style={{ paddingTop: this.padTop(58) }}><div className="seed-tab-header"><Badge tone="brand" variant="weak">SETTINGS</Badge><h1>설정</h1><p>서비스 이용 환경을 관리하세요.</p></div><div className="seed-settings-card"><div><strong>다크 모드</strong><small>어두운 화면 테마로 전환합니다.</small></div><button role="switch" aria-checked={v.darkMode} onClick={v.toggleDarkMode} className={'seed-theme-switch ' + (v.darkMode ? 'is-on' : '')}><span /></button></div><div className="seed-settings-card"><div><strong>잠금화면 알림</strong><small>푸시 알림은 추후 연결 예정</small></div><span className="seed-coming-badge">준비 중</span></div><div className="seed-settings-card"><div><strong>데이터 기준</strong><small>장 마감 데이터 · KRX/인포스탁</small></div><span>›</span></div><div className="seed-settings-card"><div><strong>앱 정보</strong><small>DAY-JA-VIEW Prototype</small></div><span>›</span></div></div>;
   }
 
   renderBottomNav(v) {
@@ -1152,7 +1152,9 @@ export default class App extends React.Component {
         height={bare ? '100%' : v.h}
         dark={v.isDark || v.darkMode}
         bare={bare}
-        showSystemBars={false}
+        showSystemBars={!bare}
+        browserChrome={!bare}
+        browserUrl="dayjaview-prototype.vercel.app"
       >
         <div className={v.darkMode ? 'app-dark' : ''} style={{ ...css("height:100%;position:relative;overflow:hidden;font-family:'Pretendard',system-ui,sans-serif;-webkit-font-smoothing:antialiased"), background: v.pageBg }}>
           {v.isSplash && this.renderSplash(v)}
