@@ -961,21 +961,21 @@ export default class App extends React.Component {
           <div style={css('margin-top:28px;font-size:19px;font-weight:800;letter-spacing:-0.03em;color:' + pl.ink2)}>상승 동반 키워드</div>
           <div style={css('margin-top:5px;font-size:12.5px;font-weight:600;color:' + pl.meta)}>5일 후 영향 · 등장 vs 미등장</div>
           <div style={css('margin-top:14px;border:1px solid ' + pl.line + ';border-radius:26px;background:' + pl.panelBg + ';padding:20px 18px;display:flex;flex-direction:column;gap:16px')}>
-            {/* 예전에는 한 줄에 키워드 / 작은 설명 / 막대 / 숫자 넷이 가로로
-                경쟁해서 눈이 좌우로 왕복했다. 키워드와 수치를 같은 줄 양 끝에
-                크게 두어 '단어 -> 얼마' 한 쌍으로 읽히게 하고, 막대는 그 아래
-                전체 폭으로 깔아 순위를 길이로 보이게 한다. 표본·상승비율은
-                판단의 근거라 남기되 가장 작은 층으로 내렸다. */}
+            {/* 키워드가 주인공이다. 예전엔 키워드와 수치가 둘 다 19px 이라
+                크기로는 동점인데 빨강이 색 대비로 이겨서 숫자가 먼저 읽혔다.
+                키워드 24px / 수치 16px 로 1.5 배 벌리면 크기 차이가 색 salience
+                를 눌러 키워드가 먼저 들어온다. 크기는 모듈러 스케일
+                (12 · 16 · 24)에 맞췄다 — 19px·11.5px 는 스케일 밖 값이었다. */}
             {v.kwRows.map(k => (
               <div key={k.key} style={css('display:flex;flex-direction:column;gap:8px')}>
                 <div style={css('display:flex;align-items:baseline;gap:10px')}>
-                  <span style={css('font-size:19px;font-weight:800;letter-spacing:-0.02em;color:' + pl.ink2)}>{k.word}</span>
-                  <span style={{ ...css('margin-left:auto;flex:none;font-size:19px;font-weight:800;letter-spacing:-0.01em'), color: pl.redInk }}>{k.lift}</span>
+                  <span style={css('font-size:24px;font-weight:800;letter-spacing:-0.03em;color:' + pl.ink2)}>{k.word}</span>
+                  <span style={{ ...css('margin-left:auto;flex:none;font-size:16px;font-weight:800;letter-spacing:-0.01em'), color: pl.redInk }}>{k.lift}</span>
                 </div>
                 <span style={css('height:6px;border-radius:999px;background:' + pl.barTrack + ';overflow:hidden')}>
                   <span style={css(k.bar)}></span>
                 </span>
-                <span style={css('font-size:11.5px;font-weight:600;color:' + pl.fg3)}>{k.meta}</span>
+                <span style={css('font-size:12px;font-weight:600;color:' + pl.fg3)}>{k.meta}</span>
               </div>
             ))}
           </div>
