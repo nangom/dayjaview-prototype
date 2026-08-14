@@ -39,6 +39,24 @@ a { color: #16160F; }
   transition: transform .14s ease, background .14s ease;
 }
 .seed-icon-button:active { transform: scale(.94); }
+.seed-detail-back {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border: 1px solid #e2e4e8;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #212124;
+  background: #f2f3f5;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .08);
+  cursor: pointer;
+}
+.seed-detail-back:active {
+  transform: scale(.94);
+  background: #e9eaed;
+}
 
 .seed-rank-row {
   width: 100%;
@@ -424,6 +442,7 @@ a { color: #16160F; }
 .seed-bottom-nav button.is-selected { color: var(--seed-color-fg-brand, #ff6f0f); background: var(--seed-color-bg-brand-weak, #fff0e5); }
 
 .seed-tab-screen { position: absolute; inset: 0; padding: 24px 20px 88px; display: flex; flex-direction: column; background: #fff; }
+.seed-search-top-action { display: flex; justify-content: flex-end; margin-bottom: 8px; }
 .seed-tab-header h1 { margin: 11px 0 4px; font-size: 30px; line-height: 1.2; letter-spacing: -.04em; }
 .seed-tab-header p { margin: 0; color: #868b94; font-size: 14px; }
 .seed-main-search { min-height: 52px; margin-top: 22px; padding: 0 15px; border-radius: 17px; display: flex; align-items: center; gap: 10px; color: #868b94; background: #f2f3f5; }

@@ -87,8 +87,6 @@ export default class App extends React.Component {
         const r = mid.getBoundingClientRect();
         el.scrollTop += (r.top + r.height / 2) - (box.top + box.height / 2 - this.focusShift);
         this.baseTop = el.scrollTop;
-        const pick = this.wheelPick || 0;
-        if (pick) el.scrollTop = this.baseTop + pick * (itemH + 8);
       }
 
       if (!this._wheelBound) {
@@ -680,6 +678,13 @@ export default class App extends React.Component {
   renderSearchScreen(v) {
     return (
       <div className="seed-tab-screen">
+        <div className="seed-search-top-action">
+          <button className="seed-icon-button seed-home-search" onClick={v.toHome} aria-label="검색 닫기">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
         <div className="seed-tab-header"><Badge tone="brand" variant="weak">SEARCH</Badge><h1>테마·종목 검색</h1><p>확인하고 싶은 테마나 종목을 찾아보세요.</p></div>
         <label className="seed-main-search"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input autoFocus value={v.searchQ} onChange={v.onSearchQ} placeholder="테마 또는 종목명 입력" /></label>
         <div className="seed-tab-scroll">
@@ -922,8 +927,8 @@ export default class App extends React.Component {
     return (
       <div className="seed-pilot seed-cases" style={css('position:absolute;inset:0;background:var(--seed-color-bg-layer-default);display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
-          <button className="icon-btn press" onClick={v.toTheme} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+          <button className="seed-detail-back press" onClick={v.toTheme} aria-label="테마 상세로 돌아가기">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
           <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>과거 사례</span>
           <button className="seed-icon-button" onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '즐겨찾기 해제' : '즐겨찾기 추가'}><svg width="21" height="21" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.isCurrentSaved ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
@@ -948,8 +953,8 @@ export default class App extends React.Component {
     return (
       <div className="seed-pilot seed-case" style={css('position:absolute;inset:0;background:var(--seed-color-bg-layer-default);display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
-          <button className="icon-btn press" onClick={v.toCases} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+          <button className="seed-detail-back press" onClick={v.toCases} aria-label="과거 사례 목록으로 돌아가기">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
           <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>사례 상세</span>
           <button className="seed-icon-button" onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '즐겨찾기 해제' : '즐겨찾기 추가'}><svg width="21" height="21" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.isCurrentSaved ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
@@ -1039,8 +1044,8 @@ export default class App extends React.Component {
     return (
       <div className="seed-pilot seed-stats" style={css('position:absolute;inset:0;background:var(--seed-color-bg-layer-default);display:flex;flex-direction:column;animation:pushIn .28s ease both')}>
         <div style={css('flex:none;display:flex;align-items:center;justify-content:space-between;padding:' + this.padTop(50) + ' 20px 4px')}>
-          <button className="icon-btn press" onClick={v.toTheme} aria-label="Back" style={css('width:44px;height:44px;border-radius:22px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center')}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16160F" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
+          <button className="seed-detail-back press" onClick={v.toTheme} aria-label="테마 상세로 돌아가기">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"></path></svg>
           </button>
           <span style={css('font-size:17px;font-weight:700;letter-spacing:-0.02em;color:#16160F')}>상세 통계</span>
           <button className="seed-icon-button" onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '즐겨찾기 해제' : '즐겨찾기 추가'}><svg width="21" height="21" viewBox="0 0 24 24" fill={v.isCurrentSaved ? 'var(--seed-color-bg-brand-solid)' : 'none'} stroke={v.isCurrentSaved ? 'var(--seed-color-fg-brand)' : 'currentColor'} strokeWidth="1.8" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg></button>
