@@ -160,7 +160,7 @@ export default function Home() {
                   <header className={styles.orangeHomeHeader}>
                     <Image className={styles.homeMark} src="/dejavu-mark.png" alt="DAY-JA-VIEW" width={28} height={34} priority />
                   </header>
-                  <div className={styles.orangeHomeTitle}><strong>2026년 08월 12일</strong><h1>오늘의 요약</h1></div>
+                  <div className={styles.orangeHomeTitle}><strong>2026년 08월 12일</strong><h1>오늘 많이 오른 테마예요</h1></div>
 
                   <ThemeRankingWheel themes={marketSnapshot.themes.slice(0, 10)} onSelect={() => goTo("screen-detail")} />
                 </div>
@@ -247,12 +247,13 @@ export default function Home() {
               </section>
 
               <section className={styles.leaderSection}>
-                <div className={styles.sectionHeading}><h2>오늘의 주도 종목</h2><button type="button" className={styles.expandButton} aria-expanded={showAllLeaders} onClick={() => setShowAllLeaders((current) => !current)}>{showAllLeaders ? "접기" : "전체보기"}</button></div>
+                <div className={styles.sectionHeading}><h2>오늘의 주도 종목</h2></div>
                 <div className={styles.leaders}>
                   {leaderRows.slice(0, showAllLeaders ? leaderRows.length : 3).map((leader) => (
                     <div key={leader.name}><span>{leader.name}<small>{leader.volume}</small></span><strong>{leader.change}</strong></div>
                   ))}
                 </div>
+                {leaderRows.length > 3 ? <button type="button" className={styles.reasonMore} aria-expanded={showAllLeaders} onClick={() => setShowAllLeaders((current) => !current)}><span>{showAllLeaders ? "종목 접기" : `종목 ${leaderRows.length - 3}개 더 보기`}</span><i aria-hidden="true" data-open={showAllLeaders ? "true" : "false"} /></button> : null}
               </section>
 
               <section className={styles.catalystSection}>
