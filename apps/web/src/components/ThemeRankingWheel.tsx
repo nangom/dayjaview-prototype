@@ -33,6 +33,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     const step = (cards[0]?.offsetHeight ?? 64) + 8;
     const cycleHeight = step * themes.length;
     let baseTop = 0;
+    let cycleLastTop = 0;
 
     const paint = () => {
       frameRef.current = undefined;
@@ -66,13 +67,17 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
       frameRef.current = window.requestAnimationFrame(paint);
     };
 
-    const keepMiddleCopy = () => {
-      if (wheel.scrollTop < cycleHeight * 0.5) wheel.scrollTop += cycleHeight;
-      if (wheel.scrollTop > cycleHeight * 1.5) wheel.scrollTop -= cycleHeight;
+    const keepPrimaryCopy = () => {
+      // Keep the visible range in one ordered copy. The old half-cycle reset
+      // could land in the middle of the list (often rank 7); crossing the
+      // actual ends now wraps cleanly from rank 10 to rank 1.
+      const wrapThreshold = step * 0.65;
+      if (wheel.scrollTop > cycleLastTop + wrapThreshold) wheel.scrollTop = baseTop;
+      if (wheel.scrollTop < baseTop - wrapThreshold) wheel.scrollTop = cycleLastTop;
     };
 
     const handleScroll = () => {
-      keepMiddleCopy();
+      keepPrimaryCopy();
       schedulePaint();
     };
 
@@ -82,6 +87,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     introTimers.splice(0, introTimers.length);
     if (firstVisibleCard) {
       baseTop = Math.max(0, firstVisibleCard.offsetTop - (wheel.clientHeight - firstVisibleCard.offsetHeight) / 2);
+      cycleLastTop = baseTop + cycleHeight - step;
       wheel.scrollTop = baseTop;
     }
 

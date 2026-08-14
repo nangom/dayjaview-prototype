@@ -134,6 +134,8 @@ export default function Home() {
     });
   };
 
+  const savedStateVisible = isLoggedIn && isSaved;
+
   const clearSearchHistory = () => {
     setSearchHistory([]);
     window.localStorage.removeItem("dayjaview:search-history");
@@ -149,6 +151,7 @@ export default function Home() {
               <i className={styles.loadingLogoBase} />
               <span className={styles.loadingGlowSweep}><i /></span>
               <span className={styles.loadingSharpSweep}><i /></span>
+              <span className={styles.loadingLateSweep}><i /></span>
             </div>
             <div className={styles.loadingFooter}><span>오늘의 시장을, 과거의 기록으로</span><b><i /></b></div>
           </div>
@@ -228,7 +231,7 @@ export default function Home() {
             <header className={styles.detailHeader}>
               <button type="button" aria-label="뒤로 가기" onClick={() => goTo("screen-home")}><IconArrowLeftLine size={24} /></button>
               <span>원전수출</span>
-              <button type="button" aria-label={isSaved ? "저장 목록에서 제거" : "분석 결과 저장"} className={isSaved ? styles.savedStar : ""} onClick={requestToggleSaved}>{isSaved ? <IconStarFill size={24} /> : <IconStarLine size={24} />}</button>
+              <button type="button" aria-label={savedStateVisible ? "저장 목록에서 제거" : "분석 결과 저장"} className={savedStateVisible ? styles.savedStar : ""} onClick={requestToggleSaved}>{savedStateVisible ? <IconStarFill size={24} /> : <IconStarLine size={24} />}</button>
             </header>
 
             <div className={styles.detailScroll}>

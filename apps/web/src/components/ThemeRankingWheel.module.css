@@ -1,4 +1,5 @@
 .wheel {
+  position: relative;
   min-height: 0;
   flex: 1;
   padding: 4px 14px;
@@ -14,6 +15,26 @@
   cursor: grab;
   user-select: none;
   -webkit-overflow-scrolling: touch;
+}
+
+.wheel::before,
+.wheel::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 4;
+  height: 38px;
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+}
+.wheel::before {
+  top: 0;
+  background: linear-gradient(to bottom, #eae8e3 8%, rgba(234,232,227,.82) 38%, rgba(234,232,227,0) 100%);
+}
+.wheel::after {
+  bottom: 0;
+  background: linear-gradient(to top, #eae8e3 8%, rgba(234,232,227,.82) 38%, rgba(234,232,227,0) 100%);
 }
 
 .wheel::-webkit-scrollbar { display: none; }
