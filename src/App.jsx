@@ -673,15 +673,17 @@ export default class App extends React.Component {
         <div ref={this.wheelRef} style={css('position:relative;z-index:1;flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 20px;display:flex;flex-direction:column;gap:8px')}>
           {v.wheel.map(a => (
             <button key={a.key} ref={a.ref} onClick={a.open} style={css(this.wheelPillStyle(p))}>
-              <span style={css('width:32px;height:32px;flex:none;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;'
+              <span style={css('width:32px;height:32px;flex:none;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;'
                 + (a.top
                   // 3개가 나란히 붙으면서 원색 #FF5C00 은 화면에서 너무 세다.
                   // 같은 색상각을 유지한 채 한 단계 연한 #FF7A33 을 쓴다.
                   // 글자는 크림(#FFFDF1)이 아니라 #4A1608 이어야 한다 — 17px
                   // 볼드는 WCAG large text(18.66px 볼드) 기준에 못 미쳐 4.5:1 이
                   // 그대로 적용되는데, 크림은 이 배경에서 기준을 못 넘긴다.
-                  ? 'background:#FF7A33;border:1px solid #FF7A33;box-shadow:0 2px 6px -2px rgba(255,122,51,.45);color:#4A1608'
-                  : 'background:' + p.badgeBg + ';border:1px solid ' + p.badgeBorder + ';box-shadow:' + p.badgeShadow + ';color:' + p.fg))}>{a.rank}</span>
+                  // 무게는 강조된 1~3위만 800 으로 올린다. 4위 이하까지 같이
+                  // 올리면 강조가 사라져서 색을 넣은 의미가 없어진다.
+                  ? 'font-weight:800;background:#FF7A33;border:1px solid #FF7A33;box-shadow:0 2px 6px -2px rgba(255,122,51,.45);color:#4A1608'
+                  : 'font-weight:700;background:' + p.badgeBg + ';border:1px solid ' + p.badgeBorder + ';box-shadow:' + p.badgeShadow + ';color:' + p.fg))}>{a.rank}</span>
               <span style={css('font-size:19px;font-weight:700;letter-spacing:-0.02em;color:' + p.fg + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0')}>{a.title}</span>
               <span style={css('margin-left:auto;padding-left:12px;font-size:19px;font-weight:700;letter-spacing:-0.01em;color:' + p.up + ';white-space:nowrap')}>{a.chg}</span>
             </button>
