@@ -846,7 +846,7 @@ export default class App extends React.Component {
               값은 전부 t(스크롤 위치)의 함수라 손가락을 따라온다. CSS
               transition 을 걸면 오히려 스크롤보다 늦게 따라와 미끄러진다. */}
           <div style={{
-            ...css('position:sticky;top:0;z-index:2;background:#FF5C00;border-radius:0 0 34px 34px'),
+            ...css('position:sticky;top:0;z-index:2;background:#FF5C00;border-radius:0 0 20px 20px'),
             paddingTop: this.padTop(52),
             paddingLeft: 22, paddingRight: 22,
             paddingBottom: 20 - 8 * t
