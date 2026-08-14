@@ -458,8 +458,10 @@
   color: #ffffff;
   font-size: 22px;
   line-height: 1;
+  display: grid;
+  place-items: center;
 }
-.detailHeader button svg { display: block; width: 23px !important; height: 23px !important; margin: auto; }
+.detailHeader button svg { display: block; width: 24px !important; height: 24px !important; margin: 0; stroke-width: 2.2; }
 .detailHeader .savedStar { color: #ffffff !important; }
 .detailScroll > section {
   margin: 0;
@@ -472,18 +474,18 @@
 }
 .detailScroll > .themeSummary {
   margin: 0 -12px 10px;
-  min-height: 132px;
-  padding: 14px 18px 30px !important;
+  min-height: 170px;
+  padding: 22px 20px 36px !important;
   border-radius: 0 0 24px 24px;
   border-bottom: 0;
   background: #f47b3d;
   box-shadow: none;
 }
-.themeSummary > div { gap: 9px; }
-.themeSummary span { font-size: 12px; font-weight: 700; }
-.themeSummary h1 { font-size: 24px; }
-.themeSummary > strong { display: inline-block; margin-top: 12px; font-size: 36px; }
-.themeSummary > p { display: inline-block; margin: 0 0 0 10px; font-size: 10px; font-weight: 700; vertical-align: 4px; }
+.themeSummary > div { gap: 12px; align-items: center; }
+.themeSummary .themeRankPill, .themeSummary .themeReturnPill { width: max-content; padding: 5px 9px; border-radius: 999px; background: rgba(255,255,255,.18); color: rgba(255,255,255,.94); font-size: 10px; font-weight: 700; }
+.themeSummary h1 { font-size: 30px; line-height: 1.15; letter-spacing: -.035em; }
+.themeSummary > strong { display: inline-block; margin-top: 20px; font-size: 44px; line-height: 1; letter-spacing: -.035em; }
+.themeSummary > .themeReturnPill { display: inline-block; margin: 0 0 0 10px; vertical-align: 7px; }
 .detailScroll > .themeSummary + .metrics { position: relative; z-index: 2; margin-top: 0; }
 .detailScroll h2, .detailScroll strong, .wireBody h1, .wireBody h2 { color: #212124; }
 .detailScroll > .themeSummary h1, .detailScroll > .themeSummary strong { color: #ffffff; }
@@ -519,10 +521,10 @@
 .leaders strong { color: #f04452; }
 .pastSummarySection .horizons article {
   border: 0;
-  background: #fff1f2;
+  background: #fff0e5;
   box-shadow: none;
 }
-.pastSummarySection .horizons strong { color: #f04452; }
+.pastSummarySection .horizons strong { color: #d95700; }
 .peakObservation { margin-top: 12px; padding: 14px; border: 1px solid #ffd5bd; border-radius: 14px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 12px; background: #fff8f3; }
 .peakObservation > span { color: #6b4a38; font-size: 11px; font-weight: 700; }
 .peakObservation > strong { color: #d95700; font-size: 22px; }
@@ -547,7 +549,8 @@
 .wireScreen { background: #f7f7f8; }
 .wireHeader { background: #ffffff; }
 .wireHeader strong { color: #212124; font-size: 15px; font-weight: 800; }
-.wireHeader button { width: 40px; height: 40px; justify-self: center; border-radius: 50%; background: #f4f4f5; color: #212124; font-size: 23px; line-height: 1; }
+.wireHeader button { width: 42px; height: 42px; justify-self: center; border-radius: 50%; display: grid; place-items: center; background: #f4f4f5; color: #212124; font-size: 23px; line-height: 1; }
+.wireHeader button svg { display: block; width: 24px !important; height: 24px !important; margin: 0; stroke-width: 2.2; }
 .wireHeader .savedStar { color: #ff6f0f !important; }
 .wireBody { padding-right: 12px; padding-left: 12px; }
 .wireBody .pageIntro {
@@ -560,6 +563,7 @@
 .wireBody .pageIntro > small { color: #f46b2c; font-weight: 700; }
 .wireBody .pageIntro > p { color: #868b94; }
 .wireBody .caseHero { background: #fff0e9; }
+.wireBody .catalystHero { border: 1px solid #f6d8c7; background: #fff0e5; }
 .wireBody .themeContext { color: #d95700; font-size: 15px; font-weight: 800; }
 .wireBody .dataBlock {
   margin: 10px 0;
@@ -576,6 +580,7 @@
   box-shadow: none;
 }
 .catalystScreen .statGrid article { background: #fff0e5; }
+.catalystScreen .wireBody .statGrid strong { color: #d95700; }
 .horizonToggle { margin: 4px 0 16px; padding: 4px; border-radius: 18px; display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; background: #f4f4f2; }
 .horizonToggle button { height: 44px; border: 0; border-radius: 15px; background: transparent; color: #8b8378; font-size: 13px; font-weight: 700; }
 .horizonToggle .horizonActive { background: #ff6f0f; color: #ffffff; }

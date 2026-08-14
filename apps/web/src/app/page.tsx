@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import {
+  IconArrowLeftLine,
   IconChevronRightSmallLine,
   IconGridLine,
   IconHouseLine,
@@ -211,16 +212,16 @@ export default function Home() {
         <section id="screen-detail" className={`${styles.phone} ${currentScreen === "screen-detail" ? styles.activePhone : ""}`} aria-label="원전수출 테마 상세 목업">
           <div className={styles.detail}>
             <header className={styles.detailHeader}>
-              <button type="button" aria-label="뒤로 가기" onClick={() => goTo("screen-home")}>←</button>
+              <button type="button" aria-label="뒤로 가기" onClick={() => goTo("screen-home")}><IconArrowLeftLine size={24} /></button>
               <span>8월 14일 장중 기준</span>
               <button type="button" aria-label={isSaved ? "저장 목록에서 제거" : "분석 결과 저장"} className={isSaved ? styles.savedStar : ""} onClick={requestToggleSaved}>{isSaved ? <IconStarFill size={24} /> : <IconStarLine size={24} />}</button>
             </header>
 
             <div className={styles.detailScroll}>
               <section className={styles.themeSummary}>
-                <div><span>오늘 상승 1위</span><h1>원전수출</h1></div>
+                <div><span className={styles.themeRankPill}>오늘 상승 1위</span><h1>원전수출</h1></div>
                 <strong>+2.7%</strong>
-                <p>오늘 테마 평균 등락</p>
+                <p className={styles.themeReturnPill}>오늘 테마 평균 등락</p>
               </section>
 
               <section className={styles.metrics}>
@@ -369,7 +370,7 @@ const caseRows = [
 ];
 
 function WireHeader({ title, onBack }: { title: string; onBack: () => void }) {
-  return <header className={styles.wireHeader}><button type="button" onClick={onBack}>←</button><strong>{title}</strong><button type="button" className={styles.savedStar} aria-label="저장 목록에서 제거"><IconStarFill size={24} /></button></header>;
+  return <header className={styles.wireHeader}><button type="button" onClick={onBack} aria-label="뒤로 가기"><IconArrowLeftLine size={24} /></button><strong>{title}</strong><button type="button" className={styles.savedStar} aria-label="저장 목록에서 제거"><IconStarFill size={24} /></button></header>;
 }
 
 function RealtimeThemeScreen({ goTo, active }: { goTo: (screen: string) => void; active: boolean }) {
@@ -448,7 +449,7 @@ function CatalystDetailScreen({ goTo, active }: { goTo: (screen: string) => void
       <div className={`${styles.wireScreen} ${styles.catalystScreen}`}>
         <WireHeader title="상승 소재" onBack={() => goTo("screen-detail")} />
         <div className={styles.wireBody}>
-          <div className={styles.pageIntro}><small>원전수출 테마 · 과거 상승 소재</small><h1>체코 원전 수주</h1><p>이 소재가 과거 같은 테마와 함께 등장했던 기록을 모았어요.</p></div>
+          <div className={`${styles.pageIntro} ${styles.catalystHero}`}><small>원전수출 테마 · 과거 상승 소재</small><h1>체코 원전 수주</h1><p>이 소재가 과거 같은 테마와 함께 등장했던 기록을 모았어요.</p></div>
           <section className={styles.dataBlock}><div className={styles.blockHeading}><h2>과거 동반 기록</h2><span>키워드 통계</span></div><div className={styles.statGrid}><article><span>발생</span><strong>9회</strong></article><article><span>상승 동반</span><strong>78%</strong></article><article><span>D+5 차이</span><strong>+2.6%p</strong></article></div></section>
           <section className={styles.dataBlock}><h2>기간별 평균 반응</h2><div className={styles.statGrid}><article><span>D+1</span><strong>+0.8%</strong></article><article><span>D+5</span><strong>+2.6%</strong></article><article><span>D+20</span><strong>+3.1%</strong></article></div></section>
           <section className={styles.dataBlock}><div className={styles.blockHeading}><h2>연결된 과거 사건</h2><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div><div className={styles.simpleRows}><button type="button" onClick={() => goTo("screen-case-detail")}>2024.07.18 · 체코 원전 우선협상자 <b>›</b></button><button type="button" onClick={() => goTo("screen-case-detail")}>2022.10.31 · 폴란드 원전 협력 <b>›</b></button></div></section>
