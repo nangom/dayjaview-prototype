@@ -50,7 +50,7 @@ export default function Home() {
                 </div>
               ) : (
                 <div className={styles.placeholder}>
-                  <h1>{activeTab === "realtime" ? "실시간 테마주" : activeTab === "saved" ? "즐겨찾기" : "설정"}</h1>
+                  <h1>{activeTab === "realtime" ? "실시간 테마주" : activeTab === "saved" ? "즐겨찾기" : "자연어 검색"}</h1>
                   <p>이 화면의 내용은 다음 단계에서 채울 예정이에요.</p>
                 </div>
               )}
@@ -61,7 +61,7 @@ export default function Home() {
                 ["home", "⌂", "홈"],
                 ["realtime", "▦", "실시간 테마주"],
                 ["saved", "☆", "즐겨찾기"],
-                ["settings", "⚙", "설정"],
+                ["natural", "⌕", "자연어 검색"],
               ].map(([id, icon, label]) => (
                 <button key={id} type="button" className={activeTab === id ? styles.active : ""} onClick={() => setActiveTab(id)}>
                   <span>{icon}</span><small>{label}</small>
@@ -170,7 +170,7 @@ export default function Home() {
       {!isLoading && <CaseDetailScreen />}
       {!isLoading && <CatalystDetailScreen />}
       {!isLoading && <LeaderDetailScreen />}
-      {!isLoading && <SettingsScreen />}
+      {!isLoading && <NaturalSearchScreen />}
     </main>
   );
 }
@@ -197,13 +197,27 @@ function WireHeader({ title }: { title: string }) {
 function RealtimeThemeScreen() {
   return (
     <section className={styles.phone} aria-label="실시간 테마주 와이어프레임">
-      <div className={styles.wireScreen}>
+      <div className={`${styles.wireScreen} ${styles.realtimeScreen}`}>
         <header className={styles.wireTitle}><div><small>장중 관찰 화면</small><h1>실시간 테마주</h1><p>현재 움직임이 강한 테마를 모아봐요.</p></div><button type="button">⌕</button></header>
-        <div className={styles.stateNote}>실시간 수집·검증 중인 영역</div>
-        <div className={styles.liveList}>
-          {realtimeThemes.map(([rank, name, value, meta]) => <button type="button" key={rank}><b>{rank}</b><span><strong>{name}</strong><small>{meta}</small></span><em>{value}</em><i>›</i></button>)}
+        <div className={styles.stateNote}>면적은 테마의 실시간 강도에 따라 달라져요.</div>
+        <div className={styles.treemap} aria-label="실시간 테마 강도 트리맵">
+          <div className={styles.treeTop}>
+            <button className={styles.treePrimary}><strong>원전수출</strong><b>+2.7%</b><small>17/21 상승</small></button>
+            <button className={styles.treeSecondary}><strong>전력설비</strong><b>+2.3%</b><small>14/19 상승</small></button>
+          </div>
+          <div className={styles.treeMiddle}>
+            <button><strong>조선기자재</strong><b>+1.9%</b></button>
+            <button><strong>방산</strong><b>+1.6%</b></button>
+            <button><strong>반도체 장비</strong><b>+1.4%</b></button>
+          </div>
+          <div className={styles.treeBottom}>
+            <button><strong>로봇</strong><b>+1.2%</b></button>
+            <button><strong>바이오</strong><b>+0.9%</b></button>
+            <button><strong>2차전지</strong><b>+0.7%</b></button>
+          </div>
         </div>
-        <nav className={styles.miniFooter}><button>⌂<small>홈</small></button><button className={styles.selected}>▦<small>실시간</small></button><button>☆<small>즐겨찾기</small></button><button>⚙<small>설정</small></button></nav>
+        <div className={styles.treeLegend}><span><i />면적: 테마 강도</span><span>수치는 장중 갱신</span></div>
+        <nav className={styles.miniFooter}><button>⌂<small>홈</small></button><button className={styles.selected}>▦<small>실시간</small></button><button>☆<small>즐겨찾기</small></button><button>⌕<small>자연어</small></button></nav>
       </div>
     </section>
   );
@@ -274,16 +288,16 @@ function LeaderDetailScreen() {
   );
 }
 
-function SettingsScreen() {
+function NaturalSearchScreen() {
   return (
-    <section className={styles.phone} aria-label="설정 와이어프레임">
+    <section className={styles.phone} aria-label="자연어 검색 와이어프레임">
       <div className={styles.wireScreen}>
-        <div className={styles.wireBody}><div className={styles.pageIntro}><h1>설정</h1><p>서비스 표시와 계정 설정을 관리해요.</p></div>
-          <div className={styles.settingGroup}><h2>화면</h2><button><span>다크 모드<small>기기 설정 사용</small></span><b>끔</b></button><button><span>글자 크기<small>기본</small></span><b>›</b></button></div>
-          <div className={styles.settingGroup}><h2>데이터</h2><button><span>실시간 정보 안내<small>갱신 시각과 지연 상태 표시</small></span><b>›</b></button><button><span>투자 정보 고지</span><b>›</b></button></div>
-          <div className={styles.settingGroup}><h2>계정</h2><button><span>로그인 및 저장 정보</span><b>›</b></button><button><span>서비스 정보</span><b>›</b></button></div>
+        <div className={styles.wireBody}><div className={styles.pageIntro}><small>테마·종목 데이터 검색</small><h1>무엇이 궁금하세요?</h1><p>질문하면 보유한 과거 데이터 안에서 답을 찾아요.</p></div>
+          <form className={styles.naturalForm} onSubmit={(event) => event.preventDefault()}><textarea defaultValue="원전수출 테마는 과거에 오른 뒤 5일 동안 어땠어?" aria-label="자연어 질문"/><button type="submit">검색</button></form>
+          <section className={styles.answerBlock}><div><small>검색 결과</small><span>과거 데이터 기준</span></div><h2>과거 34개 사례에서 5일 후 평균은 +1.3%였어요.</h2><p>34개 사례 중 20개가 상승했고, 당시 주도 종목을 기준으로 계산했어요. 가장 큰 상승 사례는 2024년 7월 18일 체코 원전 우선협상대상자 선정 사건이었어요.</p><ul><li><span>평균 수익률</span><b>+1.3%</b></li><li><span>상승 사례</span><b>20/34</b></li><li><span>대표 과거 사건</span><b>2024.07.18</b></li></ul><button type="button">관련 과거 사례 보기</button></section>
+          <p className={styles.disclaimer}>검색 결과는 DB에 저장된 사건과 가격 데이터만 사용하며 투자 자문이 아니에요.</p>
         </div>
-        <nav className={styles.miniFooter}><button>⌂<small>홈</small></button><button>▦<small>실시간</small></button><button>☆<small>즐겨찾기</small></button><button className={styles.selected}>⚙<small>설정</small></button></nav>
+        <nav className={styles.miniFooter}><button>⌂<small>홈</small></button><button>▦<small>실시간</small></button><button>☆<small>즐겨찾기</small></button><button className={styles.selected}>⌕<small>자연어</small></button></nav>
       </div>
     </section>
   );

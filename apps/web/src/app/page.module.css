@@ -242,6 +242,40 @@
 .settingGroup span { display: flex; flex-direction: column; gap: 5px; font-size: 14px; }
 .settingGroup small { color: #888; font-size: 10px; }
 .settingGroup b { color: #777; font-size: 12px; }
+.realtimeScreen { display: flex; flex-direction: column; }
+.realtimeScreen .wireTitle { flex: none; padding-bottom: 18px; }
+.realtimeScreen .stateNote { flex: none; margin: 0 12px 8px; }
+.treemap { flex: 1; min-height: 0; margin: 0 12px; padding: 5px; border: 1px solid var(--djv-color-border); border-radius: 24px; display: flex; flex-direction: column; gap: 5px; overflow: hidden; background: var(--djv-color-surface); }
+.treemap > div { min-height: 0; display: flex; gap: 5px; }
+.treemap button { min-width: 0; padding: 13px; border: 1px solid var(--djv-color-border); border-radius: 18px; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; gap: 4px; overflow: hidden; background: var(--djv-color-brand-soft); color: var(--djv-color-text); text-align: left; cursor: pointer; }
+.treemap strong { max-width: 100%; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.treemap b { color: var(--djv-color-market-up); font-size: 18px; }
+.treemap small { color: #6b4a38; font-size: 10px; }
+.treeTop { flex: 1.35; }
+.treeMiddle { flex: .9; }
+.treeBottom { flex: .68; }
+.treeTop button:first-child { flex: 1.48; background: #ffe2cc; }
+.treeTop button:last-child { flex: 1; }
+.treeMiddle button:nth-child(1) { flex: 1.25; }
+.treeMiddle button:nth-child(2) { flex: .82; }
+.treeMiddle button:nth-child(3) { flex: 1.05; }
+.treeBottom button:nth-child(1) { flex: 1.05; }
+.treeBottom button:nth-child(2) { flex: .82; }
+.treeBottom button:nth-child(3) { flex: .7; }
+.treeLegend { flex: none; margin: 9px 14px 76px; display: flex; justify-content: space-between; color: var(--djv-color-text-muted); font-size: 10px; }
+.treeLegend span { display: flex; align-items: center; gap: 5px; }
+.treeLegend i { width: 8px; height: 8px; border-radius: 2px; background: var(--djv-color-brand); }
+.naturalForm { padding: 22px 0; border-bottom: 1px solid var(--djv-color-border); }
+.naturalForm textarea { width: 100%; min-height: 108px; padding: 15px; border: 1px solid var(--djv-color-border); border-radius: var(--djv-radius-lg); resize: none; background: var(--djv-color-surface); color: var(--djv-color-text); font-size: 14px; line-height: 1.5; }
+.naturalForm button { width: 100%; height: 48px; margin-top: 10px; border: 0; border-radius: var(--djv-radius-md); background: var(--djv-color-brand); color: var(--djv-color-on-brand); font-weight: 800; }
+.answerBlock { margin-top: 22px; padding: 20px; border: 1px solid var(--djv-color-border); border-radius: var(--djv-radius-lg); background: var(--djv-color-surface); box-shadow: var(--djv-shadow-card); }
+.answerBlock > div { display: flex; align-items: center; justify-content: space-between; color: var(--djv-color-text-muted); font-size: 10px; }
+.answerBlock h2 { margin: 16px 0 0; font-size: 19px; line-height: 1.45; letter-spacing: -.025em; }
+.answerBlock p { margin: 12px 0 0; color: #555; font-size: 13px; line-height: 1.65; }
+.answerBlock ul { margin: 16px 0 0; padding: 0; list-style: none; }
+.answerBlock li { min-height: 42px; border-top: 1px solid var(--djv-color-border); display: flex; align-items: center; justify-content: space-between; font-size: 11px; }
+.answerBlock li b { font-size: 12px; }
+.answerBlock > button { width: 100%; height: 44px; margin-top: 12px; border: 1px solid var(--djv-color-brand); border-radius: var(--djv-radius-md); background: var(--djv-color-brand-soft); color: #a33b00; font-weight: 700; }
 
 @media (max-width: 440px) {
   .preview { justify-content: flex-start; padding: 0; scroll-snap-type: x mandatory; }
