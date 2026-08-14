@@ -234,7 +234,7 @@ export default function Home() {
             <div className={styles.detailScroll}>
               <section className={styles.themeSummary}>
                 <div className={styles.themeTitle}><span className={styles.themeRankPill}>오늘 상승 1위</span><h1>원전수출</h1></div>
-                <div className={styles.themeReturnRow}><strong>+2.7%</strong><p className={styles.themeReturnPill}>오늘 테마 평균 등락</p></div>
+                <div className={styles.themeReturnRow}><strong>+2.7%</strong><p className={styles.themeReturnPill}>오늘 평균 등락률</p></div>
               </section>
 
               <section className={styles.metrics}>
