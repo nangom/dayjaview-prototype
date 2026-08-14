@@ -1095,8 +1095,8 @@ export default class App extends React.Component {
           {v.isCase && this.renderCase(v)}
           {v.isStats && this.renderStats(v)}
           {!v.isSplash && !v.isHome && (
-            <button className="seed-save-fab" onClick={v.toggleSave} aria-label="현재 화면 저장">
-              <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            <button className={'seed-save-fab ' + (v.isCurrentSaved ? 'is-saved' : '')} onClick={v.toggleSave} aria-label={v.isCurrentSaved ? '현재 항목 저장 해제' : '현재 항목 저장'} title={v.isCurrentSaved ? '저장 해제' : '저장'}>
+              <svg width="27" height="27" viewBox="0 0 24 24" fill={v.isCurrentSaved ? '#fff' : 'none'} stroke="#fff" strokeWidth="1.9" strokeLinejoin="round"><path d="m12 3 2.75 5.57 6.15.9-4.45 4.33 1.05 6.12L12 17.03l-5.5 2.89 1.05-6.12L3.1 9.47l6.15-.9z"/></svg>
             </button>
           )}
           {!v.isHome && v.savedPanel && <div onClick={v.closeSavedPanel} style={css('position:absolute;inset:0;z-index:12;background:rgba(0,0,0,.28)')} />}
