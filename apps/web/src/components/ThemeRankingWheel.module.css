@@ -96,18 +96,37 @@
    glide freely while it plays and hand snapping back once it settles. */
 .wheel[data-intro="true"] { scroll-snap-type: none; }
 
-/* The rank chip sits on the card's middle line, but centring the name and the
-   metadata as one block left the name floating above it. Discount the metadata
-   from the centred box so the theme name lands on that same line and the
-   metadata hangs beneath, and give the card the extra height that needs.
-   The metadata stays on one line so the name stays centred at every width. */
-.card { min-height: 82px; }
-.copy { margin-bottom: -18px; }
-.card[data-focused="true"] .copy small {
-  display: block;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+/* Rank, theme name, return — nothing else. Dropping the metadata line lets the
+   card collapse to a single row, and with one line of content the name centres
+   against the rank chip on its own. */
+.copy small,
+.card[data-focused="true"] .copy small { display: none; }
+.copy { gap: 0; }
+
+/* Float the cards on the white canvas instead of filling them: a barely-there
+   wash over a blur, a hairline edge and a soft drop shadow do the separating,
+   which reads as glass rather than as a painted panel. */
+.card {
+  min-height: 58px;
+  padding: 8px 14px;
+  border: 1px solid rgba(22,22,15,.05);
+  border-radius: 18px;
+  background: rgba(255,255,255,.55);
+  backdrop-filter: blur(8px) saturate(1.35);
+  -webkit-backdrop-filter: blur(8px) saturate(1.35);
+  box-shadow: 0 6px 16px -10px rgba(22,22,15,.22), inset 0 1px 0 rgba(255,255,255,.9);
+}
+.card[data-focused="true"] {
+  background: rgba(255,255,255,.78);
+  box-shadow: 0 12px 26px -16px rgba(177,79,31,.4), 0 0 0 1px rgba(255,111,15,.14), inset 0 1px 0 rgba(255,255,255,.96);
+}
+
+/* The fades that hide the wheel's ends have to match the new white canvas. */
+.wheel::before {
+  background: linear-gradient(to bottom, #ffffff 4%, rgba(255,255,255,.94) 38%, rgba(255,255,255,.3) 72%, rgba(255,255,255,0) 100%);
+}
+.wheel::after {
+  background: linear-gradient(to top, #ffffff 4%, rgba(255,255,255,.94) 38%, rgba(255,255,255,.3) 72%, rgba(255,255,255,0) 100%);
 }
 
 /* Ranks 1-3 carry a filled chip so the podium reads at a glance. */

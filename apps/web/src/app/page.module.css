@@ -983,6 +983,11 @@
   font-weight: 700;
 }
 
+/* The ranking screen moves to a plain white canvas so the wheel's cards read as
+   floating glass. The beige wash and its grey blooms would only muddy that. */
+.home { background: #ffffff; }
+.home::before { display: none; }
+
 /* Historical stock rows are evidence, not links. Keep them as plain info rows
    and just make the names readable at row scale. */
 .wireBody .simpleRows > .staticRow {
