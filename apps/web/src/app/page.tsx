@@ -74,7 +74,6 @@ export default function Home() {
   const [currentScreen, setCurrentScreen] = useState("screen-home");
   const [isSaved, setIsSaved] = useState(false);
   const [showAllLeaders, setShowAllLeaders] = useState(false);
-  const [detailTab, setDetailTab] = useState<"dejavu" | "today">("dejavu");
   const [reasonSource, setReasonSource] = useState<"live" | "infostock">("live");
   const [showAllReasons, setShowAllReasons] = useState(false);
   const [themeHistory, setThemeHistory] = useState<ThemeHistoryItem[]>([]);
@@ -280,41 +279,16 @@ export default function Home() {
               </section>
 
               <div className={styles.detailContentCard}>
-              <div className={styles.detailTabs} role="tablist" aria-label="테마 상세 보기 전환">
-                <button type="button" role="tab" id="detail-tab-dejavu" aria-selected={detailTab === "dejavu"} aria-controls="detail-panel-dejavu" className={detailTab === "dejavu" ? styles.detailTabActive : ""} onClick={() => setDetailTab("dejavu")}>DAY-JA-VIEW</button>
-                <button type="button" role="tab" id="detail-tab-today" aria-selected={detailTab === "today"} aria-controls="detail-panel-today" className={detailTab === "today" ? styles.detailTabActive : ""} onClick={() => setDetailTab("today")}>오늘 현황</button>
-              </div>
-              {detailTab === "dejavu" ? (
-              <div id="detail-panel-dejavu" role="tabpanel" aria-labelledby="detail-tab-dejavu" className={styles.detailPanel}>
-              <section className={styles.pastSummarySection}>
-                <div className={styles.sectionHeading}><h2>과거엔 어땠을까요?</h2><span>이벤트 스터디</span></div>
-                <p className={styles.helper}>유사 사건 34건에서 주도 종목의 평균 움직임을 계산했어요.</p>
-                <div className={styles.horizons}>
-                  <article><span>T+1</span><strong>+0.4%</strong><small>18/34 상승</small></article>
-                  <article><span>T+5</span><strong>+1.3%</strong><small>20/34 상승</small></article>
-                  <article><span>T+20</span><strong>+2.8%</strong><small>21/34 상승</small></article>
+              <section className={styles.metrics}>
+                <h2>현재 테마 상태</h2>
+                <div>
+                  <article><span>상승 종목</span><strong>17/21</strong><small>81%</small></article>
+                  <article><span>거래 관심</span><strong>2.4배</strong><small>20일 평균 대비</small></article>
+                  <article><span>테마 거래대금</span><strong>1.8조</strong><small>장중 누적</small></article>
                 </div>
-                <div className={styles.peakObservation}><span>관측 최대 상승폭</span><strong>+8.6%</strong><small>과거 34건의 사건별 최고 반응 중앙값 · T+20 관측</small></div>
+                <div className={styles.interestGap}><strong>8개월 만에 다시 주목받고 있어요</strong><span>이전 관심 구간 이후 163거래일</span></div>
               </section>
-              <section className={styles.similarSection}>
-                <div className={styles.sectionHeading}><div className={styles.caseHeadingCopy}><h2>DAY-JA-VIEW 케이스</h2><small>오늘과 비슷했던 과거</small></div><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div>
-                <div className={styles.cases}>
-                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2024.07.18</span><strong>체코 원전 우선협상대상자 선정</strong><div className={styles.matchTags}><i>수출 계약</i><i>정책 지원</i></div><small>T+5 +4.6%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
-                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2023.04.25</span><strong>한미 원전 협력 확대 발표</strong><div className={styles.matchTags}><i>국가 협력</i><i>원전 수출</i></div><small className={styles.downValue}>T+5 -1.2%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
-                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2022.10.31</span><strong>폴란드 원전 개발계획 협력</strong><div className={styles.matchTags}><i>해외 수주</i><i>개발 계획</i></div><small>T+5 +3.3%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
-                </div>
-              </section>
-              <section className={styles.catalystSection}>
-                <div className={styles.sectionHeading}><h2>과거 상승 소재 Top 3</h2><span>과거 시장 기록 기준</span></div>
-                <ol className={styles.catalysts}>
-                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>1</b><div><strong>체코 원전 수주</strong><p>과거 9건 · 상승 동반 78%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
-                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>2</b><div><strong>원전 수출 정책</strong><p>과거 12건 · 상승 동반 67%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
-                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>3</b><div><strong>원전 기자재 공급</strong><p>과거 14건 · 상승 동반 64%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
-                </ol>
-              </section>
-              </div>
-              ) : (
-              <div id="detail-panel-today" role="tabpanel" aria-labelledby="detail-tab-today" className={styles.detailPanel}>
+
               <section className={styles.reason}>
                 <div className={styles.sectionHeading}><h2>오늘 왜 올랐을까요?</h2></div>
                 <div className={styles.reasonTabs} role="tablist" aria-label="상승 이유 분석 시점"><button type="button" role="tab" aria-selected={reasonSource === "live"} className={reasonSource === "live" ? styles.reasonTabActive : ""} onClick={() => setReasonSource("live")}>실시간 분석</button><button type="button" role="tab" aria-selected={reasonSource === "infostock"} className={reasonSource === "infostock" ? styles.reasonTabActive : ""} onClick={() => setReasonSource("infostock")}>장 마감 후 분석</button></div>
@@ -326,15 +300,7 @@ export default function Home() {
                   <p className={styles.confirmationNote}>뉴스 근거는 장중 계속 갱신되며 이후 정정될 수 있습니다.</p>
                 </> : <div className={styles.infostockPending}><strong>장 마감 후 오늘 하루를 다시 분석해요</strong><p>장중 가격 움직임과 마감 후 확인된 시장 기록을 함께 살펴 상승 배경을 정리해 보여드려요.</p><small>장중 분석과 달라진 내용이 있다면 마감 후 분석을 기준으로 안내합니다.</small></div>}
               </section>
-              <section className={styles.metrics}>
-                <h2>현재 테마 상태</h2>
-                <div>
-                  <article><span>상승 종목</span><strong>17/21</strong><small>81%</small></article>
-                  <article><span>거래 관심</span><strong>2.4배</strong><small>20일 평균 대비</small></article>
-                  <article><span>테마 거래대금</span><strong>1.8조</strong><small>장중 누적</small></article>
-                </div>
-                <div className={styles.interestGap}><strong>8개월 만에 다시 주목받고 있어요</strong><span>이전 관심 구간 이후 163거래일</span></div>
-              </section>
+
               <section className={styles.leaderSection}>
                 <div className={styles.sectionHeading}><h2>오늘의 주도 종목</h2></div>
                 <div className={styles.leaders}>
@@ -344,8 +310,35 @@ export default function Home() {
                 </div>
                 {leaderRows.length > 3 ? <button type="button" className={styles.reasonMore} aria-expanded={showAllLeaders} onClick={() => setShowAllLeaders((current) => !current)}><span>{showAllLeaders ? "종목 접기" : `종목 ${leaderRows.length - 3}개 더 보기`}</span><i aria-hidden="true" data-open={showAllLeaders ? "true" : "false"} /></button> : null}
               </section>
-              </div>
-              )}
+
+              <section className={styles.catalystSection}>
+                <div className={styles.sectionHeading}><h2>과거 상승 소재 Top 3</h2><span>과거 시장 기록 기준</span></div>
+                <ol className={styles.catalysts}>
+                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>1</b><div><strong>체코 원전 수주</strong><p>과거 9건 · 상승 동반 78%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
+                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>2</b><div><strong>원전 수출 정책</strong><p>과거 12건 · 상승 동반 67%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
+                  <li role="button" tabIndex={0} onClick={() => goTo("screen-catalyst")}><b>3</b><div><strong>원전 기자재 공급</strong><p>과거 14건 · 상승 동반 64%</p></div><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></li>
+                </ol>
+              </section>
+
+              <section className={styles.pastSummarySection}>
+                <div className={styles.sectionHeading}><h2>과거엔 어땠을까요?</h2><span>이벤트 스터디</span></div>
+                <p className={styles.helper}>유사 사건 34건에서 주도 종목의 평균 움직임을 계산했어요.</p>
+                <div className={styles.horizons}>
+                  <article><span>T+1</span><strong>+0.4%</strong><small>18/34 상승</small></article>
+                  <article><span>T+5</span><strong>+1.3%</strong><small>20/34 상승</small></article>
+                  <article><span>T+20</span><strong>+2.8%</strong><small>21/34 상승</small></article>
+                </div>
+                <div className={styles.peakObservation}><span>관측 최대 상승폭</span><strong>+8.6%</strong><small>과거 34건의 사건별 최고 반응 중앙값 · T+20 관측</small></div>
+              </section>
+
+              <section className={styles.similarSection}>
+                <div className={styles.sectionHeading}><div className={styles.caseHeadingCopy}><h2>DAY-JA-VIEW 케이스</h2><small>오늘과 비슷했던 과거</small></div><button type="button" onClick={() => goTo("screen-cases")}>전체 보기</button></div>
+                <div className={styles.cases}>
+                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2024.07.18</span><strong>체코 원전 우선협상대상자 선정</strong><div className={styles.matchTags}><i>수출 계약</i><i>정책 지원</i></div><small>T+5 +4.6%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
+                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2023.04.25</span><strong>한미 원전 협력 확대 발표</strong><div className={styles.matchTags}><i>국가 협력</i><i>원전 수출</i></div><small className={styles.downValue}>T+5 -1.2%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
+                  <article role="button" tabIndex={0} onClick={() => goTo("screen-case-detail")}><span>2022.10.31</span><strong>폴란드 원전 개발계획 협력</strong><div className={styles.matchTags}><i>해외 수주</i><i>개발 계획</i></div><small>T+5 +3.3%</small><IconChevronRightSmallLine className={styles.rowChevron} size={18} /></article>
+                </div>
+              </section>
               </div>
 
               <p className={styles.notice}>장중 정보는 이후 정정될 수 있습니다. 과거에 관측된 데이터와 확인된 뉴스 근거를 함께 보여줍니다.</p>
