@@ -515,7 +515,7 @@ function CaseDetailScreen({ goTo, active }: { goTo: (screen: string) => void; ac
             <small>사건 당일 시장 기록 기준</small>
             <div className={styles.simpleRows}>
               {visibleMemberRows.map(([name, change]) => (
-                <button type="button" key={name}>{name} <b>{change}</b></button>
+                <div className={styles.staticRow} key={name}>{name} <b>{change}</b></div>
               ))}
             </div>
             {memberRows.length > 3 ? (
