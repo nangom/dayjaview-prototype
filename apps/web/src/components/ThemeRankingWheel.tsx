@@ -93,26 +93,32 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
 
     const shouldPlayIntro = !hasPlayedIntroRef.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (shouldPlayIntro && firstVisibleCard) {
-      // One slow revolution that settles back on rank 1. The list is tripled,
-      // so travelling exactly one cycle lands on an identical card and the
-      // scroll position can be reset afterwards without a visible jump.
-      // Driving it per frame keeps the wheel gliding instead of stuttering
-      // between discrete smooth-scroll targets.
-      const introDuration = 3600;
+      // Advance one card at a time — rank 1 to rank 2 to rank 3 — pausing on
+      // each so it reads as the wheel clicking through the ranking rather than
+      // one continuous sweep. The list is tripled, so stepping through exactly
+      // one cycle lands on an identical rank 1 card and the scroll position can
+      // be reset afterwards without a visible jump. Driving it per frame keeps
+      // each hop gliding instead of stuttering against smooth-scroll targets.
+      const stepGlide = 400;
+      const stepHold = 260;
+      const stepCycle = stepGlide + stepHold;
+      const totalSteps = themes.length;
       const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
       let introStart = 0;
       const spin = (now: number) => {
         if (introCancelledRef.current) return;
         if (!introStart) introStart = now;
-        const progress = Math.min(1, (now - introStart) / introDuration);
-        wheel.scrollTop = baseTop + cycleHeight * ease(progress);
-        if (progress < 1) {
-          introRafRef.current = window.requestAnimationFrame(spin);
+        const elapsed = now - introStart;
+        const stepIndex = Math.floor(elapsed / stepCycle);
+        if (stepIndex >= totalSteps) {
+          introRafRef.current = undefined;
+          wheel.scrollTop = baseTop;
+          delete wheel.dataset.intro;
           return;
         }
-        introRafRef.current = undefined;
-        wheel.scrollTop = baseTop;
-        delete wheel.dataset.intro;
+        const glide = Math.min(1, (elapsed - stepIndex * stepCycle) / stepGlide);
+        wheel.scrollTop = baseTop + step * (stepIndex + ease(glide));
+        introRafRef.current = window.requestAnimationFrame(spin);
       };
       introTimers.push(window.setTimeout(() => {
         if (introCancelledRef.current) return;
