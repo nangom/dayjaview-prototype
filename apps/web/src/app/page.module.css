@@ -913,3 +913,78 @@
   0%, 100% { opacity: .45; transform: scale(.82); }
   50% { opacity: 1; transform: scale(1); }
 }
+
+/* ── Design update ─────────────────────────────────────────────────────────
+   Three oranges were competing: the home mark and date resolved to the Seed
+   carrot token (#f60), the theme-detail surfaces were hardcoded #f47b3d, and
+   the accents used #d95700. Pin the identity surfaces to the DAY-JA-VIEW
+   signature orange so the logo never reads as a different orange family. */
+.homeMark { background-color: #ff6f0f; }
+.orangeHomeTitle > strong { color: #ff6f0f; }
+.detailHeader { background: #ff6f0f; }
+.detailScroll > .themeSummary { background: #ff6f0f; }
+
+/* The pinned app-bar title was 14px with a shadow that muddied it against the
+   orange. Give it app-bar weight and drop the shadow; clip long theme names
+   instead of letting them collide with the 40px tap targets on either side. */
+.detailHeader > span {
+  min-width: 0;
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-shadow: none;
+}
+
+/* The rank badge and the return caption were styled identically, so the card
+   read as two matching chips with no hierarchy. Make the badge a solid chip,
+   demote the caption to a plain label, and let the theme name carry weight
+   next to the return figure instead of being dwarfed by it. */
+.themeSummary .themeTitle { gap: 10px; }
+.detailScroll > .themeSummary .themeRankPill {
+  padding: 6px 12px;
+  border: 0;
+  background: #ffffff;
+  color: #a33b00;
+  font-size: 12px;
+  font-weight: 800;
+}
+.themeSummary h1 {
+  font-size: 36px;
+  letter-spacing: -.04em;
+  word-break: keep-all;
+  text-shadow: none;
+}
+.themeReturnRow {
+  margin-top: 16px;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+.themeReturnRow > strong {
+  font-size: 42px;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+  text-shadow: none;
+}
+.detailScroll > .themeSummary .themeReturnPill {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(255,255,255,.9);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Historical stock rows are evidence, not links. Keep them as plain info rows
+   and just make the names readable at row scale. */
+.wireBody .simpleRows > .staticRow {
+  padding: 4px 0;
+  font-size: 14px;
+}
+.wireBody .simpleRows > .staticRow b {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
