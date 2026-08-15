@@ -97,9 +97,15 @@
 .wheel[data-intro="true"] { scroll-snap-type: none; }
 
 /* Theme name over its metadata line, with the rank chip, the return and a
-   chevron riding the name's line. Discounting the metadata from the centred
-   box is what puts the name on that line; the metadata then hangs beneath.
-   It stays one line so the name keeps its place at every width. */
+   chevron riding the name's line. Centre the two text lines as one block so
+   the card breathes evenly top and bottom, then lift the three single-line
+   items by half the metadata row to land them on the name. Pushing the text
+   down instead would have aligned them just as well but left the block
+   hugging the card's floor. The metadata stays on one line so that lift
+   stays correct at every width. */
+.rank,
+.card > b,
+.card::after { transform: translateY(-9px); }
 .copy small,
 .card[data-focused="true"] .copy small {
   display: block;
@@ -108,7 +114,7 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.copy { gap: 3px; margin-bottom: -18px; }
+.copy { gap: 3px; }
 
 /* Cards read as clean white rows: a hairline edge and a shallow shadow do the
    separating. The card in focus fills with the brand's softest orange so the
@@ -159,8 +165,6 @@
   width: 26px;
   height: 26px;
   border-radius: 9px;
-  /* The 1px nudge optically centred a bare digit; a chip needs no such lift. */
-  transform: none;
   background: #f2f2f3;
   color: #6f6f68;
   font-size: 13px;
