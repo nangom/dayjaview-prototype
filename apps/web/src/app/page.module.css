@@ -113,7 +113,7 @@
 .homeHeaderSpacer { width: 44px; height: 44px; }
 .homeSavedButton { width: 44px; height: 44px; border: 0; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.45); color: #16160f; }
 .orangeHomeTitle { flex: none; padding: 26px 0 40px; }
-.orangeHomeTitle > strong { display: block; color: #eb5e28; font-size: 30px; line-height: 1.14; font-weight: 700; letter-spacing: -.03em; }
+.orangeHomeTitle > strong { display: block; color: var(--djv-color-brand); font-size: 30px; line-height: 1.14; font-weight: 700; letter-spacing: -.03em; }
 .orangeHomeTitle h1 { margin-top: 0; font-size: 30px; line-height: 1.14; font-weight: 800; }
 
 .home h1 {
@@ -728,10 +728,10 @@
   border-bottom: 0;
 }
 
-/* Research keeps the warm page canvas visible; only the conversation surface
-   (question + answer) is lifted onto white. */
+/* Keep research on the same clean surface as realtime and saved screens;
+   only the conversation surface (question + answer) is lifted onto white. */
 .researchScreen,
-.researchScreen .wireBody { background: var(--djv-color-bg); }
+.researchScreen .wireBody { background: #ffffff; }
 .researchScreen .wireBody .pageIntro {
   padding: 24px 4px 16px;
   border-bottom: 0;
@@ -793,7 +793,7 @@
 /* Interaction polish: visited themes are the useful history, while research
    remains the only place for free-form questions. */
 .homeMark {
-  opacity: .84;
+  opacity: 1;
   /* Keep the mark on the same signature orange as the active controls. */
   filter: brightness(0) saturate(100%) invert(48%) sepia(95%) saturate(3058%) hue-rotate(359deg) brightness(103%) contrast(103%);
 }
@@ -896,7 +896,7 @@
 }
 
 .researchScreen,
-.researchScreen .wireBody { background: #f2eee9; }
+.researchScreen .wireBody { background: #ffffff; }
 .researchScreen .naturalForm button { background: #d8784a; }
 .researchScreen .researchChatBox .answerBlock { border-color: #eaebee; }
 
