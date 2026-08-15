@@ -19,6 +19,7 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
   const wheelRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef({ pointerId: -1, startY: 0, startTop: 0, moved: false });
   const frameRef = useRef<number | undefined>(undefined);
+  const introRafRef = useRef<number | undefined>(undefined);
   const hasPlayedIntroRef = useRef(false);
   const introCancelledRef = useRef(false);
   const introTimersRef = useRef<number[]>([]);
@@ -92,29 +93,37 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
 
     const shouldPlayIntro = !hasPlayedIntroRef.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (shouldPlayIntro && firstVisibleCard) {
-      hasPlayedIntroRef.current = true;
-      const introStepDelay = 800;
-      const introRanks = [
-        { rank: 2, delay: introStepDelay },
-        { rank: 3, delay: introStepDelay * 2 },
-        { rank: 4, delay: introStepDelay * 5 },
-        ...Array.from({ length: Math.max(0, themes.length - 4) }, (_, index) => ({
-          rank: index + 5,
-          delay: introStepDelay * (index + 6),
-        })),
-      ];
-      introRanks.forEach(({ rank, delay }) => {
-        introTimers.push(window.setTimeout(() => {
-          if (introCancelledRef.current) return;
-          wheel.scrollTo({ top: baseTop + step * (rank - 1), behavior: "smooth" });
-          wheel.dataset.introStep = String(rank);
-        }, delay));
-      });
-      // Keep the reveal moving past rank 4, then leave the wheel at the last
-      // item instead of jumping back to rank 1.
+      // One slow revolution that settles back on rank 1. The list is tripled,
+      // so travelling exactly one cycle lands on an identical card and the
+      // scroll position can be reset afterwards without a visible jump.
+      // Driving it per frame keeps the wheel gliding instead of stuttering
+      // between discrete smooth-scroll targets.
+      const introDuration = 3600;
+      const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+      let introStart = 0;
+      const spin = (now: number) => {
+        if (introCancelledRef.current) return;
+        if (!introStart) introStart = now;
+        const progress = Math.min(1, (now - introStart) / introDuration);
+        wheel.scrollTop = baseTop + cycleHeight * ease(progress);
+        if (progress < 1) {
+          introRafRef.current = window.requestAnimationFrame(spin);
+          return;
+        }
+        introRafRef.current = undefined;
+        wheel.scrollTop = baseTop;
+        delete wheel.dataset.intro;
+      };
       introTimers.push(window.setTimeout(() => {
-        delete wheel.dataset.introStep;
-      }, (introRanks.at(-1)?.delay ?? introStepDelay * 2) + 650));
+        if (introCancelledRef.current) return;
+        // Mark the intro as spent only once it actually starts. Marking it at
+        // schedule time meant Strict Mode's double-invoked effect burned the
+        // flag on the first pass, whose cleanup then cancelled the timer, so
+        // the second pass skipped the spin entirely and it never played.
+        hasPlayedIntroRef.current = true;
+        wheel.dataset.intro = "true";
+        introRafRef.current = window.requestAnimationFrame(spin);
+      }, 420));
     }
     paint();
     wheel.addEventListener("scroll", handleScroll, { passive: true });
@@ -122,9 +131,11 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     return () => {
       wheel.removeEventListener("scroll", handleScroll);
       if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+      if (introRafRef.current) window.cancelAnimationFrame(introRafRef.current);
+      introRafRef.current = undefined;
       introTimers.forEach((timer) => window.clearTimeout(timer));
       introTimers.splice(0, introTimers.length);
-      delete wheel.dataset.introStep;
+      delete wheel.dataset.intro;
     };
   }, [themes]);
 
@@ -132,8 +143,12 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     introCancelledRef.current = true;
     introTimersRef.current.forEach((timer) => window.clearTimeout(timer));
     introTimersRef.current.splice(0, introTimersRef.current.length);
+    if (introRafRef.current) {
+      window.cancelAnimationFrame(introRafRef.current);
+      introRafRef.current = undefined;
+    }
     if (wheelRef.current) {
-      delete wheelRef.current.dataset.introStep;
+      delete wheelRef.current.dataset.intro;
     }
   };
 

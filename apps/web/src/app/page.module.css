@@ -921,6 +921,11 @@
    signature orange so the logo never reads as a different orange family. */
 .homeMark { background-color: #ff6f0f; }
 .orangeHomeTitle > strong { color: #ff6f0f; }
+
+/* Ease the home headline down 2px so the ranking wheel gets more room. */
+.orangeHomeTitle > strong,
+.orangeHomeTitle h1 { font-size: 28px; }
+
 .detailHeader { background: #ff6f0f; }
 .detailScroll > .themeSummary { background: #ff6f0f; }
 

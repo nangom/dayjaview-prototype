@@ -92,6 +92,20 @@
 .card[data-focused="true"] .copy small { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
 .card > b { color: #e5484d; font-size: 16px; font-weight: 700; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
 
+/* Scroll snapping pulls against the per-frame intro spin, so let the wheel
+   glide freely while it plays and hand snapping back once it settles. */
+.wheel[data-intro="true"] { scroll-snap-type: none; }
+
+/* Ranks 1-3 carry a filled chip so the podium reads at a glance. */
+.card[data-top="true"] .rank {
+  width: 26px;
+  height: 26px;
+  border-radius: 9px;
+  background: #ffe6d2;
+  color: #a33b00;
+  font-weight: 800;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .wheel { scroll-behavior: auto; }
   .card { transition: none; }
