@@ -75,6 +75,8 @@ export default function Home() {
   const [isSaved, setIsSaved] = useState(false);
   const [showAllLeaders, setShowAllLeaders] = useState(false);
   const [detailTab, setDetailTab] = useState<"dejavu" | "today">("dejavu");
+  const themeRankBadge = "오늘 상승 1위";
+  const interestGapBadge = "8개월 만의 관심";
   const [reasonSource, setReasonSource] = useState<"live" | "infostock">("live");
   const [showAllReasons, setShowAllReasons] = useState(false);
   const [themeHistory, setThemeHistory] = useState<ThemeHistoryItem[]>([]);
@@ -275,8 +277,21 @@ export default function Home() {
 
             <div className={styles.detailScroll}>
               <section className={styles.themeSummary}>
-                <div className={styles.themeTitle}><span className={styles.themeRankPill}>오늘 상승 1위</span><h1>원전수출</h1></div>
-                <div className={styles.themeReturnRow}><strong>+2.7%</strong><p className={styles.themeReturnPill}>오늘 평균 등락률</p></div>
+                <div className={styles.themeSummaryMain}>
+                  <div className={styles.themeTitle}>
+                    <div className={styles.themeBadges}>
+                      {themeRankBadge ? <span className={styles.themeRankPill}>{themeRankBadge}</span> : null}
+                      {interestGapBadge ? <span className={styles.themeGapPill}>{interestGapBadge}</span> : null}
+                    </div>
+                    <h1>원전수출</h1>
+                  </div>
+                  <div className={styles.themeReturnRow}><strong>+2.7%</strong><p className={styles.themeReturnPill}>테마 수익률</p></div>
+                </div>
+                <div className={styles.themeStats}>
+                  <article><span>상승 종목</span><strong>17/21</strong></article>
+                  <article><span>거래 관심</span><strong>2.4배</strong></article>
+                  <article><span>거래대금</span><strong>1.8조</strong></article>
+                </div>
               </section>
 
               <div className={styles.detailContentCard}>
@@ -325,15 +340,6 @@ export default function Home() {
                   {intradayReasonNews.length > 3 ? <button type="button" className={styles.reasonMore} aria-expanded={showAllReasons} onClick={() => setShowAllReasons((current) => !current)}><span>{showAllReasons ? "근거 접기" : `근거 ${intradayReasonNews.length - 3}건 더 보기`}</span><i aria-hidden="true" data-open={showAllReasons ? "true" : "false"} /></button> : null}
                   <p className={styles.confirmationNote}>뉴스 근거는 장중 계속 갱신되며 이후 정정될 수 있습니다.</p>
                 </> : <div className={styles.infostockPending}><strong>장 마감 후 오늘 하루를 다시 분석해요</strong><p>장중 가격 움직임과 마감 후 확인된 시장 기록을 함께 살펴 상승 배경을 정리해 보여드려요.</p><small>장중 분석과 달라진 내용이 있다면 마감 후 분석을 기준으로 안내합니다.</small></div>}
-              </section>
-              <section className={styles.metrics}>
-                <h2>현재 테마 상태</h2>
-                <div>
-                  <article><span>상승 종목</span><strong>17/21</strong><small>81%</small></article>
-                  <article><span>거래 관심</span><strong>2.4배</strong><small>20일 평균 대비</small></article>
-                  <article><span>테마 거래대금</span><strong>1.8조</strong><small>장중 누적</small></article>
-                </div>
-                <div className={styles.interestGap}><strong>8개월 만에 다시 주목받고 있어요</strong><span>이전 관심 구간 이후 163거래일</span></div>
               </section>
               <section className={styles.leaderSection}>
                 <div className={styles.sectionHeading}><h2>오늘의 주도 종목</h2></div>
