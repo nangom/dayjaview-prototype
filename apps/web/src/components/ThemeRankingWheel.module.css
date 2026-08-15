@@ -96,30 +96,54 @@
    glide freely while it plays and hand snapping back once it settles. */
 .wheel[data-intro="true"] { scroll-snap-type: none; }
 
-/* Rank, theme name, return — nothing else. Dropping the metadata line lets the
-   card collapse to a single row, and with one line of content the name centres
-   against the rank chip on its own. */
+/* Theme name over its metadata line, with the rank chip, the return and a
+   chevron riding the name's line. Discounting the metadata from the centred
+   box is what puts the name on that line; the metadata then hangs beneath.
+   It stays one line so the name keeps its place at every width. */
 .copy small,
-.card[data-focused="true"] .copy small { display: none; }
-.copy { gap: 0; }
+.card[data-focused="true"] .copy small {
+  display: block;
+  overflow: hidden;
+  opacity: 1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.copy { gap: 3px; margin-bottom: -18px; }
 
-/* Float the cards on the white canvas instead of filling them: a barely-there
-   wash over a blur, a hairline edge and a soft drop shadow do the separating,
-   which reads as glass rather than as a painted panel. */
+/* Cards read as clean white rows: a hairline edge and a shallow shadow do the
+   separating. The card in focus fills with the brand's softest orange so the
+   wheel's centre is unmistakable without shouting. */
 .card {
-  min-height: 58px;
-  padding: 8px 14px;
-  border: 1px solid rgba(22,22,15,.05);
+  min-height: 78px;
+  padding: 10px 12px;
+  grid-template-columns: 30px minmax(0, 1fr) auto 10px;
+  gap: 10px;
+  border: 1px solid rgba(22,22,15,.07);
   border-radius: 18px;
-  background: rgba(255,255,255,.55);
-  backdrop-filter: blur(8px) saturate(1.35);
-  -webkit-backdrop-filter: blur(8px) saturate(1.35);
-  box-shadow: 0 6px 16px -10px rgba(22,22,15,.22), inset 0 1px 0 rgba(255,255,255,.9);
+  background: #ffffff;
+  box-shadow: 0 2px 8px -4px rgba(22,22,15,.10);
 }
 .card[data-focused="true"] {
-  background: rgba(255,255,255,.78);
-  box-shadow: 0 12px 26px -16px rgba(177,79,31,.4), 0 0 0 1px rgba(255,111,15,.14), inset 0 1px 0 rgba(255,255,255,.96);
+  border-color: rgba(255,111,15,.55);
+  background: #fff4ea;
+  box-shadow: 0 10px 22px -14px rgba(177,79,31,.35);
 }
+
+/* Buy the metadata line the last few pixels it needs to sit unabbreviated at
+   375px; the card's own shadow gives the edge enough breathing room. */
+.wheel { padding-right: 8px; padding-left: 8px; }
+
+/* The row is tappable, so it earns the affordance the evidence rows elsewhere
+   deliberately go without. */
+.card::after {
+  content: "\203A";
+  align-self: center;
+  justify-self: end;
+  color: #c2c2c6;
+  font-size: 15px;
+  line-height: 1;
+}
+.card[data-focused="true"]::after { color: #e08a4d; }
 
 /* The fades that hide the wheel's ends have to match the new white canvas. */
 .wheel::before {
@@ -129,13 +153,20 @@
   background: linear-gradient(to top, #ffffff 4%, rgba(255,255,255,.94) 38%, rgba(255,255,255,.3) 72%, rgba(255,255,255,0) 100%);
 }
 
-/* Ranks 1-3 carry a filled chip so the podium reads at a glance. */
-.card[data-top="true"] .rank {
+/* Every rank sits in a chip so the column reads as one shape; the podium's
+   three are the only ones tinted with the brand orange. */
+.rank {
   width: 26px;
   height: 26px;
   border-radius: 9px;
-  /* The 1px nudge optically centred a bare digit; the chip needs no such lift. */
+  /* The 1px nudge optically centred a bare digit; a chip needs no such lift. */
   transform: none;
+  background: #f2f2f3;
+  color: #6f6f68;
+  font-size: 13px;
+  font-weight: 700;
+}
+.card[data-top="true"] .rank {
   background: #ffe6d2;
   color: #a33b00;
   font-weight: 800;

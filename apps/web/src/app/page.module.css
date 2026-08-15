@@ -926,6 +926,10 @@
 .orangeHomeTitle > strong,
 .orangeHomeTitle h1 { font-size: 28px; }
 
+/* Drop the date and headline a touch below the mark. Wording, size and colour
+   stay exactly as they were — this is spacing only. */
+.orangeHomeTitle { padding-top: 40px; padding-bottom: 32px; }
+
 .detailHeader { background: #ff6f0f; }
 .detailScroll > .themeSummary { background: #ff6f0f; }
 
