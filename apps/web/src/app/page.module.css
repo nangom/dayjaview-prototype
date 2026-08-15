@@ -485,7 +485,8 @@
   background: #ffffff;
   box-shadow: 0 8px 22px rgba(33,33,36,.06);
 }
-.detailContentCard > section {
+.detailContentCard > section,
+.detailPanel > section {
   margin: 0;
   padding: 24px 16px;
   border: 0;
@@ -494,7 +495,44 @@
   background: transparent;
   box-shadow: none;
 }
-.detailContentCard > section:last-child { border-bottom: 0; }
+.detailContentCard > section:last-child,
+.detailPanel > section:last-child { border-bottom: 0; }
+
+.detailTabs {
+  display: flex;
+  height: 46px;
+  background: #f1f0ee;
+}
+.detailTabs button {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  height: 46px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #868b94;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+.detailTabs .detailTabActive {
+  z-index: 2;
+  background: #ffffff;
+  color: #d95700;
+  font-weight: 800;
+}
+.detailTabs button:first-child.detailTabActive {
+  clip-path: polygon(0 0, 82% 0, 100% 100%, 0 100%);
+  margin-right: -12px;
+}
+.detailTabs button:last-child.detailTabActive {
+  clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%);
+  margin-left: -12px;
+}
 .detailScroll > .themeSummary {
   margin: 0 -12px 10px;
   min-height: 170px;
