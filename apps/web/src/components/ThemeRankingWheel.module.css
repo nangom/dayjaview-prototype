@@ -8,6 +8,8 @@
   overflow-x: hidden;
   overscroll-behavior: contain;
   scroll-behavior: auto;
+  scroll-snap-type: y proximity;
+  scroll-padding-block: calc(50% - 38px);
   overflow-anchor: none;
   scrollbar-width: none;
   touch-action: pan-y;
@@ -40,7 +42,7 @@
 }
 
 .wheel::-webkit-scrollbar { display: none; }
-.wheel[data-dragging="true"] { cursor: grabbing; scroll-behavior: auto; }
+.wheel[data-dragging="true"] { cursor: grabbing; scroll-behavior: auto; scroll-snap-type: none; }
 .wheel[data-dragging="true"] * { pointer-events: none; }
 
 .card {
@@ -72,6 +74,8 @@
   will-change: transform;
   -webkit-font-smoothing: antialiased;
   transition: opacity 150ms ease, transform 220ms cubic-bezier(.2,.75,.2,1), border-color 120ms ease, background 120ms ease;
+  scroll-snap-align: center;
+  scroll-snap-stop: normal;
 }
 
 .card[data-focused="true"] {

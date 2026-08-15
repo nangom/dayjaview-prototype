@@ -793,9 +793,14 @@
 /* Interaction polish: visited themes are the useful history, while research
    remains the only place for free-form questions. */
 .homeMark {
-  opacity: 1;
-  /* Keep the mark on the same signature orange as the active controls. */
-  filter: brightness(0) saturate(100%) invert(48%) sepia(95%) saturate(3058%) hue-rotate(359deg) brightness(103%) contrast(103%);
+  display: block;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 34px;
+  background: var(--djv-color-brand);
+  /* Mask the real mark so its fill is exactly the same token as the date. */
+  -webkit-mask: url("/dejavu-mark.png") center / contain no-repeat;
+  mask: url("/dejavu-mark.png") center / contain no-repeat;
 }
 .libraryHistory > button {
   grid-template-columns: minmax(0, 1fr) auto 18px;

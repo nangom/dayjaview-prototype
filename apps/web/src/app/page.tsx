@@ -228,7 +228,7 @@ export default function Home() {
               {activeTab === "home" ? (
                 <div className={styles.home}>
                   <header className={styles.orangeHomeHeader}>
-                    <Image className={styles.homeMark} src="/dejavu-mark.png" alt="DAY-JA-VIEW" width={28} height={34} priority />
+                    <span className={styles.homeMark} role="img" aria-label="DAY-JA-VIEW" />
                   </header>
                   <div className={styles.orangeHomeTitle}><strong>2026년 08월 12일</strong><h1>오늘 많이 오른 테마예요</h1></div>
 

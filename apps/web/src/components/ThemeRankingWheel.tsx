@@ -33,7 +33,6 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     const step = (cards[0]?.offsetHeight ?? 64) + 8;
     const cycleHeight = step * themes.length;
     let baseTop = 0;
-    let cycleLastTop = 0;
 
     const paint = () => {
       frameRef.current = undefined;
@@ -68,12 +67,13 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     };
 
     const keepPrimaryCopy = () => {
-      // Keep the visible range in one ordered copy. The old half-cycle reset
-      // could land in the middle of the list (often rank 7); crossing the
-      // actual ends now wraps cleanly from rank 10 to rank 1.
+      // Keep the visible range in the middle copy. Shift by one full cycle so
+      // the duplicated cards stay in the exact same visual position instead
+      // of jumping to an unrelated rank when the user flicks past an end.
       const wrapThreshold = step * 0.65;
-      if (wheel.scrollTop > cycleLastTop + wrapThreshold) wheel.scrollTop = baseTop;
-      if (wheel.scrollTop < baseTop - wrapThreshold) wheel.scrollTop = cycleLastTop;
+      const nextCycleTop = baseTop + cycleHeight;
+      if (wheel.scrollTop > nextCycleTop + wrapThreshold) wheel.scrollTop -= cycleHeight;
+      else if (wheel.scrollTop < baseTop - wrapThreshold) wheel.scrollTop += cycleHeight;
     };
 
     const handleScroll = () => {
@@ -87,7 +87,6 @@ export function ThemeRankingWheel({ themes, onSelect }: ThemeRankingWheelProps) 
     introTimers.splice(0, introTimers.length);
     if (firstVisibleCard) {
       baseTop = Math.max(0, firstVisibleCard.offsetTop - (wheel.clientHeight - firstVisibleCard.offsetHeight) / 2);
-      cycleLastTop = baseTop + cycleHeight - step;
       wheel.scrollTop = baseTop;
     }
 
