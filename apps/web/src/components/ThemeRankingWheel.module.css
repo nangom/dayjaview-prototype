@@ -96,11 +96,27 @@
    glide freely while it plays and hand snapping back once it settles. */
 .wheel[data-intro="true"] { scroll-snap-type: none; }
 
+/* The rank chip sits on the card's middle line, but centring the name and the
+   metadata as one block left the name floating above it. Discount the metadata
+   from the centred box so the theme name lands on that same line and the
+   metadata hangs beneath, and give the card the extra height that needs.
+   The metadata stays on one line so the name stays centred at every width. */
+.card { min-height: 82px; }
+.copy { margin-bottom: -18px; }
+.card[data-focused="true"] .copy small {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 /* Ranks 1-3 carry a filled chip so the podium reads at a glance. */
 .card[data-top="true"] .rank {
   width: 26px;
   height: 26px;
   border-radius: 9px;
+  /* The 1px nudge optically centred a bare digit; the chip needs no such lift. */
+  transform: none;
   background: #ffe6d2;
   color: #a33b00;
   font-weight: 800;
