@@ -1,5 +1,0 @@
-* { box-sizing: border-box; }
-html, body { margin: 0; min-height: 100%; background: var(--djv-color-bg); color: var(--djv-color-text); font-family: var(--djv-font-sans); }
-button, input { font: inherit; }
-button:focus-visible, a:focus-visible { outline: 2px solid var(--djv-color-brand); outline-offset: 2px; }
-

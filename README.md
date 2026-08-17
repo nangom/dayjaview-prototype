@@ -1,21 +1,30 @@
-# DAY-JA-VIEW Product
+# DAY-JA-VIEW — fixture 미리보기
 
-DAY-JA-VIEW의 제품용 프론트엔드와 디자인 시스템을 함께 관리하는 독립 monorepo다.
+본체(`choidev777-bit/dayjaview`) `apps/web`을 **fixture 모드**로 구운 정적 산출물입니다.
+모바일에서 화면을 확인하려고 올려 둔 것이고, 실서비스가 아닙니다.
 
-## 구조
+- 실서비스: https://dayjaview.vercel.app
+- 이 미리보기: https://dayjaview-prototype.vercel.app
 
-```text
-apps/web/                 Next.js 제품·UX 프로토타입
-packages/design-tokens/   색상·타이포·간격·곡률·모션 토큰
-packages/ui/              토큰을 사용하는 공통 UI 컴포넌트
-docs/                     화면·디자인 시스템 결정
+## 무엇이 들어 있나
+
+- 데이터는 2026-08-10 인포스탁 실데이터(시연본)입니다. 지어낸 값은 없습니다.
+- 실시간 화면은 2026-08-14 장중 체결(키움 실시간 `0B`)로 만든 분 단위 스냅샷을
+  3초에 한 분씩 흘립니다. 정지본을 보려면 `?replay=off`.
+- 로그인·저장은 브라우저 안에서만 도는 fixture 어댑터입니다. 서버를 부르지 않습니다.
+
+## 이전 디자인 시안
+
+Claude Design 시안 원본은 `backup/design-main-20260817` 브랜치에 그대로 있습니다.
+
+## 다시 굽는 법
+
+본체 레포에서:
+
+```
+cd apps/web
+npx vite build --config vite.preview.config.ts
 ```
 
-## 경계
-
-- 디자인 토큰은 값만 소유한다.
-- UI 패키지는 버튼, 앱바, 내비게이션, 데이터 행 같은 재사용 부품을 소유한다.
-- 제품 화면과 fixture/API adapter는 `apps/web`이 소유한다.
-- 백엔드 분석 엔진과 DB 코드는 이 저장소에 복사하지 않는다.
-- 실제 API가 준비되기 전에는 화면에 합성 데이터임을 표시한다.
-
+`dist-preview/`가 이 레포의 루트 내용입니다. `fixture.html`을 `index.html`로 바꾸고
+`vercel.json`(SPA rewrite)을 같이 둡니다.
