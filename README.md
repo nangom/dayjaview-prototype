@@ -1,4 +1,4 @@
-# DAY-JA-VIEW — fixture 미리보기
+# DAY JA VIEW — fixture 미리보기
 
 본체(`choidev777-bit/dayjaview`) `apps/web`을 **fixture 모드**로 구운 정적 산출물입니다.
 모바일에서 화면을 확인하려고 올려 둔 것이고, 실서비스가 아닙니다.
