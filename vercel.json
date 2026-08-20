@@ -4,7 +4,7 @@
   "outputDirectory": ".",
   "rewrites": [
     {
-      "source": "/((?!assets/).*)",
+      "source": "/((?!assets/|brand/|.*\\.(png|jpg|jpeg|gif|svg|ico|webp|woff2?|json|txt|xml)$).*)",
       "destination": "/index.html"
     }
   ]
